@@ -7,3 +7,5 @@ nltk
 allennlp==2.1.0
 allennlp-models==2.1.0
 spacy>=2.0.5
+ibm-watson==5.1.0
+ibm-cloud-sdk-core==3.9.0
