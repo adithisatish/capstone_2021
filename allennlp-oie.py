@@ -46,7 +46,7 @@ def get_oie_triplets(text):
                 except Exception as e:
                     triplet_dict[trip[0]] = None
 
-        print("Triplets found in Extraction",count+1,":")
+        print("Extraction",count+1,":")
         print(triplet_dict)
         print("\n")
 
