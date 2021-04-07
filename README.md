@@ -9,6 +9,7 @@ Run ```pip install -r requirements.txt```
 - Tense Detection
 - Tone Detection
 - OpenIE (SPO Detection)
+- Alliteration Detection
 
 ### Authors
 - Adithi Satish
