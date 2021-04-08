@@ -46,9 +46,12 @@ def detect_alliteration(text):
 
 
 if __name__ == "__main__":
-    text = "Hello I am Mark"#"Peter Piper Picked a Peck of Pickled Peppers"
+    text = "Peter Piper Picked a Peck of Pickled Peppers"
+    print("Sentence:", text)
+    print()
     alliteration = detect_alliteration(text)
     if alliteration != '':
         print("Alliteration:", alliteration)
+        print()
     else:
         print("No alliterations found!")
