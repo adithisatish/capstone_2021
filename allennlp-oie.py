@@ -5,6 +5,7 @@ import pandas as pd
 import numpy as np
 
 import os
+import sys
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2' # to ignore tensorflow warnings and information logs
 
 from allennlp.predictors.predictor import Predictor
@@ -24,7 +25,7 @@ warnings.filterwarnings("ignore") # ignore any other warnings
 
 modifiers = {'ARGM-LOC': 'Location', 'ARGM-TMP': 'Temporal', 'ARGM-ADV': 'Adverbial', 'ARGM-DIS': 'Discourse'}
 
-text = "A two-seater aircraft crashed in Odisha's Dhenkanal district on Monday, killing a trainee pilot and her instructor, officials said"
+text = sys.argv[1]
     
 
 # Function to take text as input and return a list of all the different OpenInformationExtraction dictionaries found

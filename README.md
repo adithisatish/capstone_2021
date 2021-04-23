@@ -8,8 +8,8 @@ Run ```pip install -r requirements.txt```
 ### Components Implemented
 - Tense Detection
 - Tone Detection
-- OpenIE (SPO Detection)
-- Alliteration Detection
+- OpenIE (SPO Detection) - Run ```python3 allennlp-oie.py "<input sentence>"```
+- Alliteration Detection - Run ```python3 alliteration-detector.py```
 
 ### Authors
 - Adithi Satish
