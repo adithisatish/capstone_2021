@@ -5,11 +5,14 @@ The framework implemented here intends to deconstruct English sentences and para
 ### Required Libraries
 Run ```pip install -r requirements.txt```
 
+### Execution
+To run the integrated program, navigate to the directory and run ```python sentence-deconstructor.py```
+
 ### Components Implemented
 - Tense Detection
 - Tone Detection
-- OpenIE (SPO Detection) - Run ```python3 allennlp-oie.py "<input sentence>"```
-- Alliteration Detection - Run ```python3 alliteration-detector.py```
+- OpenIE (SPO Detection)
+- Alliteration Detection
 
 ### Authors
 - Adithi Satish
