@@ -1,5 +1,7 @@
 # Alliteration Detection 
 
+# Incorporates phonetics as well consecutive consonant words
+
 # Import libraries
 
 import pandas as pd 
@@ -77,9 +79,9 @@ def detect_alliteration(text):
 
 
 if __name__ == "__main__":
-    # text = input("Enter your sentence:")
+    text = input("Enter your sentence: ")
     # text = "Dan declares that he deserves to debate"
-    text = "the cruel king was kind in real life"
+    # text = "the cruel king was kind in real life"
     print("Sentence:", text)
     print()
     alliteration = detect_alliteration(text)
