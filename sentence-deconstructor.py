@@ -5,10 +5,15 @@ import os
 import pandas as pd 
 import numpy as np 
 import sys
+import nltk
 import time
 # from ToneAnalyzer import 
 
 if __name__ == "__main__":
+
+    nltk.download("stopwords")
+    # time.sleep(5)
+    
     os.system("CLS")
     print("Welcome to the Sentence Deconstructor!")
     print("----------------------------------------")

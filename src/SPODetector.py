@@ -23,7 +23,7 @@ warnings.filterwarnings("ignore") # ignore any other warnings
 #     - ARGM-ADV: Modifier-Adverbial
 #     - ARGM-DIS: Modifier-Discourse
 
-modifiers = {'ARGM-LOC': 'Location', 'ARGM-TMP': 'Temporal', 'ARGM-ADV': 'Adverbial', 'ARGM-DIS': 'Discourse', 'ARGM-MNR':'Manner/Behaviour'}
+modifiers = {'ARGM-LOC': 'Location', 'ARGM-TMP': 'Temporal', 'ARGM-ADV': 'Adverbial', 'ARGM-DIS': 'Discourse', 'ARGM-MNR':'Manner/Behaviour', 'ARGM-DIR': 'Directional'}
 argmatch = lambda x: re.search('ARG[0-9]:',x)
 # print(argmatch('ARG1: what'))
     

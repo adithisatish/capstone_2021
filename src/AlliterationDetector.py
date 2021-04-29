@@ -8,6 +8,7 @@ import pandas as pd
 import numpy as np 
 import re
 import nltk 
+# nltk.data.path.append("D:/PESU/capstone_2021/venv")
 
 # nltk.download("stopwords") # if not downloaded already
 
