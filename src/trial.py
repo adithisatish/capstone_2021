@@ -27,6 +27,7 @@ def determine_tense_input(sentence):
             max = tense_dict[i]
     return tense
 
-sentence = "This restaurant used to be good back in the day."
-tense = determine_tense_input(sentence)
-print(tense + ' tense')
+if __name__ == "__main__":
+    sentence = "This restaurant used to be good back in the day."
+    tense = determine_tense_input(sentence)
+    print(tense + ' tense')
