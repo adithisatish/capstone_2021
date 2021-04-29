@@ -77,14 +77,15 @@ def detect_alliteration(text):
     # print(alliterations)
     return '-'.join(alliterations)
 
-
 if __name__ == "__main__":
     text = input("Enter your sentence: ")
     # text = "Dan declares that he deserves to debate"
     # text = "the cruel king was kind in real life"
     print("Sentence:", text)
     print()
+
     alliteration = detect_alliteration(text)
+    
     if alliteration != '':
         print("Words in the alliteration:", alliteration)
         print()

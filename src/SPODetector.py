@@ -26,8 +26,6 @@ warnings.filterwarnings("ignore") # ignore any other warnings
 modifiers = {'ARGM-LOC': 'Location', 'ARGM-TMP': 'Temporal', 'ARGM-ADV': 'Adverbial', 'ARGM-DIS': 'Discourse', 'ARGM-MNR':'Manner/Behaviour'}
 argmatch = lambda x: re.search('ARG[0-9]:',x)
 # print(argmatch('ARG1: what'))
-
-text = sys.argv[1]
     
 
 # Function to take text as input and return a list of all the different OpenInformationExtraction dictionaries found
@@ -141,4 +139,5 @@ def detect_svo(text):
                 print("{0}: {1}".format(modifier_key, modifier))
 
 if __name__=='__main__':
+    text = sys.argv[1]
     detect_svo(text)
