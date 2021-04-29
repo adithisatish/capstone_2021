@@ -4,7 +4,8 @@ The framework implemented here intends to deconstruct English sentences and para
 
 ### Required Libraries
 To run the AllenNLP modes, [PyTorch](https://pytorch.org/) is required (follow the installation steps on the website).
-Run ```pip install -r requirements.txt```
+
+Run ```pip install -r requirements.txt``` once all the prerequisites are satisfied.
 
 ### Execution
 To run the integrated program, navigate to the directory and run ```python sentence-deconstructor.py```
