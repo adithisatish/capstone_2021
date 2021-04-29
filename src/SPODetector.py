@@ -3,7 +3,7 @@
 # Importing libraries
 import pandas as pd 
 import numpy as np
-
+import re
 import os
 import sys
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2' # to ignore tensorflow warnings and information logs
@@ -23,7 +23,9 @@ warnings.filterwarnings("ignore") # ignore any other warnings
 #     - ARGM-ADV: Modifier-Adverbial
 #     - ARGM-DIS: Modifier-Discourse
 
-modifiers = {'ARGM-LOC': 'Location', 'ARGM-TMP': 'Temporal', 'ARGM-ADV': 'Adverbial', 'ARGM-DIS': 'Discourse'}
+modifiers = {'ARGM-LOC': 'Location', 'ARGM-TMP': 'Temporal', 'ARGM-ADV': 'Adverbial', 'ARGM-DIS': 'Discourse', 'ARGM-MNR':'Manner/Behaviour'}
+argmatch = lambda x: re.search('ARG[0-9]:',x)
+# print(argmatch('ARG1: what'))
 
 text = sys.argv[1]
     
@@ -43,6 +45,8 @@ def get_oie_triplets(text):
         oie_triplets = desc.split(",")
         triplet_dict = {}
 
+        # print(oie_triplets)
+
         for triplet in oie_triplets:
             tags = triplet.replace("[","")
             tags = tags.split('] ')
@@ -51,8 +55,15 @@ def get_oie_triplets(text):
                 tags = tags[:-1]
             if tags[-1] == ']':
                 tags = tags[:-1]
+
+            # print(tags)
             
             for tag in tags:
+                if "ARGM-ADV" not in tag and 'V:' in tag and tag.find('V:') !=0:
+                    tag = tag[tag.find('V:'):]
+                    # print(tag)
+                elif argmatch(tag)!= None and argmatch(tag).span()[0]!=0:
+                    tag = tag[argmatch(tag).span()[0]:]
                 trip = tag.split(": ")
                 
                 try:
@@ -72,30 +83,42 @@ def get_oie_triplets(text):
 # Function to take dictionary containing OIE triplet as input and extract SVO + modifiers from it
 def get_svo_from_triplet(triplet):
     
-    argmin = min(triplet.keys())
-    subject = triplet[argmin]
-    connecting_verb = triplet['V']
+    try:
+        argmin = min(triplet.keys())
+        subject = triplet[argmin]
+    except Exception as e:
+        subject = "None"
+    try:
+        connecting_verb = triplet['V']
+    except Exception as e:
+        connecting_verb = 'None'
+
     object_clauses = []
     arg_modifiers = {}
     
     for key, value in triplet.items():
         # key = key.strip()
-        if 'ARGM' in key:
-            arg_modifiers[modifiers[key]] = value
-        elif 'ARG' in key and key != argmin:
+        try:
+            if 'ARGM' in key:
+                arg_modifiers[modifiers[key]] = value
+        except Exception as e:
+            arg_modifiers[key] = "!!New Arg Modifer!!"
+        
+        if 'ARG' in key and key != argmin and 'ARGM' not in key:
             object_clauses.append(value)
 
     return (subject,connecting_verb,object_clauses,arg_modifiers)
             
 
-if __name__=='__main__':
+def detect_svo(text):
     list_of_triplets = get_oie_triplets(text)
 
     print("\nSentence:", text)
-
+    
     for triplet in list_of_triplets:
         print("\n-----------------------------------------------------------")
         print()
+        # print(triplet)
         
         print("Deconstruction:")
         subject, verb, obj_clauses, arg_modifiers = get_svo_from_triplet(triplet)
@@ -116,3 +139,6 @@ if __name__=='__main__':
             print("\nSentence Modifiers (as key-value pairs):")
             for modifier_key, modifier in arg_modifiers.items():
                 print("{0}: {1}".format(modifier_key, modifier))
+
+if __name__=='__main__':
+    detect_svo(text)
