@@ -15,9 +15,36 @@ text = 'Team, I know that times are tough! Product '\
     'quarters. We have a competitive product, but we '\
     'need to do a better job of selling it!'
 
-tone_analysis = tone_analyzer.tone(
-    {'text': text},
-    content_type='application/json'
-).get_result()
+def detect_tone(text):
+    tone_analysis = tone_analyzer.tone({'text': text}, content_type='application/json').get_result()
+    # print(tone_analysis)
+    return tone_analysis
+    # for key, value in tone_analysis.items():
+    #     print(key, value)
+    # return json.dumps(tone_analysis, indent=2)
 
-print(json.dumps(tone_analysis, indent=2))
+def display_tones(text, tone):
+    print("---------------------------\n")
+    print("Text:", text)
+    print("\nOverall Tone(s):")
+
+    for i in tone['document_tone']['tones']:
+        print("\t",i['tone_name'])
+
+    try:
+        print()
+        print("Individual Tones:\n")
+       
+        for sentence in tone['sentences_tone']:
+            print("\tSentence:",sentence['text'])
+            print("\tTone(s):")
+            for tones in sentence['tones']:
+                print("\t\t",tones['tone_name'])
+            print()
+    except Exception as e:
+        print("\tA single sentence was passed. Thus, the individual tone is the same as overall tone.")
+
+if __name__ == "__main__":
+    result = detect_tone("This has been a very bad day")
+    # print(type(result))
+    display_tones(text,result)

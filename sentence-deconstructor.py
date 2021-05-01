@@ -1,5 +1,6 @@
 from src.SPODetector import detect_svo
 from src.AlliterationDetector import detect_alliteration
+from src.ToneAnalyzer import display_tones, detect_tone
 from src.trial import determine_tense_input
 import os
 import pandas as pd 
@@ -11,7 +12,7 @@ import time
 
 if __name__ == "__main__":
 
-    nltk.download("stopwords")
+    # nltk.download("stopwords")
     # time.sleep(5)
     
     os.system("CLS")
@@ -29,8 +30,9 @@ if __name__ == "__main__":
         print("1.\t Detect SPO")
         print("2.\t Detect Alliterations")
         print("3.\t Detect Tense")
-        print("4.\t Change Input")
-        print("5.\t Exit")
+        print("4.\t Detect Tone")
+        print("5.\t Change Input")
+        print("6.\t Exit")
         print()
         
         try:
@@ -68,10 +70,17 @@ if __name__ == "__main__":
             moveon  = input("Press any key to return to Menu")
             time.sleep(1)
         elif choice == 4:
+            tone = detect_tone(text)
+            display_tones(text, tone)
+            print("\n")
+
+            moveon  = input("Press any key to return to Menu")
+            time.sleep(1)
+        elif choice == 5:
             print()
             text = input("Enter new sentence: ")
             time.sleep(1)
-        elif choice == 5:
+        elif choice == 6:
             exit(0)
         else:
             print("Invalid Choice. Please enter again.")
