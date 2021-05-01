@@ -10,6 +10,9 @@ Run ```pip install -r requirements.txt``` once all the prerequisites are satisfi
 ### Execution
 To run the integrated program, navigate to the directory and run ```python sentence-deconstructor.py```
 
+Note: Refer to the [Instructions](https://github.com/adithisatish/capstone_2021/blob/master/instructions.md) file for detailed directions on how to execute the individual components.
+ 
+
 ### Components Implemented
 - Tense Detection
 - Tone Detection
