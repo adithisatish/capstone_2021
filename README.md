@@ -18,6 +18,7 @@ Note: Refer to the [Instructions](https://github.com/adithisatish/capstone_2021/
 - Tone Detection
 - OpenIE (SPO Detection)
 - Alliteration Detection
+- Simile Detection
 
 ### Authors
 - Adithi Satish
