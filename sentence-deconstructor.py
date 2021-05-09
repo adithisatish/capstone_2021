@@ -2,6 +2,7 @@ from src.SPODetector import detect_svo
 from src.AlliterationDetector import detect_alliteration
 from src.ToneAnalyzer import display_tones, detect_tone
 from src.trial import determine_tense_input
+from src.SimileDetector import detect_similes
 import os
 import pandas as pd 
 import numpy as np 
@@ -31,8 +32,9 @@ if __name__ == "__main__":
         print("2.\t Detect Alliterations")
         print("3.\t Detect Tense")
         print("4.\t Detect Tone")
-        print("5.\t Change Input")
-        print("6.\t Exit")
+        print("5.\t Detect Similes")
+        print("6.\t Change Input")
+        print("7.\t Exit")
         print()
         
         try:
@@ -77,10 +79,17 @@ if __name__ == "__main__":
             moveon  = input("Press any key to return to Menu")
             time.sleep(1)
         elif choice == 5:
+            text = text.rstrip()
+            detect_similes(text)
+
+            print()
+            moveon  = input("Press any key to return to Menu")
+            time.sleep(1)
+        elif choice == 6:
             print()
             text = input("Enter new sentence: ")
             time.sleep(1)
-        elif choice == 6:
+        elif choice == 7:
             exit(0)
         else:
             print("Invalid Choice. Please enter again.")

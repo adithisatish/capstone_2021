@@ -36,6 +36,7 @@ if __name__ == "__main__":
     # For "as" occuring in the sentense 
     for i in range(len(words[0])):
          if (words[0][i] == "as" and words[0][i+2]=="as"):
+            print(words, i)
             print("SIMILI FOUND, Phrase:",words[0][i], words[0][i+1], words[0][i+2], words[i+3],words[i+4])
 
 
