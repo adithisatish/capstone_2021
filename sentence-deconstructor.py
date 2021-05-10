@@ -26,6 +26,7 @@ if __name__ == "__main__":
         os.system("CLS")
         print("Welcome to the Sentence Deconstructor!")
         print("----------------------------------------")
+        print("\nSentence:", text)
         print()
         print("Menu")
         print("1.\t Detect SPO")

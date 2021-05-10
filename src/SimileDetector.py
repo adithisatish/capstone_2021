@@ -7,6 +7,7 @@ from nltk.tokenize import word_tokenize
 flag=0
 
 def detect_similes(text):
+    simile = 0
     flag = 0
     words = text.split()
     # For "like" occuring in the sentense
@@ -31,9 +32,11 @@ def detect_similes(text):
                     # print("YES")
                     if(final[j+2][1]=='DT'):
                         if(final[j+3][1] in ["NN","NNS","NNP","JJ"]):
+                            simile = 1
                             print("SIMILE FOUND, Phrase:", ' '.join(tokenized_text[j:j+4]))# final[j][0],final[j+1][0],final[j+2][0],final[j+3][0])
                     
                     elif final[j+2][1] in ["NN","NNS","NNP","JJ"]:
+                        simile = 1
                         print("SIMILE FOUND, Phrase:", ' '.join(tokenized_text[j:j+3]))#final[j][0],final[j+1][0],final[j+2][0])
             
             elif final[j][1] in ["NN","NNS","MD"]:
@@ -41,15 +44,25 @@ def detect_similes(text):
                     # print("YES")
                     if(final[j+2][1]=='DT'):
                         if(final[j+3][1] in ["NN","NNS","NNP","JJ"]):
+                            simile = 1
                             print("SIMILE FOUND, Phrase:", ' '.join(tokenized_text[j:j+4]))#final[j][0],final[j+1][0],final[j+2][0],final[j+3][0])
-    # For "as" occuring in the sentense 
+    
+    # For "as" occuring in the sentence 
+
+    # print(words)
     for i in range(len(words)):
-         if (words[i] == "as" and words[i+2]=="as"):
-            # print(i)
-            print("SIMILE FOUND, Phrase:",' '.join(words[i:i+5]))
+        try:
+            if words[i] == "as" and words[i+2] == "as":
+                simile = 1
+                print("SIMILE FOUND, Phrase:",' '.join(words[i:i+4]))
+        except Exception as e:
+            pass
+    
+    if simile == 0:
+        print("No similes detected!")
 
 if __name__ == "__main__":
-    text = ["He paints like a rainbow in the sky.", "She is as pretty as a flock of birds.","This path meanders like a stream.",
+    text = ["Rob was never as honest as Emily.","He paints like a rainbow in the sky.", "She is as pretty as a flock of birds.","This path meanders like a stream.",
     "In our eighth grade pageant, we shone like stars.",
     "Her voice sounds like nails on a chalkboard!",
     "After I received that 'A' on my spelling test, I thought I might soar like an eagle.",
