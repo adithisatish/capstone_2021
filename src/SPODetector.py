@@ -43,6 +43,7 @@ def get_oie_triplets(text):
     # print("\nTotal Number of Extractions Found:",len(openie['verbs']))
     for count, i in enumerate(openie['verbs']): # contains the ARGx, V and ARGM-XXX
         desc = i['description']
+        # print(desc)
         oie_triplets = desc.split(",")
         triplet_dict = {}
 
