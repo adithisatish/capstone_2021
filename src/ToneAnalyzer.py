@@ -10,12 +10,13 @@ tone_analyzer = ToneAnalyzerV3(
 
 tone_analyzer.set_service_url('https://api.us-south.tone-analyzer.watson.cloud.ibm.com/instances/e772457c-fdc1-473e-b300-f5f4dc57c6f5')
 
-text = 'Team, I know that times are tough! Product '\
+'''text = 'Team, I know that times are tough! Product '\
     'sales have been disappointing for the past three '\
     'quarters. We have a competitive product, but we '\
-    'need to do a better job of selling it!'
+    'need to do a better job of selling it!'''
 
 def detect_tone(text):
+    # print(text)
     tone_analysis = tone_analyzer.tone({'text': text}, content_type='application/json').get_result()
     # print(tone_analysis)
     return tone_analysis
@@ -27,6 +28,11 @@ def display_tones(text, tone):
     print("---------------------------\n")
     print("Text:", text)
     print("\nOverall Tone(s):")
+
+    if len(tone['document_tone']['tones']) == 0:
+        print("\tNo Tone Detected")
+        return None
+    # print("Yes")
 
     for i in tone['document_tone']['tones']:
         print("\t",i['tone_name'])
@@ -45,6 +51,8 @@ def display_tones(text, tone):
         print("\tA single sentence was passed. Thus, the individual tone is the same as overall tone.")
 
 if __name__ == "__main__":
-    result = detect_tone("This has been a very bad day")
+    # print("hello")
+    result = detect_tone("I did this work yesterday")
+    # print(result)
     # print(type(result))
-    display_tones(text,result)
+    display_tones("I did this work yesterday",result)

@@ -1,7 +1,7 @@
 from src.SPODetector import detect_svo
 from src.AlliterationDetector import detect_alliteration
 from src.ToneAnalyzer import display_tones, detect_tone
-from src.trial import determine_tense_input
+from src.TenseDetector import tenseDetection
 from src.SimileDetector import detect_similes
 import os
 import pandas as pd 
@@ -66,7 +66,7 @@ if __name__ == "__main__":
         elif choice == 3:
             print("\nSentence:", text)
             # print()
-            tense = determine_tense_input(text)
+            tense = tenseDetection(text)
             print("Tense:", tense)
             print("\n")
             
@@ -74,6 +74,7 @@ if __name__ == "__main__":
             time.sleep(1)
         elif choice == 4:
             tone = detect_tone(text)
+            # print(tone)
             display_tones(text, tone)
             print("\n")
 

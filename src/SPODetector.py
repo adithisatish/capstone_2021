@@ -18,10 +18,6 @@ warnings.filterwarnings("ignore") # ignore any other warnings
 # - ARGx: Argument (The lowest ARGx is usually the subject)
 # - V: Verb
 # - ARGM-XXX: Modifiers
-#     - ARGM-LOC: Modifier-Location
-#     - ARGM-TMP: Modifier-Temporal
-#     - ARGM-ADV: Modifier-Adverbial
-#     - ARGM-DIS: Modifier-Discourse
 
 modifiers = {'ARGM-LOC': 'Location', 'ARGM-TMP': 'Temporal', 'ARGM-ADV': 'Adverbial - General Purpose', 
             'ARGM-DIS': 'Discourse', 'ARGM-MNR':'Manner/Behaviour', 'ARGM-DIR': 'Directional',
@@ -44,6 +40,8 @@ def get_oie_triplets(text):
     for count, i in enumerate(openie['verbs']): # contains the ARGx, V and ARGM-XXX
         desc = i['description']
         # print(desc)
+        if "V" in desc and "ARG" not in desc:
+            continue
         oie_triplets = desc.split(",")
         triplet_dict = {}
 
@@ -66,6 +64,10 @@ def get_oie_triplets(text):
                     # print(tag)
                 elif argmatch(tag)!= None and argmatch(tag).span()[0]!=0:
                     tag = tag[argmatch(tag).span()[0]:]
+
+                if "ARGM" in tag and tag.find("ARGM") !=0:
+                    tag = tag[tag.find("ARGM"):]
+
                 trip = tag.split(": ")
                 
                 try:
