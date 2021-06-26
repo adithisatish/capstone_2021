@@ -56,9 +56,14 @@ def detect_similes(text):
             similes.append(' '.join(words[i:i+5]))
             val=1
     for j in range(len(final)-3):
+        if j!=0 and final[j-1][0] in ["As", 'as'] and ' '.join(tokenized_text[j-1:j+4]) in similes:
+            continue
         if (final[j][1] in ['JJ','NNP','NNS','NN','PRP','RB']):
                 if(final[j+1][0] in ['As','as']):
                     if(final[j+2][1] in ['JJ',"NN","NNS","NNP",'PRP'] or final[j+3][1] in ['JJ',"NN","NNS","NNP",'PRP'] ):
+                        # print(final[j][0], final[j-1][0])
+                        if j!=0 and final[j-1][0] in ["As, as"]:
+                            continue
                         similes.append(' '.join(tokenized_text[j:j+4]))# final[j][0],final[j+1][0],final[j+2][0],final[j+3][0])
                         val=1
     return (val, similes)
@@ -86,7 +91,7 @@ if __name__ == "__main__":
     k = 0
     for i in dataset["Sentence"]:
         val, similes = detect_similes(i)
-        print(similes)
+        # print(similes)
         predictions["Predicted"][k] = val
         k+=1
     
@@ -123,11 +128,11 @@ if __name__ == "__main__":
     #     # print(text[i])
 
     # # print(text)
-    # print()
+    # print()sd
 
     # for sentence in text:
     #     detect_similes(sentence)
-    print
+    # prints
 
 
 
