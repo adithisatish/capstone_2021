@@ -82,8 +82,13 @@ if __name__ == "__main__":
             time.sleep(1)
         elif choice == 5:
             text = text.rstrip()
-            detect_similes(text)
-
+            val, similes = detect_similes(text)
+            if val == 0:
+                print("No Similes Found!")
+            else:
+                print("Similes:")
+                for i in similes:
+                    print(i)
             print()
             moveon  = input("Press any key to return to Menu")
             time.sleep(1)
