@@ -111,7 +111,8 @@ def get_svo_from_triplet(triplet):
         if 'ARG' in key and key != argmin and 'ARGM' not in key:
             object_clauses.append(value)
 
-    return (subject,connecting_verb,object_clauses,arg_modifiers)
+    svo_result = {'Subject':subject,'Connecting Verb':connecting_verb,'Object Clauses':object_clauses,'Argument Modifiers':arg_modifiers}
+    return svo_result
             
 
 def detect_svo(text):
@@ -125,23 +126,23 @@ def detect_svo(text):
         # print(triplet)
         
         print("Deconstruction:")
-        subject, verb, obj_clauses, arg_modifiers = get_svo_from_triplet(triplet)
+        svo = get_svo_from_triplet(triplet)
         
-        print("\nSubject Clause:",subject)
-        print("\nConnecting Verb:", verb)
+        print("\nSubject Clause:",svo['Subject'])
+        print("\nConnecting Verb:", svo['Connecting Verb'])
 
-        if len(obj_clauses) == 0:
+        if len(svo['Object Clauses']) == 0:
             print("\nObject Clause(s): None")
         else:
             print("\nObject Clause(s):")
-            for obj_clause in obj_clauses:
+            for obj_clause in svo['Object Clauses']:
                 print(obj_clause)
         
-        if arg_modifiers == {}:
+        if svo['Argument Modifiers'] == {}:
             print("\nSentence Modifiers: None")
         else:
             print("\nSentence Modifiers (as key-value pairs):")
-            for modifier_key, modifier in arg_modifiers.items():
+            for modifier_key, modifier in svo['Argument Modifiers'].items():
                 print("{0}: {1}".format(modifier_key, modifier))
 
 if __name__=='__main__':
