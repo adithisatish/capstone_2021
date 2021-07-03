@@ -1,0 +1,21 @@
+{
+  "name": "capstone_2021",
+  "version": "1.0.0",
+  "description": "The framework implemented here intends to deconstruct English sentences and paragraphs to identify and highlight the different grammatical forms used. In addition to this, it also aims to provide interpretability by explaining the reasoning behind the identification. In doing this, we provide a tool that will help laymen understand and significantly improve their written English.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "postinstall": "cd authserver && npm install",
+    "start": "cd authserver && npm start"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/adithisatish/capstone_2021.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/adithisatish/capstone_2021/issues"
+  },
+  "homepage": "https://github.com/adithisatish/capstone_2021#readme"
+}
