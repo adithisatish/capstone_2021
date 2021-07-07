@@ -120,7 +120,14 @@ const Deconstructor = () => {
                         </div>
                     </div>
                     <div className="flex h-96">
-                        <div className="w-1/2">
+                        <div className="w-1/2 relative">
+                            <div className="flex items-center justify-center w-12 h-12 bg-green-800 absolute bottom-4 right-4 rounded-3xl shadow-xl cursor-pointer">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-send" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="lightgrey" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                    <line x1="10" y1="14" x2="21" y2="3"></line>
+                                    <path d="M21 3l-6.5 18a0.55 .55 0 0 1 -1 0l-3.5 -7l-7 -3.5a0.55 .55 0 0 1 0 -1l18 -6.5"></path>
+                                </svg>
+                            </div>
                             <textarea 
                                 className="form-textarea w-full h-full p-4 bg-green-100 border-transparent focus:border-green-800 focus:ring-0 rounded-l-xl resize-none text-justify"
                                 placeholder='Enter text'
@@ -131,6 +138,11 @@ const Deconstructor = () => {
                             Hello!
                         </div>                
                     </div>
+                    {/* <div className="flex">
+                        <div className="w-1/2 flex">
+                            <button className="rounded bg-green-800 px-4 py-2 text-white ml-auto mt-2">Deconstruct</button>
+                        </div>
+                    </div> */}
                 </div>
             </div>
             <Dialog

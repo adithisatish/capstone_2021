@@ -2,10 +2,12 @@ import React from "react"
 import Layout from "../components/layout/Layout"
 import { showAlert } from "../utils/alert";
 import { loginSuccesful } from '../actions/auth';
+import { CircularProgress } from "@material-ui/core";
 
 import { authServer } from "../utils/axios";
 
 const Login = () => {
+    const [isLoading, setIsLoading] = React.useState(false);
     const [isLogin, setIsLogin] = React.useState(true);
     const [loginData, setLoginData] = React.useState({
         email: '',
@@ -17,11 +19,13 @@ const Login = () => {
         password: '',
         confirmPassword: ''
     })
-
+    
     const handleLogin = (e) => {
         e.preventDefault();
+        if(isLoading) return
         if(!loginData.email) return showAlert('Email required', 'warning');
         if(!loginData.password) return showAlert('Password required', 'warning');
+        setIsLoading(true);
         authServer.post('/login', loginData)
             .then(res => {
                 showAlert('Login succesful!', 'success');
@@ -29,6 +33,7 @@ const Login = () => {
                 localStorage.setItem('token', res.data.token);
                 window.location.href = "/deconstructor";
             }).catch(err => {
+                setIsLoading(false);
                 console.log(err);
                 if(err.response)
                     return showAlert(err.response.data.message, 'error');
@@ -39,10 +44,12 @@ const Login = () => {
 
     const handleSignup = (e) => {
         e.preventDefault();
+        if(isLoading) return
         if(!signupData.email) return showAlert('Email required', 'warning');
         if(!signupData.password) return showAlert('Password required', 'warning');
         if(!signupData.name) return showAlert('Name required', 'warning');
         if(signupData.password !== signupData.confirmPassword) return showAlert('Passwords do not match', 'warning');
+        setIsLoading(true);
         authServer.post('/signup', signupData)
             .then(res => {
                 showAlert('Succesfully signed up!', 'success');
@@ -50,6 +57,7 @@ const Login = () => {
                     window.location.reload();
                 }, 1500);
             }).catch(err => {
+                setIsLoading(false);
                 if(err.response)
                     return showAlert(err.response.data.message, 'error');
                 return showAlert('Internal server error, try again later', 'error');
@@ -92,8 +100,11 @@ const Login = () => {
             </div>
             <div className="flex">
                 <div className="flex-grow"></div>
-                <button type="submit" className="px-6 py-3 rounded-xl bg-green-600 text-white text-right">
+                <button type="submit" className={`px-6 py-3 rounded-xl text-white text-right ${isLoading?'bg-gray-400':'bg-green-600'}`} disabled={isLoading}>
                     Login
+                    {
+                        isLoading?<CircularProgress className="ml-2" color="success" size={16}/>:null
+                    }
                 </button>
             </div>
         </form>
@@ -163,8 +174,11 @@ const Login = () => {
             </div> 
             <div className="flex">
                 <div className="flex-grow"></div>
-                <button className="px-6 py-3 rounded-xl bg-green-600 text-white text-right">
+                <button type="submit" className={`px-6 py-3 rounded-xl text-white text-right ${isLoading?'bg-gray-400':'bg-green-600'}`} disabled={isLoading}>
                     Signup
+                    {
+                        isLoading?<CircularProgress className="ml-2" color="success" size={16}/>:null
+                    }
                 </button>
             </div>
         </form>
