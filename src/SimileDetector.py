@@ -8,6 +8,7 @@ from nltk.tokenize import word_tokenize
 import os
 import sys
 import pandas as pd
+import requests
 flag=0
 
 def detect_similes(text):
@@ -18,7 +19,7 @@ def detect_similes(text):
     val=0
     tokenized_text=word_tokenize(text)
     final=nltk.pos_tag(tokenized_text)
-    #print("POS:",final)
+    # print("POS:",final)
         # print()
     words = text.split()
     
@@ -28,8 +29,8 @@ def detect_similes(text):
         if(words[x]in ['like','Like']):
             flag=1
     if flag==1:
-        for j in range(len(final)-3):
-          
+        for j in range(len(final)-2):
+            # print(final[j][0])
             if (final[j][1] in ['VB','VBD','VBG','VBN','VBP','VBZ']):
                 if(final[j+1][0]in ['like','Like']):
                     if(final[j+2][1]=='DT'):
@@ -42,11 +43,22 @@ def detect_similes(text):
                         val=1
             
             elif final[j][1] in ["RB","JJ","NN","NNS"]:
+                # print("yes")
                 if(final[j+1][0] in ['like','Like']):
                     if(final[j+2][1]=='DT'):
                         if(final[j+3][1] in ["NN","NNS","NNP","JJ"]):
                             similes.append(' '.join(tokenized_text[j:j+4]))#final[j][0],final[j+1][0],final[j+2][0],final[j+3][0])
                             val=1
+                    elif final[j+2][1] in ["NN","NNS","NNP","JJ"]:
+                        path = 'http://api.conceptnet.io//relatedness?node1=/c/en/'+final[j][0]+'&node2=/c/en/'+final[j+2][0]
+                        # print(path)
+                        result = requests.get(path).json()
+                        # print("The relatedness of {0} and {1} is {2}".format(final[j][0],final[j+2][0],result['value']))
+                        # print()
+                        if result['value'] < 0.1:
+                            similes.append(' '.join(tokenized_text[j:j+3]))#final[j][0],final[j+1][0],final[j+2][0],final[j+3][0])
+                            val=1
+
                             
                          
                             
@@ -122,6 +134,9 @@ if __name__ == "__main__":
     print("Recall:", recall)
     print("F1 Score:", f1_score)
     print("--------------------------------")
+    
+    # print(detect_similes("I like pizza"))
+
     # for i in range(len(text)):
     #     text[i] = text[i].rstrip()
     #     # text[i] = text[i].rstrip('.')

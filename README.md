@@ -14,11 +14,14 @@ Note: Refer to the [Instructions](https://github.com/adithisatish/capstone_2021/
  
 
 ### Components Implemented
-- Tense Detection
-- Tone Detection
-- OpenIE (SPO Detection)
-- Alliteration Detection
-- Simile Detection
+- Tense
+- Tone
+- OpenIE (Subject-Predicate-Object)
+- Alliterations
+- Similes
+- Voice (Active/Passive)
+- Rhyme Scheme
+- Metaphors
 
 ### Authors
 - Adithi Satish
