@@ -19,7 +19,7 @@ def detect_similes(text):
     val=0
     tokenized_text=word_tokenize(text)
     final=nltk.pos_tag(tokenized_text)
-    # print("POS:",final)
+    print("POS:",final)
         # print()
     words = text.split()
     
@@ -53,8 +53,8 @@ def detect_similes(text):
                         path = 'http://api.conceptnet.io//relatedness?node1=/c/en/'+final[j][0]+'&node2=/c/en/'+final[j+2][0]
                         # print(path)
                         result = requests.get(path).json()
-                        # print("The relatedness of {0} and {1} is {2}".format(final[j][0],final[j+2][0],result['value']))
-                        # print()
+                        print("The relatedness of {0} and {1} is {2}".format(final[j][0],final[j+2][0],result['value']))
+                        print()
                         if result['value'] < 0.1:
                             similes.append(' '.join(tokenized_text[j:j+3]))#final[j][0],final[j+1][0],final[j+2][0],final[j+3][0])
                             val=1
@@ -91,51 +91,51 @@ if __name__ == "__main__":
     "I can't imagine what he was thinking to hide a thing like that from you.",
     "He looked like a hard-working countryman just in from the backwoods."]
 
-    path = "\\".join(os.getcwd().split("\\")[:-1] + ['data'])
-    dataset = pd.read_csv(os.path.join(path, "similes.csv"))
+    # path = "\\".join(os.getcwd().split("\\")[:-1] + ['data'])
+    # dataset = pd.read_csv(os.path.join(path, "similes.csv"))
 
-    dataset["Simile"] = dataset["Simile"].replace({"Y":1, "N":0})
+    # dataset["Simile"] = dataset["Simile"].replace({"Y":1, "N":0})
 
-    predictions = {}
-    predictions["Actual"] = list(dataset["Simile"])
-    predictions["Predicted"] = [-1]*len(predictions["Actual"])
+    # predictions = {}
+    # predictions["Actual"] = list(dataset["Simile"])
+    # predictions["Predicted"] = [-1]*len(predictions["Actual"])
 
-    k = 0
-    for i in dataset["Sentence"]:
-        val, similes = detect_similes(i)
-        # print(similes)
-        predictions["Predicted"][k] = val
-        k+=1
+    # k = 0
+    # for i in dataset["Sentence"]:
+    #     val, similes = detect_similes(i)
+    #     # print(similes)
+    #     predictions["Predicted"][k] = val
+    #     k+=1
     
-    # print(predictions)
+    # # print(predictions)
 
-    k = 0
+    # k = 0
 
-    confusion_matrix = [[0,0],[0,0]]
-    while k < len(predictions['Actual']):
-        if predictions['Actual'][k] == 1 and predictions['Predicted'][k] == 1:
-            confusion_matrix[0][0]+=1
-        elif predictions['Actual'][k] == 1 and predictions['Predicted'][k] == 0:
-            confusion_matrix[0][1]+=1
-        elif predictions['Actual'][k] == 0 and predictions['Predicted'][k] == 1:
-            confusion_matrix[1][0]+=1
-        elif predictions['Actual'][k] == 0 and predictions['Predicted'][k] == 0:
-            confusion_matrix[1][1]+=1
-        k+=1
+    # confusion_matrix = [[0,0],[0,0]]
+    # while k < len(predictions['Actual']):
+    #     if predictions['Actual'][k] == 1 and predictions['Predicted'][k] == 1:
+    #         confusion_matrix[0][0]+=1
+    #     elif predictions['Actual'][k] == 1 and predictions['Predicted'][k] == 0:
+    #         confusion_matrix[0][1]+=1
+    #     elif predictions['Actual'][k] == 0 and predictions['Predicted'][k] == 1:
+    #         confusion_matrix[1][0]+=1
+    #     elif predictions['Actual'][k] == 0 and predictions['Predicted'][k] == 0:
+    #         confusion_matrix[1][1]+=1
+    #     k+=1
 
-    accuracy = 100*((confusion_matrix[0][0] + confusion_matrix[1][1])/len(predictions['Actual']))
-    precision = 100*(confusion_matrix[0][0]/(confusion_matrix[0][0] + confusion_matrix[1][0]))
-    recall = 100*(confusion_matrix[0][0]/(confusion_matrix[0][0] + confusion_matrix[0][1]))
-    f1_score = 2*precision*recall/(precision + recall)
+    # accuracy = 100*((confusion_matrix[0][0] + confusion_matrix[1][1])/len(predictions['Actual']))
+    # precision = 100*(confusion_matrix[0][0]/(confusion_matrix[0][0] + confusion_matrix[1][0]))
+    # recall = 100*(confusion_matrix[0][0]/(confusion_matrix[0][0] + confusion_matrix[0][1]))
+    # f1_score = 2*precision*recall/(precision + recall)
 
-    print("\n\nPerformance Metrics:")
-    print("Accuracy:", accuracy)
-    print("Precision:", precision)
-    print("Recall:", recall)
-    print("F1 Score:", f1_score)
-    print("--------------------------------")
+    # print("\n\nPerformance Metrics:")
+    # print("Accuracy:", accuracy)
+    # print("Precision:", precision)
+    # print("Recall:", recall)
+    # print("F1 Score:", f1_score)
+    # print("--------------------------------")
     
-    # print(detect_similes("I like pizza"))
+    print(detect_similes("there are many sentences like these"))
 
     # for i in range(len(text)):
     #     text[i] = text[i].rstrip()
