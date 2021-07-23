@@ -1,5 +1,5 @@
 from src.SPODetector import detect_svo
-from src.AlliterationDetector import detect_alliteration
+from src.alliteration.AlliterationDetector import Alliteration, detect_alliteration
 from src.ToneAnalyzer import display_tones, detect_tone
 from src.TenseDetector import tenseDetection
 from src.SimileDetector import detect_similes
@@ -53,13 +53,21 @@ if __name__ == "__main__":
         elif choice == 2:
             print("\nSentence:", text)
             # print()
-            alliteration = detect_alliteration(text)
-            if alliteration != '':
-                print("Words in the alliteration:", alliteration)
+            allit = Alliteration(text)
+            alliterations = allit.detect_alliterations()
+
+            for sent_allit in alliterations:
+                print("\nSentence:", sent_allit['sentence'])
+                print("**************************")
+                if len(sent_allit['alliteration']) != 0:
+                    for allit in sent_allit['alliteration']:
+                        print("Begins with:", allit['begins_with'])
+                        print("Alliteration:", allit['joined'])
+                        print("___________________________________")
+                else:
+                    print("No alliterations found!")
+                    print("___________________________________")
                 print()
-            else:
-                print("No alliterations found!")
-            print("\n")
             
             moveon = input("Press any key to return to Menu")
             time.sleep(1)
