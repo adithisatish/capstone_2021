@@ -1,5 +1,5 @@
-from src.SPODetector import detect_svo
-from src.alliteration.AlliterationDetector import Alliteration, detect_alliteration
+from src.spo.SPODetector import SPO
+from src.alliteration.AlliterationDetector import Alliteration
 from src.ToneAnalyzer import display_tones, detect_tone
 from src.TenseDetector import tenseDetection
 from src.SimileDetector import detect_similes
@@ -46,7 +46,9 @@ if __name__ == "__main__":
             continue
 
         if choice == 1:
-            detect_svo(text)
+            spo = SPO(text)
+            spo.detect_svo()
+            spo.display_spo()
             print("\n")
             moveon  = input("Press any key to return to Menu")
             time.sleep(1)
