@@ -122,7 +122,7 @@ class Alliteration:
         processed_text_list = self.preprocess_para()
         if self.paragraph == 1:
             for i, processed_text in enumerate(processed_text_list):
-                sentence_alliteration = {"sentence":text[i], "alliteration": self.detect_alliteration_sentence(processed_text)}
+                sentence_alliteration = {"sentence":self.text[i], "alliteration": self.detect_alliteration_sentence(processed_text)}
                 self.alliteration_list.append(sentence_alliteration)
         
         else:
