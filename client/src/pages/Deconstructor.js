@@ -1,6 +1,7 @@
 import React from "react"
 import { Dialog, DialogContent, Button, DialogTitle, DialogActions } from "@material-ui/core"
 import Layout from "../components/layout/Layout"
+import { levels, metaphors, metaphorLevel } from "../data"
 
 const Deconstructor = () => {
     const [currentLevel, setCurrentLevel] = React.useState(0)
@@ -8,52 +9,31 @@ const Deconstructor = () => {
     const [isAggregateOpen, setAggregateOpen] = React.useState(false)
     const [isIndividualOpen, setIndividualOpen] = React.useState(false)
     const [curAttrExplanation, setCurAttrExplanation] = React.useState(0)
+    const [isMetaphorOpen, setMetaphorOpen] = React.useState(false)
+    const [currentMetaphor, setCurrentMetaphor] = React.useState(metaphors[0].type)
+
+    const handleChangeMetaphor = (metaphor) => {
+        setCurrentMetaphor(metaphor)
+    }
+
+    const handleAnalysis = () => {
+        alert("Hi")
+        setMetaphorOpen(false)
+    }
+    
+    const handleSubmit = () => {
+        if (metaphorLevel[0] == currentLevel && metaphorLevel[1] === currentAttribute){
+            setMetaphorOpen(true)
+            return
+        }
+        console.log(currentLevel, currentAttribute)
+        handleAnalysis()
+    }
 
     const handleChangeLevel = (level) => {
         setCurrentAttribute(0)
         setCurrentLevel(level)
     }
-    
-    const levels = [{
-        level: "Easy",
-        key: 0,
-        attributes: [{
-            name: "SPO",
-            explanation: "This is subject-predicate-object detection."
-        }, {
-            name: "Tense",
-            explanation: "Tense detection."
-        },{
-            name: "Tone",
-            explanation: "Tone detection."
-        }],
-        explanation: "Level easy - 5th and 6th grade"
-    }, {
-        level: "Intermediate",
-        key: 1,
-        attributes: [{
-            name: "Alliteration",
-            explanation: "Alliteration detection."
-        }, {
-            name: "Rhyme Scheme",
-            explanation: "Rhyme Scheme detection."
-        },{
-            name: "Similes",
-            explanation: "Simile detection."
-        }],
-        explanation: "Level intermediate - 7th and 8th grade"
-    }, {
-        level: "Advanced",
-        key: 2,
-        attributes: [{
-            name: "Metaphor",
-            explanation: "Metaphor detection."
-        }, {
-            name: "Voice",
-            explanation: "Voice detection."
-        }],
-        explanation: "Level advanced - 9th and 10th grade"
-    }]
 
     return (
         <Layout page="deconstructor">
@@ -121,7 +101,11 @@ const Deconstructor = () => {
                     </div>
                     <div className="flex h-96">
                         <div className="w-1/2 relative">
-                            <div className="flex items-center justify-center w-12 h-12 bg-green-800 absolute bottom-4 right-4 rounded-3xl shadow-xl cursor-pointer">
+                            {/* Submit Button */}
+                            <div 
+                                className="flex items-center justify-center w-12 h-12 bg-green-800 absolute bottom-4 right-4 rounded-3xl shadow-xl cursor-pointer"
+                                onClick={() => handleSubmit()}
+                            >
                                 <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-send" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="lightgrey" fill="none" stroke-linecap="round" stroke-linejoin="round">
                                     <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
                                     <line x1="10" y1="14" x2="21" y2="3"></line>
@@ -201,6 +185,43 @@ const Deconstructor = () => {
                 </DialogContent>
                 <DialogActions>
                 <Button onClick={() => setIndividualOpen(false)} color="primary">
+                    Close
+                </Button>
+                </DialogActions>
+            </Dialog>
+
+            <Dialog
+                open= {isMetaphorOpen}
+                onClose= {() => setMetaphorOpen(false)}
+            >
+                <DialogTitle>Types of Metaphors</DialogTitle>
+                <DialogContent>
+                    <div className="ml-6">
+                        {
+                            metaphors.map((metaphor) => <p>
+                                <span className="font-bold">
+                                    {metaphor.type}
+                                </span>: {metaphor.description}
+                            </p>)
+                        }
+                    </div>
+                    <div className="flex items-center">
+                        <select 
+                            className="p-2 rounded border border-green-800 bg-green-800 text-white focus:outline-none cursor-pointer mx-auto mt-4"
+                            value={currentMetaphor}
+                            onChange={(e) => handleChangeMetaphor(e.target.value)}
+                        >
+                            {
+                                metaphors.map(metaphor => <option value={metaphor.type}>{metaphor.type}</option>)
+                            }
+                        </select>
+                    </div>                
+                </DialogContent>
+                <DialogActions>
+                <Button onClick={() => handleAnalysis()} color="primary">
+                    Submit
+                </Button>
+                <Button onClick={() => setMetaphorOpen(false)} color="primary">
                     Close
                 </Button>
                 </DialogActions>
