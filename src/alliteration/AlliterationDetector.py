@@ -18,7 +18,7 @@ class Alliteration:
 
     def __init__(self, text, paragraph = 0): # Split the text and pass as a list if paragraph=1
         self.alliteration_list = []
-        self.paragraph = paragraph # indicates single sentence has been passed
+        self.paragraph = paragraph # indicates whether a single sentence has been passed or not
         self.text = text
 
     # Function to preprocess text
