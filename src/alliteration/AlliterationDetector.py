@@ -20,6 +20,7 @@ class Alliteration:
         self.alliteration_list = []
         self.paragraph = paragraph # indicates whether a single sentence has been passed or not
         self.text = text
+        self.explanation = lambda beg, allit: "Explanation: Due to the occurrence of the same letter (or sound) (i.e {0}) in adjacent or closely connected words (excluding commonly used words like 'a', \"the\", etc), {1} is considered to be an alliteration.".format(beg, allit)
 
     # Function to preprocess text
     def preprocess_text(self, text):
@@ -131,33 +132,27 @@ class Alliteration:
 
         return self.alliteration_list
 
+    def display_alliterations(self): # To display alliteration along with an example
+
+        for sent_allit in self.alliteration_list:
+            print("\nSentence:", sent_allit['sentence'])
+            print("**************************")
+            if len(sent_allit['alliteration']) != 0:
+                for allit in sent_allit['alliteration']:
+                    print("Begins with:", allit['begins_with'])
+                    print("Alliteration:", allit['joined'])
+                    print(self.explanation(allit['begins_with'], allit['joined']))
+                    print("___________________________________")
+            else:
+                print("No alliterations found!")
+                print("___________________________________")
+            print()
+
 if __name__ == "__main__":
     # text = input("Enter your sentence: ")
     text = ["I knew you were trouble","Dan deserved to debate with the kind king."]
     # text = "the cruel king was kind in real life"
-    # print("Sentence:", text)
-    # print()
-
+    
     allit_obj = Alliteration(text, 1)
     alliterations = allit_obj.detect_alliterations()
-
-    print(alliterations)
-
-    for sent_allit in alliterations:
-        print("\nSentence:", sent_allit['sentence'])
-        print("**************************")
-        if len(sent_allit['alliteration']) != 0:
-            for allit in sent_allit['alliteration']:
-                print("Begins with:", allit['begins_with'])
-                print("Alliteration:", allit['joined'])
-                print("___________________________________")
-        else:
-            print("No alliterations found!")
-            print("___________________________________")
-        print()
-    
-    # if alliteration != '':
-    #     print("Words in the alliteration:", lol)
-    #     print()
-    # else:
-    #     print("No alliterations found!")
+    allit_obj.display_alliterations()

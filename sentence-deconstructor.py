@@ -57,20 +57,7 @@ if __name__ == "__main__":
             # print()
             allit = Alliteration(text)
             alliterations = allit.detect_alliterations()
-
-            for sent_allit in alliterations:
-                print("\nSentence:", sent_allit['sentence'])
-                print("**************************")
-                if len(sent_allit['alliteration']) != 0:
-                    for allit in sent_allit['alliteration']:
-                        print("Begins with:", allit['begins_with'])
-                        print("Alliteration:", allit['joined'])
-                        print("___________________________________")
-                else:
-                    print("No alliterations found!")
-                    print("___________________________________")
-                print()
-            
+            allit.display_alliterations()            
             moveon = input("Press any key to return to Menu")
             time.sleep(1)
         elif choice == 3:

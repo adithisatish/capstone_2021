@@ -45,7 +45,7 @@ def find_main_category(noun, categories):
     return main_cat
 
 
-text = "chocolate is a pizza"
+text = "The world is a stage"
 doc = nlp(text)
 
 dependencies = {}
@@ -58,22 +58,23 @@ for token in doc:
 # print(dependencies)
 
 for subj in dependencies['nsubj']:
-    cat_subj = extract_lexical_categories(subj)
+    cat_subj = extract_lexical_categories(subj) # Categories of subject
     for attr in dependencies['attr']:
-        cat_attr = extract_lexical_categories(attr)
+        cat_attr = extract_lexical_categories(attr) # Categories of object
         # print(cat_subj, cat_attr)
 
         common_categories = cat_subj.intersection(cat_attr)
-        if len(common_categories) == 0:
+        if len(common_categories) == 0: # No common categories
             print("\nNo overlap => {0} and {1} are METAPHORICAL".format(subj, attr))
         else:
             main_cat_subj = find_main_category(subj, cat_subj)
             main_cat_attr = find_main_category(attr, cat_attr)
 
-            if main_cat_attr != main_cat_subj:
-                print("\nNo overlap => {0} and {1} are METAPHORICAL".format(subj, attr))
+            if main_cat_attr != main_cat_subj: # Different main categories
+                print("\nMain categories are different => {0} and {1} are METAPHORICAL".format(subj, attr))
             else:
                 print("ugh I cry")
+                # COCA Collocation Dataset required
             
             # print("MCA:", main_cat_attr)
             # print("MCS:",main_cat_subj)
