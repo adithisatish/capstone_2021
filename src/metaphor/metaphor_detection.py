@@ -1,5 +1,5 @@
 import requests
-from SPODetector import get_oie_triplets, get_svo_from_triplet
+from spo.SPODetector import get_oie_triplets, get_svo_from_triplet
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 from nltk import pos_tag

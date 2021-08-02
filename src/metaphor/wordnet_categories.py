@@ -11,7 +11,7 @@ def remove_stopwords(text):
     words = stopwords.words("english")
     convert = lambda x: " ".join([i for i in x.split() if i not in words])
 
-    processed_text = convert(text)
+    processed_text = convert(text).lower()
     # return processed_text
     if len(processed_text) != 0:
         return processed_text
@@ -29,7 +29,23 @@ def extract_lexical_categories(word):
             # print(name, definition)
     return categories
 
-text = "I am a prisoner"
+def find_main_category(noun, categories):
+    main_cat = ''
+    max_rel = -99999
+    for cat in categories:
+        if "noun" in cat:
+            current_category = cat[5:]
+            path = 'http://api.conceptnet.io//relatedness?node1=/c/en/'+noun+'&node2=/c/en/'+current_category
+            result = requests.get(path).json()
+            # print(current_category, result['value'])
+            if result['value'] > max_rel:
+                max_rel = result['value']
+                main_cat = current_category
+    
+    return main_cat
+
+
+text = "chocolate is a pizza"
 doc = nlp(text)
 
 dependencies = {}
@@ -51,6 +67,16 @@ for subj in dependencies['nsubj']:
         if len(common_categories) == 0:
             print("\nNo overlap => {0} and {1} are METAPHORICAL".format(subj, attr))
         else:
-            # to be done
-            pass
+            main_cat_subj = find_main_category(subj, cat_subj)
+            main_cat_attr = find_main_category(attr, cat_attr)
+
+            if main_cat_attr != main_cat_subj:
+                print("\nNo overlap => {0} and {1} are METAPHORICAL".format(subj, attr))
+            else:
+                print("ugh I cry")
+            
+            # print("MCA:", main_cat_attr)
+            # print("MCS:",main_cat_subj)
+                    
+            # pass
 
