@@ -126,7 +126,7 @@ class SPO:
 
     def detect_svo_sentence(self, text):
         list_of_triplets = self.get_oie_triplets(text)
-        new_svo = {'sentence':self.text,'triplets':[]}
+        new_svo = {'sentence':text,'triplets':[]}
         # print("\nSentence:", self.text)
         
         for triplet in list_of_triplets:
@@ -139,8 +139,12 @@ class SPO:
         if self.paragraph == 0:
             self.svo_list.append(self.detect_svo_sentence(self.text))
         else:
-            for i in text:
-                self.svo_list.append(self.detect_svo_sentence(i))
+            for i in self.text:
+                try:
+                    self.svo_list.append(self.detect_svo_sentence(i))
+                except Exception as e:
+                    print("!! Text that caused error: {0}!!\n".format(i))
+                    print(e)
     
     def display_spo(self):
         for svo_sent in self.svo_list:
