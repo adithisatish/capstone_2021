@@ -20,14 +20,19 @@ class SPO:
     # - V: Verb
     # - ARGM-XXX: Modifiers
     def __init__(self, text, paragraph = 0):
-        self.modifiers = {'ARGM-LOC': 'Location', 'ARGM-TMP': 'Temporal', 'ARGM-ADV': 'Adverbial - General Purpose', 
+        self.modifiers = {'ARGM-LOC': 'Location - relating to place', 'ARGM-TMP': 'Temporal - relating to time', 'ARGM-ADV': 'Adverbial - General Purpose', 
                     'ARGM-DIS': 'Discourse', 'ARGM-MNR':'Manner/Behaviour', 'ARGM-DIR': 'Directional',
-                    'ARGM-EXT':'Extent', 'ARGM-PNC': 'Purpose', 'ARGM-CAU': 'Causal', 
-                    'ARGM-NEG': 'Negation','ARGM-MOD': 'Modal Verb'}
+                    'ARGM-EXT':'Extent', 'ARGM-PNC': 'Purpose', 'ARGM-CAU': 'Causal - relating to cause', 
+                    'ARGM-NEG': 'Negation - a "not" has been seen in the sentence, negating it','ARGM-MOD': 'Modal Verb'}
         self.argmatch = lambda x: re.search('ARG[0-9]:',x)
         self.text = text
         self.paragraph = paragraph
         self.svo_list = []
+        
+        self.subj_explanation = lambda subj: "\"{0}\" is a subject/ subject phrase because the sentence is about it. The subject performs the action that is being described in the sentence.".format(subj)
+        self.verb_explanation = lambda verb: "\"{0}\" is the verb because it is the action or the state of being that is happening in the sentence. The verb functions as a connector between the subject and the object.".format(verb)
+        self.obj_explanation = lambda obj: "\"{0}\" is the object because it describes the \"whom\" or \"what\" the action is being done to. There can be multiple object clauses in a sentence.".format(obj)
+
     # print(argmatch('ARG1: what'))
         
 
@@ -146,7 +151,9 @@ class SPO:
 
             for svo in svo_list:
                 print("\nSubject Clause:",svo['Subject'])
+                print("Explanation:", self.subj_explanation(svo['Subject']))
                 print("\nConnecting Verb:", svo['Connecting Verb'])
+                print("Explanation:",self.verb_explanation(svo['Connecting Verb']))
 
                 if len(svo['Object Clauses']) == 0:
                     print("\nObject Clause(s): None")
@@ -154,6 +161,8 @@ class SPO:
                     print("\nObject Clause(s):")
                     for obj_clause in svo['Object Clauses']:
                         print(obj_clause)
+                        print("Explanation:", self.obj_explanation(obj_clause))
+                        print()
                 
                 if svo['Argument Modifiers'] == {}:
                     print("\nSentence Modifiers: None")
