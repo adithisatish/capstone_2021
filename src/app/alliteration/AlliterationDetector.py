@@ -148,6 +148,9 @@ class Alliteration:
                 print("No alliterations found!")
                 print("___________________________________")
             print()
+    
+    def execute(self):
+        return self.detect_alliterations()
 
 if __name__ == "__main__":
     # text = input("Enter your sentence: ")

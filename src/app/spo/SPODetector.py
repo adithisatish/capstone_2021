@@ -184,6 +184,9 @@ class SPO:
                     for modifier_key, modifier in svo['Argument Modifiers'].items():
                         print("{0}: {1}".format(modifier_key, modifier))
             print("-------------------------------------")
+    
+    def execute(self):
+        return self.detect_spo()
 
 if __name__=='__main__':
     text = "John bought a apple."

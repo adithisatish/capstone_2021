@@ -30,14 +30,9 @@ def deconstruct():
     # print(processed_text)
     # return "Done"
     obj = mapComponent[comp](processed_text, paragraph)
+    result = obj.execute()
 
-    if comp == "Alliteration":
-        alliterations = obj.detect_alliterations()
-        # print(alliterations)
-        return jsonify(alliterations)
-    elif comp == "SPO":
-        spo = obj.detect_spo()
-        return jsonify(spo)
+    return jsonify(result)
         
     # return jsonify(mapComponent)
 
