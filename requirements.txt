@@ -8,6 +8,7 @@ spacy>=2.0.5
 ibm-watson==5.1.0
 ibm-cloud-sdk-core==3.9.0
 flask==2.0.1
+pronouncing
 allennlp
 allennlp-models
 beautifulsoup4
