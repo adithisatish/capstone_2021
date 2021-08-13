@@ -114,6 +114,7 @@ class Alliteration:
             joined_alliteration = '-'.join(list_of_alliterations)
 
             new_alliteration['joined'] = joined_alliteration
+            new_alliteration["explanation"] = self.explanation(new_alliteration['begins_with'], new_alliteration['joined'])
             # print("New:",new_alliteration)
             alliteration_list.append(new_alliteration)
         
@@ -127,7 +128,7 @@ class Alliteration:
                 self.alliteration_list.append(sentence_alliteration)
         
         else:
-            sentence_alliteration = {"sentence":text, "alliteration": self.detect_alliteration_sentence(processed_text_list[0])}
+            sentence_alliteration = {"sentence":self.text, "alliteration": self.detect_alliteration_sentence(processed_text_list[0])}
             self.alliteration_list.append(sentence_alliteration)
 
         return self.alliteration_list
@@ -141,7 +142,7 @@ class Alliteration:
                 for allit in sent_allit['alliteration']:
                     print("Begins with:", allit['begins_with'])
                     print("Alliteration:", allit['joined'])
-                    print(self.explanation(allit['begins_with'], allit['joined']))
+                    print(allit['explanation'])
                     print("___________________________________")
             else:
                 print("No alliterations found!")

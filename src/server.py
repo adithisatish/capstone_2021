@@ -1,17 +1,44 @@
 import flask
 from flask import request, jsonify
+import json
 from deconstructor import mapComponent
 
 app = flask.Flask(__name__)
 app.config["DEBUG"] = True
 
+def preprocess(comp, text):
+    if comp != "Rhyme Scheme":
+        sentences = text.split(".")
+    else:
+        sentences = []
+    if sentences[-1] == "":
+        return sentences[:-1]
+    else:
+        return sentences
 
 @app.route('/', methods=['GET'])
 def home():
-    return "<h1>Distant Reading Archive</h1><p>This site is a prototype API for distant reading of science fiction novels.</p>"
+    return "<h1>Sentence Deconstructor</h1><p>Capstone Project 2021</p>"
 
 @app.route('/deconstructor', methods=['POST'])
 def deconstruct():
-    return jsonify(mapComponent)
+    comp = request.json['component']
+    text = request.json['text']
+    paragraph = 1
+
+    processed_text = preprocess(comp, text)
+    # print(processed_text)
+    # return "Done"
+    obj = mapComponent[comp](processed_text, paragraph)
+
+    if comp == "Alliteration":
+        alliterations = obj.detect_alliterations()
+        # print(alliterations)
+        return jsonify(alliterations)
+    elif comp == "SPO":
+        spo = obj.detect_spo()
+        return jsonify(spo)
+        
+    # return jsonify(mapComponent)
 
 app.run()

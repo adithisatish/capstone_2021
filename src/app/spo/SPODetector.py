@@ -29,9 +29,9 @@ class SPO:
         self.paragraph = paragraph
         self.svo_list = []
         
-        self.subj_explanation = lambda subj: "\"{0}\" is a subject/ subject phrase because the sentence is about it. The subject performs the action that is being described in the sentence.".format(subj)
-        self.verb_explanation = lambda verb: "\"{0}\" is the verb because it is the action or the state of being that is happening in the sentence. The verb functions as a connector between the subject and the object.".format(verb)
-        self.obj_explanation = lambda obj: "\"{0}\" is the object because it describes the \"whom\" or \"what\" the action is being done to. There can be multiple object clauses in a sentence.".format(obj)
+        self.subj_explanation = lambda subj: 'Explanation: "{0}" is a subject/ subject phrase because the sentence is about it. The subject performs the action that is being described in the sentence.'.format(subj)
+        self.verb_explanation = lambda verb: 'Explanation: "{0}" is the verb because it is the action or the state of being that is happening in the sentence. The verb functions as a connector between the subject and the object.'.format(verb)
+        self.obj_explanation = lambda obj: 'Explanation: "{0}" is the object because it describes the \"whom\" or \"what\" the action is being done to. There can be multiple object clauses in a sentence.'.format(obj)
 
     # print(argmatch('ARG1: what'))
         
@@ -107,6 +107,7 @@ class SPO:
             connecting_verb = 'None'
 
         object_clauses = []
+        obj_explanations = []
         arg_modifiers = {}
         
         for key, value in triplet.items():
@@ -119,8 +120,15 @@ class SPO:
             
             if 'ARG' in key and key != argmin and 'ARGM' not in key:
                 object_clauses.append(value)
+                obj_explanations.append(self.obj_explanation(value))
 
-        svo_result = {'Subject':subject,'Connecting Verb':connecting_verb,'Object Clauses':object_clauses,'Argument Modifiers':arg_modifiers}
+        svo_result = {'Subject':subject,\
+                    "Connecting Verb":connecting_verb,\
+                    "Object Clauses":object_clauses,\
+                    "Argument Modifiers":arg_modifiers, \
+                    "Subject Explanation: ": self.subj_explanation(subject), \
+                    "Verb Explanation: ": self.verb_explanation(connecting_verb),\
+                    "Object Explanations: ": obj_explanations}
         return svo_result
                 
 
@@ -135,7 +143,7 @@ class SPO:
 
         return new_svo
     
-    def detect_svo(self):
+    def detect_spo(self):
         if self.paragraph == 0:
             self.svo_list.append(self.detect_svo_sentence(self.text))
         else:
@@ -145,6 +153,7 @@ class SPO:
                 except Exception as e:
                     print("!! Text that caused error: {0}!!\n".format(i))
                     print(e)
+        return self.svo_list
     
     def display_spo(self):
         for svo_sent in self.svo_list:
@@ -155,17 +164,17 @@ class SPO:
 
             for svo in svo_list:
                 print("\nSubject Clause:",svo['Subject'])
-                print("Explanation:", self.subj_explanation(svo['Subject']))
+                print(svo['Subject Explanation'])
                 print("\nConnecting Verb:", svo['Connecting Verb'])
-                print("Explanation:",self.verb_explanation(svo['Connecting Verb']))
+                print(svo['Verb Explanation'])
 
                 if len(svo['Object Clauses']) == 0:
                     print("\nObject Clause(s): None")
                 else:
                     print("\nObject Clause(s):")
-                    for obj_clause in svo['Object Clauses']:
+                    for i, obj_clause in enumerate(svo['Object Clauses']):
                         print(obj_clause)
-                        print("Explanation:", self.obj_explanation(obj_clause))
+                        print(svo["Object Explanations"][i])
                         print()
                 
                 if svo['Argument Modifiers'] == {}:
@@ -179,7 +188,7 @@ class SPO:
 if __name__=='__main__':
     text = "John bought a apple."
     spo = SPO(text)
-    spo.detect_svo()
+    spo.detect_spo()
     spo.display_spo()
     # print(spo.svo_list)
 
