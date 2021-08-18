@@ -45,6 +45,7 @@ class Alliteration:
     # Functions to detect alliteration 
 
     def consecutive_word_checker(self, processed_text, alliterations):
+        # Function checks if consecutive or closely related words begin with the same letter
         for i in range(len(processed_text)):
             if i==0: # first word
                 if processed_text[i][0] == processed_text[i+1][0]:
@@ -72,7 +73,7 @@ class Alliteration:
         # return alliterations
 
     def phonetic_checker(self, processed_text, alliterations):
-
+        # Function checks for alliterations based on the phonetics (when starting letters may be different)
         similar_sounds = ['c*k','v*w']
         f_ph = ['f*ph','ph*f']
         r_wr = ["r*wr","wr*r"]
@@ -101,7 +102,7 @@ class Alliteration:
         # return alliterations
 
     def detect_alliteration_sentence(self, processed_text):
-        # Comparing first alphabets of consecutive words to find alliterations 
+        # Function to detect alliterations (if any) given a sentence as input 
         alliterations = {}
         alliteration_list = []
 
@@ -122,6 +123,7 @@ class Alliteration:
         return alliteration_list
 
     def detect_alliterations(self):
+        # Detect alliterations given a list of sentences
         processed_text_list = self.preprocess_para()
         if self.paragraph == 1:
             for i, processed_text in enumerate(processed_text_list):
@@ -134,8 +136,8 @@ class Alliteration:
 
         return self.alliteration_list
 
-    def display_alliterations(self): # To display alliteration along with an example
-
+    def display_alliterations(self): 
+        # To display alliteration along with an explanation
         for sent_allit in self.alliteration_list:
             print("\nSentence:", sent_allit['sentence'])
             print("**************************")
@@ -151,6 +153,7 @@ class Alliteration:
             print()
     
     def execute(self):
+        # Driver function
         return self.detect_alliterations()
 
 if __name__ == "__main__":
