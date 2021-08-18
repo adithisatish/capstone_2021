@@ -75,6 +75,7 @@ class Alliteration:
 
         similar_sounds = ['c*k','v*w']
         f_ph = ['f*ph','ph*f']
+        r_wr = ["r*wr","wr*r"]
         trigram_tuples = {}
         for i in range(len(processed_text)-1):
             trigram_tuples[i] = processed_text[i][0]+'*' + processed_text[i+1][:2]
@@ -82,7 +83,7 @@ class Alliteration:
         # print(trigram_tuples)
 
         for i, trigram in trigram_tuples.items():
-            if trigram[:-1] in similar_sounds or trigram[:-1:-1] in similar_sounds or trigram in f_ph:
+            if trigram[:-1] in similar_sounds or trigram[:-1:-1] in similar_sounds or trigram in f_ph or trigram in r_wr:
                 # print()
                 starting_letter = processed_text[i][0]
                 if starting_letter not in alliterations:
