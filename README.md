@@ -14,14 +14,14 @@ Note: Refer to the [Instructions](https://github.com/adithisatish/capstone_2021/
  
 
 ### Components Implemented
+- Alliterations
+- Metaphors (ongoing)
+- Rhyme Scheme
+- Similes
+- Subject Predicate Object
 - Tense
 - Tone
-- OpenIE (Subject-Predicate-Object)
-- Alliterations
-- Similes
-- Voice (Active/Passive)
-- Rhyme Scheme
-- Metaphors
+- Voice
 
 ### Authors
 - Adithi Satish
