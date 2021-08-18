@@ -23,7 +23,8 @@ class SPO:
         self.modifiers = {'ARGM-LOC': 'Location - relating to place', 'ARGM-TMP': 'Temporal - relating to time', 'ARGM-ADV': 'Adverbial - General Purpose', 
                     'ARGM-DIS': 'Discourse', 'ARGM-MNR':'Manner/Behaviour', 'ARGM-DIR': 'Directional',
                     'ARGM-EXT':'Extent', 'ARGM-PNC': 'Purpose', 'ARGM-CAU': 'Causal - relating to cause', 
-                    'ARGM-NEG': 'Negation - a "not" has been seen in the sentence, negating it','ARGM-MOD': 'Modal Verb'}
+                    'ARGM-NEG': 'Negation - a "not" has been seen in the sentence, negating it','ARGM-MOD': 'Modal Verb',
+                    'ARGM-GOL':"Goal"}
         self.argmatch = lambda x: re.search('ARG[0-9]:',x)
         self.text = text
         self.paragraph = paragraph
@@ -32,7 +33,7 @@ class SPO:
         self.subj_explanation = lambda subj: 'Explanation: "{0}" is a subject/ subject phrase because the sentence is about it. The subject performs the action that is being described in the sentence.'.format(subj)
         self.verb_explanation = lambda verb: 'Explanation: "{0}" is the verb because it is the action or the state of being that is happening in the sentence. The verb functions as a connector between the subject and the object.'.format(verb)
         self.obj_explanation = lambda obj: 'Explanation: "{0}" is the object because it describes the \"whom\" or \"what\" the action is being done to. There can be multiple object clauses in a sentence.'.format(obj)
-
+        self.reference_explanation = lambda ref: ' Additionally, the object clause refers to "{0}".'.format(ref)
     # print(argmatch('ARG1: what'))
         
 
@@ -42,55 +43,24 @@ class SPO:
         # Initializing the AllenNLP-OIE predictor
         predictor = Predictor.from_path("https://storage.googleapis.com/allennlp-public-models/openie-model.2020.03.26.tar.gz")
         openie = predictor.predict(sentence = text)
+        # print(openie)
 
         triplet_list = []
 
         # print("\nTotal Number of Extractions Found:",len(openie['verbs']))
         for count, i in enumerate(openie['verbs']): # contains the ARGx, V and ARGM-XXX
             desc = i['description']
-            # print(desc)
-            if "V" in desc and "ARG" not in desc:
-                continue
-            oie_triplets = desc.split(",")
+            pattern = "\[.*?\]"
+            matches = re.findall(pattern=pattern, string=desc)
+            print(matches)
             triplet_dict = {}
+            for match in matches:
+                key,value = match[1:-1].split(": ")
+                triplet_dict[key] = value
+            
+            if triplet_dict != {}:
+                triplet_list.append(triplet_dict)
 
-            # print(oie_triplets)
-
-            for triplet in oie_triplets:
-                tags = triplet.replace("[","")
-                tags = tags.split('] ')
-
-                if tags[-1] == '':
-                    tags = tags[:-1]
-                if tags[-1] == ']':
-                    tags = tags[:-1]
-
-                # print(tags)
-                
-                for tag in tags:
-                    if "ARGM-ADV" not in tag and 'V:' in tag and tag.find('V:') !=0:
-                        tag = tag[tag.find('V:'):]
-                        # print(tag)
-                    elif self.argmatch(tag)!= None and self.argmatch(tag).span()[0]!=0:
-                        tag = tag[self.argmatch(tag).span()[0]:]
-
-                    if "ARGM" in tag and tag.find("ARGM") !=0:
-                        tag = tag[tag.find("ARGM"):]
-
-                    trip = tag.split(": ")
-                    
-                    try:
-                        if trip[1][-1]==']':
-                            trip[1] = trip[1][:-1]
-                        triplet_dict[trip[0].strip()] = trip[1].strip()
-                    
-                    except Exception as e:
-                        if trip[0][-1]==']':
-                            trip[0] = trip[1][:-1]
-                        triplet_dict["NONE"] = trip[0]
-
-            triplet_list.append(triplet_dict) # List of parsed OIE triplets
-        
         return triplet_list
 
     # Function to take dictionary containing OIE triplet as input and extract SVO + modifiers from it
@@ -109,6 +79,7 @@ class SPO:
         object_clauses = []
         obj_explanations = []
         arg_modifiers = {}
+        references = {}
         
         for key, value in triplet.items():
             # key = key.strip()
@@ -117,18 +88,28 @@ class SPO:
                     arg_modifiers[self.modifiers[key]] = value
             except Exception as e:
                 arg_modifiers[key] = "!!New Arg Modifer!!"
-            
-            if 'ARG' in key and key != argmin and 'ARGM' not in key:
+            if "R-ARG" in key:
+                references["Obj"+key[5:]] = value
+                # print("Reference found for object:",key[5:])
+                # exit()
+            elif 'ARG' in key and key != argmin and 'ARGM' not in key:
+                obj_number = key[3:]
+                # print(obj_number)
+                if "Obj"+obj_number in references:
+                    obj_explanation = self.obj_explanation(value) + self.reference_explanation(references["Obj"+obj_number])
+                else:
+                    obj_explanation = self.obj_explanation(value)
                 object_clauses.append(value)
-                obj_explanations.append(self.obj_explanation(value))
+                obj_explanations.append(obj_explanation)
 
         svo_result = {'Subject':subject,\
                     "Connecting Verb":connecting_verb,\
                     "Object Clauses":object_clauses,\
+                    "References":references, \
                     "Argument Modifiers":arg_modifiers, \
-                    "Subject Explanation: ": self.subj_explanation(subject), \
-                    "Verb Explanation: ": self.verb_explanation(connecting_verb),\
-                    "Object Explanations: ": obj_explanations}
+                    "Subject Explanation": self.subj_explanation(subject), \
+                    "Verb Explanation": self.verb_explanation(connecting_verb),\
+                    "Object Explanations": obj_explanations}
         return svo_result
                 
 
@@ -136,21 +117,32 @@ class SPO:
         list_of_triplets = self.get_oie_triplets(text)
         new_svo = {'sentence':text,'triplets':[]}
         # print("\nSentence:", self.text)
+
+        if list_of_triplets == []:
+            return None
         
         for triplet in list_of_triplets:
             svo = self.get_svo_from_triplet(triplet)
             new_svo['triplets'].append(svo)
-
-        return new_svo
+        
+        if new_svo['triplets'] != []:
+            return new_svo
+        else:
+            return None
     
     def detect_spo(self):
         if self.paragraph == 0:
-            self.svo_list.append(self.detect_svo_sentence(self.text))
+            sent_svo = self.detect_svo_sentence(self.text)
+            if sent_svo != None:
+                self.svo_list.append(sent_svo)
         else:
             for i in self.text:
                 try:
-                    self.svo_list.append(self.detect_svo_sentence(i))
+                    sent_svo = self.detect_svo_sentence(i)
+                    if sent_svo != None:
+                        self.svo_list.append(sent_svo)
                 except Exception as e:
+                    # print(self.svo_list)
                     print("!! Text that caused error: {0}!!\n".format(i))
                     print(e)
         return self.svo_list
@@ -189,10 +181,13 @@ class SPO:
         return self.detect_spo()
 
 if __name__=='__main__':
-    text = "John bought a apple."
+    # text = ['The silence spoke volumes, none of which he wanted to hear.']
+    text = "My difficult daily schedule slips by wayside."
     spo = SPO(text)
     spo.detect_spo()
-    spo.display_spo()
-    # print(spo.svo_list)
+    # spo.display_spo()
+
+    # spo.detect_svo_sentence(text)
+    print(spo.svo_list)
 
     

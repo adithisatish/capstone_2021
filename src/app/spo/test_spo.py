@@ -22,7 +22,7 @@ for i in range(len(subjects)):
 # print(subjects)
 spo_obj = SPO(d1,paragraph)
 
-spo_obj.detect_svo()
+spo_obj.detect_spo()
 
 count = 0
 i = 0

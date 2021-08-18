@@ -9,11 +9,13 @@ app.config["DEBUG"] = True
 def preprocess(comp, text):
     if comp != "Rhyme Scheme":
         sentences = text.split(".")
+        # print(sentences)
     else:
         sentences = []
-    if sentences[-1] == "":
+    if len(sentences[-1]) == 0:
         return sentences[:-1]
     else:
+        # print(len(sentences[-1]))
         return sentences
 
 @app.route('/', methods=['GET'])
@@ -27,7 +29,7 @@ def deconstruct():
     paragraph = 1
 
     processed_text = preprocess(comp, text)
-    # print(processed_text)
+    print("Processed Text: ", processed_text)
     # return "Done"
     obj = mapComponent[comp](processed_text, paragraph)
     result = obj.execute()
