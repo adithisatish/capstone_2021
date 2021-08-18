@@ -1,8 +1,8 @@
 from src.app.spo.SPODetector import SPO
 from src.app.alliteration.AlliterationDetector import Alliteration
-from src.app.ToneAnalyzer import display_tones, detect_tone
-from src.app.TenseDetector import tenseDetection
-from src.app.SimileDetector import detect_similes
+from src.app.tone.ToneAnalyzer import display_tones, detect_tone
+from src.app.tense.TenseDetector import tenseDetection
+from src.app.simile.SimileDetector import detect_similes
 import os
 import pandas as pd 
 import numpy as np 
