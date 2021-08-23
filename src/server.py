@@ -1,9 +1,12 @@
 import flask
 from flask import request, jsonify
+from flask_cors import CORS, cross_origin
 import json
 from deconstructor import mapComponent
 
 app = flask.Flask(__name__)
+cors = CORS(app)
+# app.config['CORS_HEADERS'] = 'Content-Type'
 app.config["DEBUG"] = True
 
 def preprocess(comp, text):
@@ -23,6 +26,7 @@ def home():
     return "<h1>Sentence Deconstructor</h1><p>Capstone Project 2021</p>"
 
 @app.route('/deconstructor', methods=['POST'])
+@cross_origin()
 def deconstruct():
     comp = request.json['component']
     text = request.json['text']
