@@ -20,7 +20,7 @@ class Alliteration:
         self.alliteration_list = []
         self.paragraph = paragraph # indicates whether a single sentence has been passed or not
         self.text = text
-        self.explanation = lambda beg, allit: "Explanation: Due to the occurrence of the same letter (or sound) (i.e {0}) in adjacent or closely connected words (excluding commonly used words like 'a', \"the\", etc), {1} is considered to be an alliteration.".format(beg, allit)
+        self.explanation = lambda beg, allit: "*Due to the occurrence of the same letter (or sound) (i.e **{0}**) in adjacent or closely connected words (excluding commonly used words like 'a', \"the\", etc), **{1}** is considered to be an alliteration.*".format(beg, allit)
 
     # Function to preprocess text
     def preprocess_text(self, text):

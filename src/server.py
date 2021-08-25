@@ -29,7 +29,7 @@ def home():
 @cross_origin()
 def deconstruct():
     comp = request.json['component']
-    text = request.json['text']
+    text = request.json['text'].strip()
     paragraph = 1
 
     processed_text = preprocess(comp, text)

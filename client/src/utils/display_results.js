@@ -1,3 +1,6 @@
+import React from "react"
+import getMarkdown from "./markdown"
+
 const Alliteration = (obj) => {
     
     // for each sentence
@@ -6,33 +9,39 @@ const Alliteration = (obj) => {
     //         display joined
     //         display explanation
 
-    const res = obj.map(sentence => {
+    const res = obj.map((sentence, index) => {
         return (
-            <li>
-                <p>{sentence.sentence}</p>
-                <ul>
+            <div>
+                <p className="text-lg">{index+1}. {sentence.sentence}</p>
+                <div className="ml-6">
                 {
-                    sentence.alliteration.map(allit => {
-                        return (
-                            <li>
-                                <p>{allit.joined}</p>
-                                <p>{allit.explanation}</p>
-                            </li>
-                        )
-                    })
+                    sentence.alliteration.length?
+                    <React.Fragment>
+                        <p className="text-green-800 text-lg">Alliterations: </p>
+                        {
+                            sentence.alliteration.map((allit, index) => {
+                                return (
+                                        <React.Fragment>
+                                            <p className="font-bold">{index+1}. {allit.joined.split("-").join(" ")}</p>
+                                            <p>{getMarkdown(allit.explanation)}</p>
+                                            <br></br>
+                                        </React.Fragment>
+                                )
+                            })}
+                    </React.Fragment>:
+                    <p className="font-bold text-lg">No Alliterations Found!</p>
                 }
-                </ul>
-            </li>
+                </div>
+            </div>
         )
     })
     
     if(res.length){
-        return <ol>{res}</ol>
+        return <React.Fragment>{res}</React.Fragment>
     }
 
-    return <p>No Alliterations Found!</p>
+    return <p className="font-bold text-lg">No Alliterations Found!</p>
 }
-
 const SPO = (obj) => {
     // for each sentence
     //     display sentence
