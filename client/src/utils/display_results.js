@@ -53,56 +53,70 @@ const SPO = (obj) => {
     //         for each argm
     //             display argm
 
-    const res = obj.map(sentence => {
+    const res = obj.map((sentence, index) => {
         return (
-            <li>
-                <p>{sentence.sentence}</p>
-                <ul>
+            <div className="text-justify">
+                <p className="text-lg">{index+1}. {sentence.sentence}</p>
+                <div className="ml-6">
                 {
-                    sentence.triplets.map(spo => {
-                        return (
-                            <li>
-                                <p>{spo.Subject}</p>
-                                <p>{spo["Subject Explanation"]}</p>
-                                <p>{spo.Verb}</p>
-                                <p>{spo['Verb Explanation']}</p>
+                    sentence.triplets.length?
+                    <React.Fragment>
+                        <p className="text-green-800 text-lg mb-2">SPO Extractions: </p>
+                        {
+                            sentence.triplets.map((spo, index) => {
+                                return (
+                                    <div>
+                                        <p className="font-bold mb-1">{index + 1}. Subject: {spo.Subject}</p>
+                                        <p>{getMarkdown(spo["Subject Explanation"])}</p>
+                                        <p className="font-bold mt-1 mb-1">Verb: {spo["Connecting Verb"]}</p>
+                                        <p>{getMarkdown(spo['Verb Explanation'])}</p>
 
-                                <ul>
-                                    {
-                                        spo['Object Clauses'].map((obj_clause,index) => {
-                                            return (
-                                                <li>
-                                                    <p>{obj_clause}</p>
-                                                    <p>{spo['Object Explanations'][index]}</p>
-                                                </li>
-                                            )
-                                        })
-                                    }
-                                </ul>
+                                        <div>
+                                            <p className="font-bold mt-1 mb-1">Object Clauses: </p>
+                                            {
+                                                spo['Object Clauses'].map((obj_clause,index) => {
+                                                    return (
+                                                        <div className="ml-4">
+                                                            <p className="font-bold italic">{index+1}. Object: {obj_clause}</p>
+                                                            <p>{getMarkdown(spo['Object Explanations'][index])}</p>
+                                                        </div>
+                                                    )
+                                                })
+                                            }
+                                        </div>
 
-                                <ul>
-                                    {
-                                        Object.keys(spo['Argument Modifiers']).map(arg_mod => {
-                                            return (
-                                                <li>
-                                                    <p>{arg_mod}: {spo['Argument Modifiers'][arg_mod]}</p>
-                                                </li>
-                                            )
-                                        })
-                                    }
-                                </ul>
-
-                            </li>
-                        )
-                    })
+                                        <div>
+                                        {
+                                            spo['Argument Modifiers'].length?
+                                            <React.Fragment>
+                                                <p className="font-bold ml-1 mb-1">Argument Modifiers: </p>
+                                                    {
+                                                        Object.keys(spo['Argument Modifiers']).map(arg_mod => {
+                                                            return (
+                                                                <div className="ml-4">
+                                                                    <p>{arg_mod}: {spo['Argument Modifiers'][arg_mod]}</p>
+                                                                </div>
+                                                            )
+                                                        })
+                                                    }
+                                            </React.Fragment>:null
+                                        }
+                                        </div>
+                                        <br></br>
+                                    </div>                                    
+                                )                                
+                            })
+                        }
+                    </React.Fragment>:
+                    <p>No subjects, predicates or objects found!</p>
                 }
-                </ul>
-            </li>
+                </div>
+            </div>
         )
         })
 
         if(res.length){
-            return <ol>{res}</ol>
+            return <React.Fragment>{res}</React.Fragment>
         }
 
         return <p>No subjects, predicates or objects found!</p>

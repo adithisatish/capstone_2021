@@ -30,10 +30,10 @@ class SPO:
         self.paragraph = paragraph
         self.svo_list = []
         
-        self.subj_explanation = lambda subj: 'Explanation: "{0}" is a subject/ subject phrase because the sentence is about it. The subject performs the action that is being described in the sentence.'.format(subj)
-        self.verb_explanation = lambda verb: 'Explanation: "{0}" is the verb because it is the action or the state of being that is happening in the sentence. The verb functions as a connector between the subject and the object.'.format(verb)
-        self.obj_explanation = lambda obj: 'Explanation: "{0}" is the object because it describes the \"whom\" or \"what\" the action is being done to. There can be multiple object clauses in a sentence.'.format(obj)
-        self.reference_explanation = lambda ref: ' Additionally, the object clause refers to "{0}".'.format(ref)
+        self.subj_explanation = lambda subj: '***"{0}"** is a subject/ subject phrase because the sentence is about it. The subject performs the action that is being described in the sentence.*'.format(subj)
+        self.verb_explanation = lambda verb: '***"{0}"** is the verb because it is the action or the state of being that is happening in the sentence. The verb functions as a connector between the subject and the object.*'.format(verb)
+        self.obj_explanation = lambda obj: '***"{0}"** is the object because it describes the \"whom\" or \"what\" the action is being done to. There can be multiple object clauses in a sentence.*'.format(obj)
+        self.reference_explanation = lambda ref: ' *Additionally, the object clause refers to **"{0}"**.*'.format(ref)
     # print(argmatch('ARG1: what'))
         
 

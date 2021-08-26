@@ -5,6 +5,7 @@ import { levels, metaphors, metaphorLevel } from "../data"
 import { showAlert } from '../utils/alert'
 import { decServer } from "../utils/axios"
 import display_result from "../utils/display_results"
+import EllipsisLoader from "../components/layout/EllipsisLoader"
 
 const Deconstructor = () => {
     const [currentLevel, setCurrentLevel] = React.useState(0)
@@ -18,6 +19,7 @@ const Deconstructor = () => {
     const [isLevelDropdownOpen, setLevelDropdown] = React.useState(false)
     const [inputText, setInputText] = React.useState('')
     const [outputJSX, setOutputJSX] = React.useState(null)
+    const [isLoading, setIsLoading] = React.useState(false)
    
     const handleAnalysis = () => {
         if(isMetaphorDropdownOpen) setMetaphorDropdown(false);
@@ -28,12 +30,17 @@ const Deconstructor = () => {
             component,
             text: inputText
         }
+        setOutputJSX(null)
+        setIsLoading(true)
         decServer.post("http://127.0.0.1:5000/deconstructor",body)
         .then(res => {
+            setIsLoading(false)
             setOutputJSX(display_result[component](res.data))
             console.log(res)
         })
         .catch(err => {
+            setIsLoading(false)
+            showAlert("Internal Server Error!","error")
             console.log(err)
         })
     }
@@ -189,7 +196,7 @@ const Deconstructor = () => {
                             </textarea>
                         </div>
                         <div className="w-1/2 h-96 border-l border-green-800 rounded-br-xl bg-green-100 p-4 overflow-y-auto">
-                            {outputJSX}
+                            {isLoading?<EllipsisLoader/>:outputJSX}
                         </div>                
                     </div>
                     {/* <div className="flex">
