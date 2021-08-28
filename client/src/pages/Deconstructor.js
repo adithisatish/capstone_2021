@@ -4,8 +4,9 @@ import Layout from "../components/layout/Layout"
 import { levels, metaphors, metaphorLevel } from "../data"
 import { showAlert } from '../utils/alert'
 import { decServer } from "../utils/axios"
-import display_result from "../utils/display_results"
+import OutputSelector from "../utils/display_results"
 import EllipsisLoader from "../components/layout/EllipsisLoader"
+// import OutputSelector from "../utils/display_results"
 
 const Deconstructor = () => {
     const [currentLevel, setCurrentLevel] = React.useState(0)
@@ -35,7 +36,7 @@ const Deconstructor = () => {
         decServer.post("http://127.0.0.1:5000/deconstructor",body)
         .then(res => {
             setIsLoading(false)
-            setOutputJSX(display_result[component](res.data))
+            setOutputJSX(OutputSelector(res.data,component))
             console.log(res)
         })
         .catch(err => {
