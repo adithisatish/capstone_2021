@@ -32,7 +32,7 @@ def deconstruct():
     text = request.json['text'].strip()
     paragraph = 1
 
-    processed_text = preprocess(comp, text)
+    processed_text = preprocess(comp, text) # List of sentences
     print("Processed Text: ", processed_text)
     # return "Done"
     obj = mapComponent[comp](processed_text, paragraph)

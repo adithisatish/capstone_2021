@@ -1,4 +1,6 @@
-from app.spo.SPODetector import get_oie_triplets, get_svo_from_triplet
+import sys
+sys.path.append("..")
+from spo.SPODetector import get_oie_triplets, get_svo_from_triplet
 
 text = "She returned the computer after noticing the damage."
 triplets = get_oie_triplets(text)
