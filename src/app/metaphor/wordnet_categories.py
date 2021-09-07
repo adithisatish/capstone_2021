@@ -18,8 +18,12 @@ def remove_stopwords(text):
     else:
         return text
 
-def extract_lexical_categories(word):
+def return_synsets(word):
     synsets = wn.synsets(word)
+    return synsets
+
+def extract_lexical_categories(synsets):
+    # synsets = wn.synsets(word)
     categories = set()
     if len(synsets) != 0:
         for synset in synsets:
@@ -44,40 +48,75 @@ def find_main_category(noun, categories):
     
     return main_cat
 
+def wu_palmer_similarity(syn1, syn2):
+    wu_palmer_score = syn1[0].wup_similarity(syn2[0])
+    shortest_path_distance = syn1[0].shortest_path_distance(syn2[0])
 
-text = "The world is a stage"
-doc = nlp(text)
+    return (wu_palmer_score, shortest_path_distance)
 
-dependencies = {}
-for token in doc:
-    if token.dep_ in dependencies:
-        dependencies[token.dep_] += [token.text]
-    else:
-        dependencies[token.dep_] = [token.text]
 
-# print(dependencies)
+# text = "I am a prisoner."
+texts = ["My eyes are an ocean of blue",\
+            "Today is a prison and I am the inmate.",\
+            "I am a prisoner","You dog!",\
+            "The snow is a white blanket.",\
+            "Her long hair was a flowing golden river.",\
+            "Tom's eyes were ice as he stared at her.",\
+            "The children were flowers grown in concrete gardens.",\
+            "The falling snowflakes are dancers.",\
+            "The calm lake was a mirror.",\
+            "John's suggestion was just a Band-Aid for the problem."]
 
-for subj in dependencies['nsubj']:
-    cat_subj = extract_lexical_categories(subj) # Categories of subject
-    for attr in dependencies['attr']:
-        cat_attr = extract_lexical_categories(attr) # Categories of object
-        # print(cat_subj, cat_attr)
+for text in texts:
+    doc = nlp(text)
 
-        common_categories = cat_subj.intersection(cat_attr)
-        if len(common_categories) == 0: # No common categories
-            print("\nNo overlap => {0} and {1} are METAPHORICAL".format(subj, attr))
+    dependencies = {}
+    for token in doc:
+        if token.dep_ in dependencies:
+            dependencies[token.dep_] += [token.text]
         else:
-            main_cat_subj = find_main_category(subj, cat_subj)
-            main_cat_attr = find_main_category(attr, cat_attr)
+            dependencies[token.dep_] = [token.text]
 
-            if main_cat_attr != main_cat_subj: # Different main categories
-                print("\nMain categories are different => {0} and {1} are METAPHORICAL".format(subj, attr))
-            else:
-                print("ugh I cry")
-                # COCA Collocation Dataset required
-            
-            # print("MCA:", main_cat_attr)
-            # print("MCS:",main_cat_subj)
-                    
-            # pass
+    # print(dependencies)
+    try:
+        for subj in dependencies['nsubj']:
+            subj_syn = return_synsets(subj)
+            # print(subj_syn)
+            for attr in dependencies["attr"]:
+                attr_syn = return_synsets(attr)
+                wup_result = wu_palmer_similarity(subj_syn, attr_syn)
+                print()
+                print(subj, ",", attr)
+                print("WU-Palmer Score:",wup_result)
+    except Exception as e:
+        print(text)
+        print(e)
+        print("----------------")
+        
+        # cat_subj = extract_lexical_categories(subj_syn) # Categories of subject
+        # for attr in dependencies['attr']:
+        #     cat_attr = extract_lexical_categories(attr_syn) # Categories of object
+        #     # print(cat_subj, cat_attr)
+
+        #     common_categories = cat_subj.intersection(cat_attr)
+        #     if len(common_categories) == 0: # No common categories
+        #         print("\nNo overlap => {0} and {1} are METAPHORICAL".format(subj, attr))
+        #     else:
+        #         main_cat_subj = find_main_category(subj, cat_subj)
+        #         main_cat_attr = find_main_category(attr, cat_attr)
+
+        #         if main_cat_attr != main_cat_subj: # Different main categories
+        #             print("\nMain categories are different => {0} and {1} are METAPHORICAL".format(subj, attr))
+        #         else:
+        #             mc_subj_syn = return_synsets(main_cat_subj)
+        #             mc_attr_syn = return_synsets(main_cat_attr)
+        #             wup_result_cat = wu_palmer_similarity(mc_subj_syn, mc_attr_syn)
+        #             wup_result = wu_palmer_similarity(subj_syn, attr_syn)
+        #             print("WU-Palmer Score:",wup_result)
+                    # COCA Collocation Dataset required
+                
+                # print("MCA:", main_cat_attr)
+                # print("MCS:",main_cat_subj)
+                        
+                # pass
 
