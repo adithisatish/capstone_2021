@@ -44,82 +44,94 @@ import nltk
 from nltk import word_tokenize, pos_tag
 import re
 
-def tenseDetection(sentence):
-    tense = ""
-    print()
-    # print(sentence)
-    text = word_tokenize(sentence)
-    tagged = pos_tag(text)
-    #print(tagged)
+class Tenses:
+    def __init__(self, sentence): 
+        self.text = sentence
+    def tenseDetection(self):
+        tense = ""
+        print()
+        # print(sentence)
+        text = word_tokenize(sentence)
+        tagged = pos_tag(text)
+        #print(tagged)
 
-    verbs = []
-    for i in tagged:
-        if(i[1] in ['VBN', 'VBD', 'VBP', 'VBG', 'VBZ', 'MD', 'VB']):
-            verbs.append(i)
-    #print(verbs)
+        verbs = []
+        for i in tagged:
+            if(i[1] in ['VBN', 'VBD', 'VBP', 'VBG', 'VBZ', 'MD', 'VB']):
+                verbs.append(i)
+        #print(verbs)
 
-    for i in range(len(verbs)):
-        if(len(verbs) >= 2):
-            #past
-            if(re.search("was|were", verbs[i][0]) and verbs[i+1][1] == 'VBG'):
-                tense = "Past Continuous"
-                break
-            elif(re.search("had", verbs[i][0]) and re.search("been", verbs[i+1][0]) and verbs[i+2][1] == 'VBG'):
-                tense = "Past Perfect Continuous"
-                break
-            elif(re.search("had", verbs[i][0]) and verbs[i+1][1] == 'VBN'):
-                tense = "Past Perfect"
-                break
-            elif(verbs[i][1] == 'VBD'):
-                tense = "Past Simple"
-                break
-
-            #present
-            elif(re.search("is|am|are", verbs[i][0]) and verbs[i+1][1] == 'VBG'):
-                tense = "Present Continuous"
-                break
-            elif(re.search("has|have", verbs[i][0]) and re.search("been", verbs[i+1][0]) and verbs[i+2][1] == 'VBG'):
-                tense = "Present Perfect Continuous"
-                break
-            elif(re.search("has|have", verbs[i][0]) and verbs[i+1][1] == 'VBN'):
-                tense = "Present Perfect"
-                break
-            elif(verbs[i][1] in ['VBP', 'VBZ']):
-                tense = "Present Simple"
-                break
-            elif(verbs[i][1] == 'VBG'):
-                tense = "Present Continuous"
-                break
-
-            #future
-            elif(verbs[i][1] == 'MD'):
-                if(re.search("be", verbs[i + 1][0]) and verbs[i+2][1] == 'VBG'):
-                    tense = "Future Continuous"
+        for i in range(len(verbs)):
+            if(len(verbs) >= 2):
+                #past
+                if(re.search("was|were", verbs[i][0]) and verbs[i+1][1] == 'VBG'):
+                    tense = "Past Continuous"
                     break
-                elif(re.search("has|have", verbs[i+1][0]) and re.search("been", verbs[i+2][0]) and verbs[i+3][1] == 'VBG'):
-                    tense = "Future Perfect Continuous"
+                elif(re.search("had", verbs[i][0]) and re.search("been", verbs[i+1][0]) and verbs[i+2][1] == 'VBG'):
+                    tense = "Past Perfect Continuous"
                     break
-                elif(re.search("have", verbs[i + 1][0]) and verbs[i+2][1] == 'VBN'):
-                    tense = "Future Perfect"
+                elif(re.search("had", verbs[i][0]) and verbs[i+1][1] == 'VBN'):
+                    tense = "Past Perfect"
                     break
-                else:
+                elif(verbs[i][1] == 'VBD'):
+                    tense = "Past Simple"
+                    break
+
+                #present
+                elif(re.search("is|am|are", verbs[i][0]) and verbs[i+1][1] == 'VBG'):
+                    tense = "Present Continuous"
+                    break
+                elif(re.search("has|have", verbs[i][0]) and re.search("been", verbs[i+1][0]) and verbs[i+2][1] == 'VBG'):
+                    tense = "Present Perfect Continuous"
+                    break
+                elif(re.search("has|have", verbs[i][0]) and verbs[i+1][1] == 'VBN'):
+                    tense = "Present Perfect"
+                    break
+                elif(verbs[i][1] in ['VBP', 'VBZ']):
+                    tense = "Present Simple"
+                    break
+                elif(verbs[i][1] == 'VBG'):
+                    tense = "Present Continuous"
+                    break
+
+                #future
+                elif(verbs[i][1] == 'MD'):
+                    if(re.search("be", verbs[i + 1][0]) and verbs[i+2][1] == 'VBG'):
+                        tense = "Future Continuous"
+                        break
+                    elif(re.search("has|have", verbs[i+1][0]) and re.search("been", verbs[i+2][0]) and verbs[i+3][1] == 'VBG'):
+                        tense = "Future Perfect Continuous"
+                        break
+                    elif(re.search("have", verbs[i + 1][0]) and verbs[i+2][1] == 'VBN'):
+                        tense = "Future Perfect"
+                        break
+                    else:
+                        tense = "Future Simple"
+                        break
+            else:
+                if(verbs[i][1] == 'VBD'):
+                    tense = "Past Simple"
+                    break
+                elif(verbs[i][1] in ['VBP', 'VBZ']):
+                    tense = "Present Simple"
+                    break
+                elif(verbs[i][1] == 'VBG'):
+                    tense = "Present Continuous"
+                    break
+                elif(verbs[i][1] == 'MD'):
                     tense = "Future Simple"
                     break
-        else:
-            if(verbs[i][1] == 'VBD'):
-                tense = "Past Simple"
-                break
-            elif(verbs[i][1] in ['VBP', 'VBZ']):
-                tense = "Present Simple"
-                break
-            elif(verbs[i][1] == 'VBG'):
-                tense = "Present Continuous"
-                break
-            elif(verbs[i][1] == 'MD'):
-                tense = "Future Simple"
-                break
-    return tense
+        output = dict()
+        output['sentence'] = sentence
+        output['tense'] = tense
+        return output
+    def execute(self):
+        # Driver function
+        return self.tenseDetection()
 
 if __name__ == "__main__":
     sentence = "Jack attended the program"
-    print(tenseDetection(sentence))
+    ten_obj = Tenses(sentence)
+    #s = sim_obj.detect_similes()
+    s1=ten_obj.execute()
+    print(s1)
