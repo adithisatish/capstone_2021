@@ -20,7 +20,7 @@ class Similes:
     def detect_similes(self):
         index=0
         for list_index in range(len(text)):
-            self.similes[index]['Sentense']=text[list_index]
+            self.similes[index]['Sentence']=text[list_index]
             text[list_index] = re.sub('[^a-zA-Z0-9 \n\.]', '', text[list_index])
             self.similes[index]['Simile']=list()
             flag=0
@@ -75,7 +75,7 @@ class Similes:
     def display(self):
 
         for i in range(len(self.similes)):
-            print("Sentence:", self.similes[i]['Sentense'])
+            print("Sentence:", self.similes[i]['Sentence'])
             print("Similes:",self.similes[i]['Simile'])
             print("**************************")
             
