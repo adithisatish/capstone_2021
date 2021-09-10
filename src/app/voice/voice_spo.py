@@ -65,13 +65,13 @@ class Voice_Spo:
             for i in processed_text_list:
                 #print(i)
                 sentence_voice = {"sentence": i, "voice": self.voiceSpoDetection(i)}
-                self.tense_voice.append(sentence_voice)
-                #print(self.tense_list)
+                self.voice_list.append(sentence_voice)
+                #print(self.voice_list)
         else:
-            sentence_voice = {"sentence":self.text, "tense": self.voiceSpoDetection(processed_text_list[0])}
-            self.tense_list.append(sentence_voice)
+            sentence_voice = {"sentence":self.text, "voice": self.voiceSpoDetection(processed_text_list[0])}
+            self.voice_list.append(sentence_voice)
 
-        return self.tense_list
+        return self.voice_list
 
     def execute(self):
         # Driver function
