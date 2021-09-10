@@ -13,9 +13,10 @@ flag=0
 
 
 class Similes:
-    def __init__(self,text):
+    def __init__(self,text, paragraph = 0):
         self.text = text
         self.similes=[dict() for number in range(len(text))]
+        self.paragraph = paragraph
     
     def detect_similes(self):
         index=0
@@ -60,7 +61,7 @@ class Similes:
                         self.similes[index]['Simile'].append(' '.join(tokenized_text[i:i+5]))
                         val=1
                 for j in range(len(final)-3):
-                    if val!=1 and j!=0 and final[j-1][0] in ["As", 'as'] and ' '.join(tokenized_text[j-1:j+4]) in similes:
+                    if val!=1 and j!=0 and final[j-1][0] in ["As", 'as'] and ' '.join(tokenized_text[j-1:j+4]) in self.similes:
                         continue
                     if (val!=1 and final[j][1] in ['JJ','NNP','NNS','NN','PRP','RB']):
                             if(final[j+1][0] in ['As','as']):
