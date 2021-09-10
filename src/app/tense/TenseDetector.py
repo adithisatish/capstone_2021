@@ -125,6 +125,7 @@ class Tenses:
         output['sentence'] = sentence
         output['tense'] = tense
         return output
+    
     def execute(self):
         # Driver function
         return self.tenseDetection()
