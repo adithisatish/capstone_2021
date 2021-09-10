@@ -39,15 +39,39 @@ First Form: Verb
 Second Form: Past 
 Third Form: Past Participle
 """
-import nltk
-# nltk.download('averaged_perceptron_tagger')
+
 from nltk import word_tokenize, pos_tag
+import nltk
+from nltk.corpus import stopwords
 import re
+import pandas as pd 
+import numpy as np 
 
 class Tenses:
-    def __init__(self, sentence): 
-        self.text = sentence
-    def tenseDetection(self):
+    def __init__(self, text, paragraph = 0): 
+        self.tense_list = []
+        self.paragraph = paragraph # indicates whether a single sentence has been passed or not
+        self.text = text
+        #self.explanation = lambda beg, allit: "*Due to the occurrence of the same letter (or sound) (i.e **{0}**) in adjacent or closely connected words (excluding commonly used words like 'a', \"the\", etc), **{1}** is considered to be an alliteration.*".format(beg, allit)
+
+    def preprocess_text(self, text):
+        # Removal of stopwords
+        # Conversion to lowercase
+        # Removal of punctuation
+
+        words = stopwords.words("english")    
+        convert = lambda x: " ".join([i for i in re.sub("[^a-zA-Z]", " ", x).split() if i not in words]).lower()
+        return convert(text)
+
+    def preprocess_para(self):
+        if self.paragraph == 1:
+            preprocessed_para = sentence.split('.')
+            #print(preprocessed_para)
+            return preprocessed_para
+        else:
+            return [self.text]
+    
+    def tenseDetection(self, processed_text):
         tense = ""
         print()
         # print(sentence)
@@ -121,17 +145,30 @@ class Tenses:
                 elif(verbs[i][1] == 'MD'):
                     tense = "Future Simple"
                     break
-        output = dict()
-        output['sentence'] = sentence
-        output['tense'] = tense
-        return output
+        return tense
+
+    def detect_tense(self):
+        processed_text_list = self.preprocess_para()
+        #print(processed_text_list)
+        if self.paragraph == 1:
+            for i in processed_text_list:
+                #print(i)
+                sentence_tense = {"sentence": i, "tense": self.tenseDetection(i)}
+                self.tense_list.append(sentence_tense)
+                #print(self.tense_list)
+        else:
+            sentence_tense = {"sentence":self.text, "tense": self.tenseDetection(processed_text_list[0])}
+            self.tense_list.append(sentence_tense)
+
+        return self.tense_list
+
     def execute(self):
         # Driver function
-        return self.tenseDetection()
+        return self.detect_tense()
 
 if __name__ == "__main__":
-    sentence = "Jack attended the program"
-    ten_obj = Tenses(sentence)
+    sentence = "Jack attended the program. He was sad."
+    ten_obj = Tenses(sentence, 1)
     #s = sim_obj.detect_similes()
     s1=ten_obj.execute()
     print(s1)
