@@ -35,7 +35,8 @@ def deconstruct():
     processed_text = preprocess(comp, text) # List of sentences
     print("Processed Text: ", processed_text)
     # return "Done"
-    obj = mapComponent[comp](processed_text, paragraph)
+    # The input passed to each class while instantiating is a LIST of sentences 
+    obj = mapComponent[comp](processed_text, paragraph) # Mapping the component requested to appropriate class and instantiating object
     result = obj.execute()
 
     return jsonify(result)

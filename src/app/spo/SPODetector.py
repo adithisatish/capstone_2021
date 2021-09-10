@@ -57,10 +57,14 @@ class SPO:
             for match in matches:
                 key,value = match[1:-1].split(": ")
                 triplet_dict[key] = value
+
+            keys = set(triplet_dict.keys())
+            if len(keys) == 1 and "V" in keys:
+                triplet_dict = {}                    
             
             if triplet_dict != {}:
                 triplet_list.append(triplet_dict)
-
+            
         return triplet_list
 
     # Function to take dictionary containing OIE triplet as input and extract SVO + modifiers from it
@@ -182,12 +186,12 @@ class SPO:
 
 if __name__=='__main__':
     # text = ['The silence spoke volumes, none of which he wanted to hear.']
-    text = "My difficult daily schedule slips by wayside."
+    text = "She is eating chocolate cake."
     spo = SPO(text)
     spo.detect_spo()
     # spo.display_spo()
 
     # spo.detect_svo_sentence(text)
-    print(spo.svo_list)
+    # print(spo.svo_list)
 
     
