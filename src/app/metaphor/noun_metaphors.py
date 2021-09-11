@@ -83,7 +83,7 @@ class NounMetaphor:
         # print(index_subj, index_obj)
 
         if index_obj == -1 or index_subj == -1:
-            print("SYNSET INDEX ERROR!")
+            print("Error: Synsets not found!")
             return (None, None)
         
         wup_result = self.wu_palmer_similarity(subj_syn, index_subj, attr_syn, index_obj)
@@ -149,8 +149,10 @@ class NounMetaphor:
 
     def detect_noun_metaphor(self):
         doc = nlp(self.text)
+        self.dependencies = {}
+        self.metaphors = []
         self.noun_metaphor_util(doc)
-        print(self.metaphors)                          
+        return self.metaphors
 
 if __name__ == "__main__":
     # text = "Today is a prison and I am the inmate => figure out a logical split
