@@ -18,11 +18,12 @@ class NounMetaphor:
 
     def __init__(self, text):
         self.text = text
-        self.dependencies = {}
-        self.metaphors = []
+        self.dependencies = {} # Overwritten for every sentence
+        self.metaphors = [] # Overwritten for every sentence
         # self.paragraph = paragraph
 
     def remove_stopwords(self, text):
+        # Function that removes stopwords from a sentence
         words = stopwords.words("english")
         convert = lambda x: " ".join([i for i in x.split() if i not in words])
 
@@ -34,10 +35,12 @@ class NounMetaphor:
             return text
 
     def return_synsets(self, word):
+        # Function that returns wordnet synsets for a particular word
         synsets = wn.synsets(word)
         return synsets
 
     def extract_lexical_categories(self, synsets):
+        # Function to extract lexical categories given the synsets for a word
         # synsets = wn.synsets(word)
         categories = set()
         if len(synsets) != 0:
@@ -49,6 +52,7 @@ class NounMetaphor:
         return categories
 
     def find_main_category(self, noun, categories):
+        # Finding main category of the word using ConceptNet
         main_cat = ''
         max_rel = -99999
         for cat in categories:
@@ -64,6 +68,7 @@ class NounMetaphor:
         return main_cat
 
     def wu_palmer_similarity(self, syn1, index1, syn2, index2):
+        # Computes Wu-Palmer Similarity for two synsets and returns the score as well as the shortest path distance
         # print(syn1)
         # print(syn2)
         wu_palmer_score = syn1[index1].wup_similarity(syn2[index2])
@@ -72,6 +77,7 @@ class NounMetaphor:
         return (wu_palmer_score, shortest_path_distance)
     
     def index_synset(self, synset, name):
+        # Returns the index of the right synset to use after comparing with stemmed and lemmatized forms
         ps = PorterStemmer()
         lem = WordNetLemmatizer()
         stemmed_name = ps.stem(name)
@@ -87,22 +93,13 @@ class NounMetaphor:
                 index = i 
         return index
 
-    def compare_categories(self, subj, obj, subj_syn = None, attr_syn = None):
+    def compare_categories(self, subj, obj, subj_syn, attr_syn):
+        # Extracts and compares the categories of the two noun 
         metaphor = False
-        
-        if subj_syn == None:
-            c_sub = subj
-        else:
-            c_sub = subj_syn
 
-        if attr_syn == None:
-            c_obj = obj
-        else:
-            c_obj = attr_syn
-
-        cat_subj = self.extract_lexical_categories(c_sub) # Categories of subject
+        cat_subj = self.extract_lexical_categories(subj_syn) # Categories of subject
             # for attr in self.dependencies[dependency]:
-        cat_attr = self.extract_lexical_categories(c_obj) # Categories of object
+        cat_attr = self.extract_lexical_categories(attr_syn) # Categories of object
         # print(cat_subj, cat_attr)
 
         common_categories = cat_subj.intersection(cat_attr)
@@ -118,15 +115,14 @@ class NounMetaphor:
                 metaphor = True
             else:
                 # What to do here??
-                # category = main_cat_subj
-                # cat_syn = self.return_synsets(category)
-                # index_cat = self.return_synsets()
+
                 message = "The algorithm cannot determine whether a metaphor exists in this sentence."
                 metaphor = False
         
         return (message, metaphor)
     
-    def is_noun_metaphor(self, obj, subj_syn, subj, dependency):
+    def is_noun_metaphor(self, obj, subj_syn, subj):
+        # Driver function to check if two nouns form a noun metaphor
         attr_syn = self.return_synsets(obj)
         # print(attr_syn)
         index_subj = self.index_synset(subj_syn, subj)
@@ -153,6 +149,7 @@ class NounMetaphor:
         return (message,metaphor)
 
     def noun_metaphor_util(self, doc):
+        # Utility funtion that extracts pos dependencies for the sentence and extracts the 2 nouns
         for token in doc:
             if token.dep_ in self.dependencies:
                 self.dependencies[token.dep_] += [token.text]
@@ -183,6 +180,7 @@ class NounMetaphor:
         # return self.metaphors
 
     def detect_noun_metaphor(self):
+        # Driver function
         doc = nlp(self.text)
         self.dependencies = {}
         self.metaphors = []
