@@ -1,12 +1,16 @@
+from nltk import stem
 from nltk.corpus import wordnet as wn
+from nltk.stem import PorterStemmer, WordNetLemmatizer
+from nltk.tag import pos_tag
 from nltk.util import pr
 import requests
-from nltk.tokenize import word_tokenize
-from nltk import metrics, pos_tag
 from nltk.corpus import stopwords
 import spacy
 
-# from app.metaphor.MetaphorDetection import Metaphor
+# Possible grey areas
+# 1. What to do when synsets can't be found?
+# 2. Check for false positives 
+# 3. "You dog!" not equated to "you are a dog" => results in error
 
 nlp = spacy.load("en_core_web_sm")
 
@@ -68,50 +72,80 @@ class NounMetaphor:
         return (wu_palmer_score, shortest_path_distance)
     
     def index_synset(self, synset, name):
+        ps = PorterStemmer()
+        lem = WordNetLemmatizer()
+        stemmed_name = ps.stem(name)
+        lemmatized_name = lem.lemmatize(name)
         index = -1
         for i, syn in enumerate(synset):
             syn_name = syn.name().split(".")[0]
-            if name.lower() == syn_name.lower() and index == -1:
-                index = i
+            stemmed_syn = ps.stem(syn_name)
+            lemmatized_syn = lem.lemmatize(syn_name)
+            # print("Stemming:",stemmed_name, stemmed_syn)
+            # print("Lemmatized:", lemmatized_name, lemmatized_syn)
+            if (name.lower() == syn_name.lower() or stemmed_name == stemmed_syn or lemmatized_name == lemmatized_syn) and index == -1:
+                index = i 
         return index
 
+    def compare_categories(self, subj, obj, subj_syn = None, attr_syn = None):
+        metaphor = False
+        
+        if subj_syn == None:
+            c_sub = subj
+        else:
+            c_sub = subj_syn
+
+        if attr_syn == None:
+            c_obj = obj
+        else:
+            c_obj = attr_syn
+
+        cat_subj = self.extract_lexical_categories(c_sub) # Categories of subject
+            # for attr in self.dependencies[dependency]:
+        cat_attr = self.extract_lexical_categories(c_obj) # Categories of object
+        # print(cat_subj, cat_attr)
+
+        common_categories = cat_subj.intersection(cat_attr)
+        if len(common_categories) == 0: # No common categories
+            message = "\nNo overlap => {0} and {1} are METAPHORICAL".format(subj, obj)
+            metaphor = True
+        else:
+            main_cat_subj = self.find_main_category(subj, cat_subj)
+            main_cat_attr = self.find_main_category(obj, cat_attr)
+
+            if main_cat_attr != main_cat_subj: # Different main categories
+                message = "\nMain categories are different => {0} and {1} are METAPHORICAL".format(subj, obj)
+                metaphor = True
+            else:
+                # What to do here??
+                # category = main_cat_subj
+                # cat_syn = self.return_synsets(category)
+                # index_cat = self.return_synsets()
+                message = "The algorithm cannot determine whether a metaphor exists in this sentence."
+                metaphor = False
+        
+        return (message, metaphor)
+    
     def is_noun_metaphor(self, obj, subj_syn, subj, dependency):
         attr_syn = self.return_synsets(obj)
+        # print(attr_syn)
         index_subj = self.index_synset(subj_syn, subj)
         index_obj = self.index_synset(attr_syn, obj)
 
         # print(index_subj, index_obj)
 
         if index_obj == -1 or index_subj == -1:
-            print("Error: Synsets not found!")
+            print("Error: Synsets not found")
             return (None, None)
         
         wup_result = self.wu_palmer_similarity(subj_syn, index_subj, attr_syn, index_obj)
 
-        print()
-        print(subj, ",", obj)
-        print("WU-Palmer Score:",wup_result)
+        # print()
+        # print(subj, ",", obj)
+        # print("WU-Palmer Score:",wup_result)
 
         if wup_result[0] >= 0.3:
-            cat_subj = self.extract_lexical_categories(subj_syn) # Categories of subject
-            for attr in self.dependencies[dependency]:
-                cat_attr = self.extract_lexical_categories(attr_syn) # Categories of object
-                # print(cat_subj, cat_attr)
-
-                common_categories = cat_subj.intersection(cat_attr)
-                if len(common_categories) == 0: # No common categories
-                    message = "\nNo overlap => {0} and {1} are METAPHORICAL".format(subj, attr)
-                    metaphor = True
-                else:
-                    main_cat_subj = self.find_main_category(subj, cat_subj)
-                    main_cat_attr = self.find_main_category(attr, cat_attr)
-
-                    if main_cat_attr != main_cat_subj: # Different main categories
-                        message = "\nMain categories are different => {0} and {1} are METAPHORICAL".format(subj, attr)
-                        metaphor = True
-                    else:
-                        message = "The algorithm cannot determine whether a metaphor exists in this sentence."
-                        metaphor = False
+            message, metaphor = self.compare_categories(subj, obj, subj_syn, attr_syn)
         else:
             message = "Metaphor due to low Wu-Palmer score"
             metaphor = True
@@ -130,6 +164,7 @@ class NounMetaphor:
             for subj in self.dependencies['nsubj']:
                 subj_syn = self.return_synsets(subj)
                 # print(subj_syn)
+
                 if "attr" in self.dependencies:
                     dependency = "attr"
                 elif "acomp" in self.dependencies:
@@ -156,20 +191,20 @@ class NounMetaphor:
 
 if __name__ == "__main__":
     # text = "Today is a prison and I am the inmate => figure out a logical split
-    texts = [#"My eyes are an ocean of blue",\
-            # "Today is a prison and I am the inmate.",\
-            # "I am a prisoner","You dog!",\
-            # "The snow is a white blanket.",\
-            # "Her long hair was a flowing golden river.",\
-            # "Tom's eyes were ice as he stared at her.",\
-            # "The children were flowers grown in concrete gardens.",\
-            # "The falling snowflakes are dancers.",\
-            # "The calm lake was a mirror.",\
-            # "John's suggestion was just a Band-Aid for the problem.",\
-            # "Chaos is a friend of mine.",\
-            # "His eyes are saucers.",\
-            "She is an early bird."]
-            # "His memories were cloudy."]
+    texts = ["My eyes are an ocean of blue",\
+            "Today is a prison and I am the inmate.",\
+            "I am a prisoner","You dog!",\
+            "The snow is a white blanket.",\
+            "Her long hair was a flowing golden river.",\
+            "Tom's eyes were ice as he stared at her.",\
+            "The children were flowers grown in concrete gardens.",\
+            "The falling snowflakes are dancers.",\
+            "The calm lake was a mirror.",\
+            "John's suggestion was just a Band-Aid for the problem.",\
+            "Chaos is a friend of mine.",\
+            "His eyes are saucers.",\
+            "She is an early bird.",\
+            "His memories were cloudy."]
 
     NM_Trial = NounMetaphor(None)
 
@@ -179,6 +214,7 @@ if __name__ == "__main__":
         print(text)
         NM_Trial.text = text
         NM_Trial.detect_noun_metaphor()
+        print(NM_Trial.metaphors)
     # doc = nlp(texts[0])
 
     # for token in doc:

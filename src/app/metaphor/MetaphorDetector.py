@@ -26,7 +26,7 @@ class Metaphor:
 if __name__ == "__main__":
     texts = ["My eyes are an ocean of blue",\
             "Today is a prison and I am the inmate.",\
-            "I am a prisoner","You dog!",\
+            "I am a prisoner","You are a dog!",\
             "The snow is a white blanket.",\
             "Her long hair was a flowing golden river.",\
             "Tom's eyes were ice as he stared at her.",\
