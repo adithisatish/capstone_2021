@@ -168,7 +168,7 @@ class NounMetaphor:
                     dependency = "acomp"
                 for dep in self.dependencies[dependency]:
                     # print(dep, subj_syn, subj, dependency)
-                    msg, is_metaphor = self.is_noun_metaphor(dep, subj_syn, subj, dependency)
+                    msg, is_metaphor = self.is_noun_metaphor(dep, subj_syn, subj)
                     
                     if is_metaphor == True:
                         self.metaphors.append(("{0} and {1} are metaphorical".format(subj, dep),msg))
