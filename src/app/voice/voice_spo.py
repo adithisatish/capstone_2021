@@ -1,10 +1,10 @@
-from app.spo.SPODetector import get_oie_triplets, get_svo_from_triplet
 from nltk import word_tokenize, pos_tag
 import nltk
 from nltk.corpus import stopwords
 import re
 import pandas as pd 
 import numpy as np 
+from SPODetector import SPO
 
 class Voice_Spo:
     def __init__(self, text, paragraph = 0): 
@@ -31,12 +31,11 @@ class Voice_Spo:
             return [self.text]
 
     def voiceSpoDetection(self, processed_text):
-        text = "She returned the computer after noticing the damage."
-        triplets = get_oie_triplets(text)
-        for triplet in triplets:
-            svo = get_svo_from_triplet(triplet)
-        print(svo)
-
+        spo = SPO(processed_text)
+        s = spo.execute()
+        #print(s[0]['triplets'][0]['Subject'])
+        svo = s[0]['triplets'][0]
+        text = s[0]['sentence']
         subject = svo['Subject']
         print('subject index: ')
         sub_index = text.index(subject)
@@ -53,23 +52,35 @@ class Voice_Spo:
         voice = ""
         if sub_index < obj_index:
             voice = "Active"
+            explanation = 'The Subject "*** {0} ***" appears before the object "*** {1} ***"'.format(subject, objectClause[0])
         if obj_index < sub_index:
             voice = "Passive"
+            explanation = 'The object "*** {0} ***" appears before the subject "*** {1} ***"'.format(objectClause[0], subject)
         
-        return voice
+        return {'sentence': sentence, 'voice': voice, 'explanation': explanation}
     
     def detect_voice(self):
         processed_text_list = self.preprocess_para()
-        #print(processed_text_list)
+        print(processed_text_list)
         if self.paragraph == 1:
             for i in processed_text_list:
-                #print(i)
-                sentence_voice = {"sentence": i, "voice": self.voiceSpoDetection(i)}
-                self.voice_list.append(sentence_voice)
-                #print(self.voice_list)
+                try:
+                    #print(i)
+                    result = self.voiceSpoDetection(i)
+                    sentence_voice = {"sentence": result['sentence'], "voice": result['voice'], "explanation": result['explanation']}
+                    self.voice_list.append(sentence_voice)
+                    #print(self.voice_list)
+                except Exception as e:
+                    print("!! Text that caused error: {0}!!\n".format(i))
+                    print(e)
         else:
-            sentence_voice = {"sentence":self.text, "voice": self.voiceSpoDetection(processed_text_list[0])}
-            self.voice_list.append(sentence_voice)
+            try: 
+                result = self.voiceSpoDetection(processed_text_list[0])
+                sentence_voice = {"sentence": result['sentence'], "voice": result['voice'], "explanation": result['explanation']}
+                self.voice_list.append(sentence_voice)
+            except Exception as e:
+                print("!! Text that caused error: {0}!!\n".format(result['sentence']))
+                print(e)
 
         return self.voice_list
 
@@ -79,7 +90,12 @@ class Voice_Spo:
 
 if __name__ == "__main__":
     sentence = "Jack attended the program"
+    """
+    text = "She is eating chocolate cake."
+    spo = SPO(text)
+    s = spo.execute()
+    print(s[0]['triplets'][0]['Subject'])
+    """
     voice_obj = Voice_Spo(sentence)
-    #s = sim_obj.detect_similes()
     s1=voice_obj.execute()
     print(s1)
