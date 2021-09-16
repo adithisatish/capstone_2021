@@ -31,23 +31,25 @@ class Voice_Spo:
             return [self.text]
 
     def voiceSpoDetection(self, processed_text):
+        print("processed text: ")
+        print(processed_text)
         spo = SPO(processed_text)
         s = spo.execute()
         #print(s[0]['triplets'][0]['Subject'])
         svo = s[0]['triplets'][0]
         text = s[0]['sentence']
         subject = svo['Subject']
-        print('subject index: ')
+        #print('subject index: ')
         sub_index = text.index(subject)
-        print(sub_index)
+        #print(sub_index)
 
         objectClause = svo['Object Clauses']
         obj = ''
         for i in objectClause:
             obj = obj + i
-        print('object index: ')
+        #print('object index: ')
         obj_index = text.index(obj)
-        print(obj_index)
+        #print(obj_index)
 
         voice = ""
         if sub_index < obj_index:
@@ -57,7 +59,7 @@ class Voice_Spo:
             voice = "Passive"
             explanation = 'The object "*** {0} ***" appears before the subject "*** {1} ***"'.format(objectClause[0], subject)
         
-        return {'sentence': sentence, 'voice': voice, 'explanation': explanation}
+        return {'sentence': processed_text, 'voice': voice, 'explanation': explanation}
     
     def detect_voice(self):
         processed_text_list = self.preprocess_para()
@@ -65,9 +67,10 @@ class Voice_Spo:
         if self.paragraph == 1:
             for i in processed_text_list:
                 try:
-                    #print(i)
+                    print(i)
                     result = self.voiceSpoDetection(i)
-                    sentence_voice = {"sentence": result['sentence'], "voice": result['voice'], "explanation": result['explanation']}
+                    print(result)
+                    sentence_voice = {"sentence": i, "voice": result['voice'], "explanation": result['explanation']}
                     self.voice_list.append(sentence_voice)
                     #print(self.voice_list)
                 except Exception as e:
@@ -89,13 +92,13 @@ class Voice_Spo:
         return self.detect_voice()
 
 if __name__ == "__main__":
-    sentence = "Jack attended the program"
+    sentence = "Jack attended the program. He was excited."
     """
     text = "She is eating chocolate cake."
     spo = SPO(text)
     s = spo.execute()
     print(s[0]['triplets'][0]['Subject'])
     """
-    voice_obj = Voice_Spo(sentence)
+    voice_obj = Voice_Spo(sentence, 1)
     s1=voice_obj.execute()
     print(s1)

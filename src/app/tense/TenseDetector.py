@@ -73,8 +73,9 @@ class Tenses:
     
     def tenseDetection(self, processed_text):
         tense = ""
-        print()
-        # print(sentence)
+        explanation = ""
+        sentence = processed_text
+        print(sentence)
         text = word_tokenize(sentence)
         tagged = pos_tag(text)
         #print(tagged)
@@ -90,75 +91,104 @@ class Tenses:
                 #past
                 if(re.search("was|were", verbs[i][0]) and verbs[i+1][1] == 'VBG'):
                     tense = "Past Continuous"
+                    explanation = "The verb ***{0}*** is in the form of a gerund/present participle and appears after 'was/were'.\nRule for Past Continuous: was/were + verb + ing".format(verbs[i+1][1])
                     break
                 elif(re.search("had", verbs[i][0]) and re.search("been", verbs[i+1][0]) and verbs[i+2][1] == 'VBG'):
                     tense = "Past Perfect Continuous"
+                    explanation = "The verb ***{0}*** is in the form of a gerund/present participle and appears after 'had been'".format(verbs[i+2][1])
                     break
                 elif(re.search("had", verbs[i][0]) and verbs[i+1][1] == 'VBN'):
                     tense = "Past Perfect"
+                    explanation = "The verb ***{0}*** is in the form of a past participle and appears after 'had'".format(verbs[i+1][1])
                     break
                 elif(verbs[i][1] == 'VBD'):
                     tense = "Past Simple"
+                    explanation = "The verb ***{0}*** is in the past tense form".format(verbs[i][1])
                     break
 
                 #present
                 elif(re.search("is|am|are", verbs[i][0]) and verbs[i+1][1] == 'VBG'):
                     tense = "Present Continuous"
+                    explanation = "The verb ***{0}*** is in the form of a gerund/present participle and appears after 'is/am/are'".format(verbs[i+1][1])
                     break
                 elif(re.search("has|have", verbs[i][0]) and re.search("been", verbs[i+1][0]) and verbs[i+2][1] == 'VBG'):
                     tense = "Present Perfect Continuous"
+                    explanation = "The verb ***{0}*** is in the form of a gerund/present participle and appears after 'has/have been'".format(verbs[i+2][1])
                     break
                 elif(re.search("has|have", verbs[i][0]) and verbs[i+1][1] == 'VBN'):
                     tense = "Present Perfect"
+                    explanation = "The verb ***{0}*** is in the form of a past participle and appears after 'has/have'".format(verbs[i+1][1])
                     break
                 elif(verbs[i][1] in ['VBP', 'VBZ']):
                     tense = "Present Simple"
+                    explanation = "The verb ***{0}*** is in the present tense form".format(verbs[i][1])
                     break
                 elif(verbs[i][1] == 'VBG'):
                     tense = "Present Continuous"
+                    explanation = "The verb ***{0}*** is in the form of a gerund/present participle".format(verbs[i][1])
                     break
 
                 #future
                 elif(verbs[i][1] == 'MD'):
                     if(re.search("be", verbs[i + 1][0]) and verbs[i+2][1] == 'VBG'):
                         tense = "Future Continuous"
+                        explanation = "The verb ***{0}*** is in the form of a gerund/present participle and appears after 'be'".format(verbs[i+2][1])
                         break
                     elif(re.search("has|have", verbs[i+1][0]) and re.search("been", verbs[i+2][0]) and verbs[i+3][1] == 'VBG'):
                         tense = "Future Perfect Continuous"
+                        explanation = "The verb ***{0}*** is in the form of a gerund/present participle taking and appears after 'has/have been'".format(verbs[i+3][1])
                         break
                     elif(re.search("have", verbs[i + 1][0]) and verbs[i+2][1] == 'VBN'):
                         tense = "Future Perfect"
+                        explanation = "The verb ***{0}*** is in the form of a past participle and appears after 'have'".format(verbs[i+1][1])
                         break
                     else:
                         tense = "Future Simple"
+                        explanation = "The verb ***{0}*** is in the future tense form".format(verbs[i][1])
                         break
             else:
                 if(verbs[i][1] == 'VBD'):
                     tense = "Past Simple"
+                    explanation = "The verb ***{0}*** is in the past tense form".format(verbs[i][1])
                     break
                 elif(verbs[i][1] in ['VBP', 'VBZ']):
                     tense = "Present Simple"
+                    explanation = "The verb ***{0}*** is in the present tense form".format(verbs[i][1])
                     break
                 elif(verbs[i][1] == 'VBG'):
                     tense = "Present Continuous"
+                    explanation = "The verb ***{0}*** is in the gerund/present participle form".format(verbs[i][1])
                     break
                 elif(verbs[i][1] == 'MD'):
                     tense = "Future Simple"
+                    explanation = "The verb ***{0}*** is a modal - could/ will".format(verbs[i][1])
                     break
-        return tense
+        #print(tense)
+        #print(explanation)
+        return {'sentence': sentence, 'tense': tense, 'explanation': explanation}
 
     def detect_tense(self):
         processed_text_list = self.preprocess_para()
         #print(processed_text_list)
         if self.paragraph == 1:
             for i in processed_text_list:
-                #print(i)
-                sentence_tense = {"sentence": i, "tense": self.tenseDetection(i)}
-                self.tense_list.append(sentence_tense)
-                #print(self.tense_list)
+                try:
+                    #print(i)
+                    result = self.tenseDetection(i)
+                    sentence_tense = {"sentence": result['sentence'], "tense": result['tense'], "explanation": result['explanation']}
+                    #print(sentence_tense)
+                    self.tense_list.append(sentence_tense)
+                    #print(self.tense_list)
+                except Exception as e:
+                    print("!! Text that caused error: {0}!!\n".format(i))
+                    print(e)
         else:
-            sentence_tense = {"sentence":self.text, "tense": self.tenseDetection(processed_text_list[0])}
-            self.tense_list.append(sentence_tense)
+            try: 
+                sentence_tense = {"sentence": result['sentence'], "tense": result['tense'], "explanation": result['explanation']}
+                self.tense_list.append(sentence_tense)
+            except Exception as e:
+                    print("!! Text that caused error: {0}!!\n".format(i))
+                    print(e)
 
         return self.tense_list
 
