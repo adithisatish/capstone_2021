@@ -4,7 +4,11 @@ from nltk.corpus import stopwords
 import re
 import pandas as pd 
 import numpy as np 
-from SPODetector import SPO
+import sys
+
+sys.path.append("..")
+
+from spo.SPODetector import SPO
 
 class Voice_Spo:
     def __init__(self, text, paragraph = 0): 
