@@ -8,7 +8,7 @@ import sys
 
 sys.path.append("..")
 
-from spo.SPODetector import SPO
+from app.spo.SPODetector import SPO
 
 class Voice_Spo:
     def __init__(self, text, paragraph = 0): 
@@ -59,30 +59,30 @@ class Voice_Spo:
         if sub_index < obj_index:
             voice = "Active"
             explanation = 'The Subject "*** {0} ***" appears before the object "*** {1} ***"'.format(subject, objectClause[0])
-        if obj_index < sub_index:
+        else:
             voice = "Passive"
             explanation = 'The object "*** {0} ***" appears before the subject "*** {1} ***"'.format(objectClause[0], subject)
         
         return {'sentence': processed_text, 'voice': voice, 'explanation': explanation}
     
     def detect_voice(self):
-        processed_text_list = self.preprocess_para()
-        print(processed_text_list)
+        # processed_text_list = self.preprocess_para()
+        # print(processed_text_list)
         if self.paragraph == 1:
-            for i in processed_text_list:
-                try:
+            for i in self.text:
+                # try:
                     print(i)
                     result = self.voiceSpoDetection(i)
                     print(result)
                     sentence_voice = {"sentence": i, "voice": result['voice'], "explanation": result['explanation']}
                     self.voice_list.append(sentence_voice)
                     #print(self.voice_list)
-                except Exception as e:
-                    print("!! Text that caused error: {0}!!\n".format(i))
-                    print(e)
+                # except Exception as e:
+                #     print("!! Text that caused error: {0}!!\n".format(i))
+                #     print(e)
         else:
             try: 
-                result = self.voiceSpoDetection(processed_text_list[0])
+                result = self.voiceSpoDetection(self.text[0])
                 sentence_voice = {"sentence": result['sentence'], "voice": result['voice'], "explanation": result['explanation']}
                 self.voice_list.append(sentence_voice)
             except Exception as e:
@@ -96,7 +96,7 @@ class Voice_Spo:
         return self.detect_voice()
 
 if __name__ == "__main__":
-    sentence = "Jack attended the program. He was excited."
+    sentence = "I study at PES University."
     """
     text = "She is eating chocolate cake."
     spo = SPO(text)

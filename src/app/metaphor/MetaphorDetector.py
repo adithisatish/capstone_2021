@@ -1,5 +1,9 @@
 from nltk import text
-from noun_metaphors import NounMetaphor
+import sys 
+
+if __name__ == "deconstructor":
+    sys.path.append("..")
+    from app.metaphor.noun_metaphors import NounMetaphor
 
 class Metaphor:
     
@@ -43,6 +47,8 @@ class Metaphor:
 
 
 if __name__ == "__main__":
+    from noun_metaphors import NounMetaphor
+    
     texts = ["My eyes are an ocean of blue",\
             "Today is a prison and I am the inmate.",\
             "I am a prisoner","You are a dog!",\

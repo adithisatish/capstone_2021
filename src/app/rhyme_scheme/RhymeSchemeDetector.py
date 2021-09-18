@@ -8,7 +8,7 @@ from nltk.tokenize import word_tokenize
 import pronouncing
 
 
-class Rhyme_detection:
+class RhymeScheme:
     
     def __init__(self,text,paragraph):
         self.text=text
@@ -160,6 +160,6 @@ if __name__ == "__main__":
          "And Spring herself, when she woke at dawn","Would scarcely know that we were gone."]
     
     
-    rd_obj = Rhyme_detection(text,1)
+    rd_obj = RhymeScheme(text,1)
     rd=rd_obj.execute() 
    

@@ -13,6 +13,7 @@ def preprocess(comp, text):
     if comp != "Rhyme Scheme":
         sentences = text.split(".")
         # print(sentences)
+        # What is the delimiter??
     else:
         sentences = []
     if len(sentences[-1]) == 0:

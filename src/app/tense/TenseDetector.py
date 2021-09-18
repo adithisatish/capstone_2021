@@ -168,10 +168,10 @@ class Tenses:
         return {'sentence': sentence, 'tense': tense, 'explanation': explanation}
 
     def detect_tense(self):
-        processed_text_list = self.preprocess_para()
+        # processed_text_list = self.preprocess_para()
         #print(processed_text_list)
         if self.paragraph == 1:
-            for i in processed_text_list:
+            for i in self.text:
                 try:
                     #print(i)
                     result = self.tenseDetection(i)
@@ -184,10 +184,11 @@ class Tenses:
                     print(e)
         else:
             try: 
+                result = self.tenseDetection(self.text)
                 sentence_tense = {"sentence": result['sentence'], "tense": result['tense'], "explanation": result['explanation']}
                 self.tense_list.append(sentence_tense)
             except Exception as e:
-                    print("!! Text that caused error: {0}!!\n".format(i))
+                    print("!! Text that caused error: {0}!!\n".format(self.text))
                     print(e)
 
         return self.tense_list
