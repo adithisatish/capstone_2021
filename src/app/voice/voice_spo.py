@@ -6,9 +6,12 @@ import pandas as pd
 import numpy as np 
 import sys
 
+"""
 sys.path.append("..")
 
 from app.spo.SPODetector import SPO
+"""
+from SPODetector import SPO
 
 class Voice_Spo:
     def __init__(self, text, paragraph = 0): 
@@ -70,16 +73,16 @@ class Voice_Spo:
         # print(processed_text_list)
         if self.paragraph == 1:
             for i in self.text:
-                # try:
+                try:
                     print(i)
                     result = self.voiceSpoDetection(i)
                     print(result)
                     sentence_voice = {"sentence": i, "voice": result['voice'], "explanation": result['explanation']}
                     self.voice_list.append(sentence_voice)
                     #print(self.voice_list)
-                # except Exception as e:
-                #     print("!! Text that caused error: {0}!!\n".format(i))
-                #     print(e)
+                except Exception as e:
+                    print("!! Text that caused error: {0}!!\n".format(i))
+                    print(e)
         else:
             try: 
                 result = self.voiceSpoDetection(self.text[0])
@@ -96,7 +99,7 @@ class Voice_Spo:
         return self.detect_voice()
 
 if __name__ == "__main__":
-    sentence = "I study at PES University."
+    sentence = ["She is eating chocolate cake"]
     """
     text = "She is eating chocolate cake."
     spo = SPO(text)

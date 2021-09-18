@@ -11,7 +11,6 @@ Present:
         VBZ verb, 3rd person sing. present takes
 Future: 
         MD modal could, will
-
 NN noun, singular 'desk'
 NNS noun plural 'desks'
 """
@@ -33,7 +32,6 @@ Future:
     Future continuous: Shall/will + be + verb + ing
     Future Perfect: Shall/will + have + past partciple
     Future Perfect Continuous: Shall/will + have + been + verb + ing
-
 Verb Forms:
 First Form: Verb
 Second Form: Past 
@@ -91,77 +89,77 @@ class Tenses:
                 #past
                 if(re.search("was|were", verbs[i][0]) and verbs[i+1][1] == 'VBG'):
                     tense = "Past Continuous"
-                    explanation = "The verb ***{0}*** is in the form of a gerund/present participle and appears after 'was/were'.\nRule for Past Continuous: was/were + verb + ing".format(verbs[i+1][1])
+                    explanation = "The verb ***{0}*** is in the form of a gerund/present participle and appears after 'was/were'.\nRule for Past Continuous: was/were + verb + ing".format(verbs[i+1][0])
                     break
                 elif(re.search("had", verbs[i][0]) and re.search("been", verbs[i+1][0]) and verbs[i+2][1] == 'VBG'):
                     tense = "Past Perfect Continuous"
-                    explanation = "The verb ***{0}*** is in the form of a gerund/present participle and appears after 'had been'".format(verbs[i+2][1])
+                    explanation = "The verb ***{0}*** is in the form of a gerund/present participle and appears after 'had been'".format(verbs[i+2][0])
                     break
                 elif(re.search("had", verbs[i][0]) and verbs[i+1][1] == 'VBN'):
                     tense = "Past Perfect"
-                    explanation = "The verb ***{0}*** is in the form of a past participle and appears after 'had'".format(verbs[i+1][1])
+                    explanation = "The verb ***{0}*** is in the form of a past participle and appears after 'had'".format(verbs[i+1][0])
                     break
                 elif(verbs[i][1] == 'VBD'):
                     tense = "Past Simple"
-                    explanation = "The verb ***{0}*** is in the past tense form".format(verbs[i][1])
+                    explanation = "The verb ***{0}*** is in the past tense form".format(verbs[i][0])
                     break
 
                 #present
                 elif(re.search("is|am|are", verbs[i][0]) and verbs[i+1][1] == 'VBG'):
                     tense = "Present Continuous"
-                    explanation = "The verb ***{0}*** is in the form of a gerund/present participle and appears after 'is/am/are'".format(verbs[i+1][1])
+                    explanation = "The verb ***{0}*** is in the form of a gerund/present participle and appears after 'is/am/are'".format(verbs[i+1][0])
                     break
                 elif(re.search("has|have", verbs[i][0]) and re.search("been", verbs[i+1][0]) and verbs[i+2][1] == 'VBG'):
                     tense = "Present Perfect Continuous"
-                    explanation = "The verb ***{0}*** is in the form of a gerund/present participle and appears after 'has/have been'".format(verbs[i+2][1])
+                    explanation = "The verb ***{0}*** is in the form of a gerund/present participle and appears after 'has/have been'".format(verbs[i+2][0])
                     break
                 elif(re.search("has|have", verbs[i][0]) and verbs[i+1][1] == 'VBN'):
                     tense = "Present Perfect"
-                    explanation = "The verb ***{0}*** is in the form of a past participle and appears after 'has/have'".format(verbs[i+1][1])
+                    explanation = "The verb ***{0}*** is in the form of a past participle and appears after 'has/have'".format(verbs[i+1][0])
                     break
                 elif(verbs[i][1] in ['VBP', 'VBZ']):
                     tense = "Present Simple"
-                    explanation = "The verb ***{0}*** is in the present tense form".format(verbs[i][1])
+                    explanation = "The verb ***{0}*** is in the present tense form".format(verbs[i][0])
                     break
                 elif(verbs[i][1] == 'VBG'):
                     tense = "Present Continuous"
-                    explanation = "The verb ***{0}*** is in the form of a gerund/present participle".format(verbs[i][1])
+                    explanation = "The verb ***{0}*** is in the form of a gerund/present participle".format(verbs[i][0])
                     break
 
                 #future
                 elif(verbs[i][1] == 'MD'):
                     if(re.search("be", verbs[i + 1][0]) and verbs[i+2][1] == 'VBG'):
                         tense = "Future Continuous"
-                        explanation = "The verb ***{0}*** is in the form of a gerund/present participle and appears after 'be'".format(verbs[i+2][1])
+                        explanation = "The verb ***{0}*** is in the form of a gerund/present participle and appears after 'be'".format(verbs[i+2][0])
                         break
                     elif(re.search("has|have", verbs[i+1][0]) and re.search("been", verbs[i+2][0]) and verbs[i+3][1] == 'VBG'):
                         tense = "Future Perfect Continuous"
-                        explanation = "The verb ***{0}*** is in the form of a gerund/present participle taking and appears after 'has/have been'".format(verbs[i+3][1])
+                        explanation = "The verb ***{0}*** is in the form of a gerund/present participle taking and appears after 'has/have been'".format(verbs[i+3][0])
                         break
                     elif(re.search("have", verbs[i + 1][0]) and verbs[i+2][1] == 'VBN'):
                         tense = "Future Perfect"
-                        explanation = "The verb ***{0}*** is in the form of a past participle and appears after 'have'".format(verbs[i+1][1])
+                        explanation = "The verb ***{0}*** is in the form of a past participle and appears after 'have'".format(verbs[i+1][0])
                         break
                     else:
                         tense = "Future Simple"
-                        explanation = "The verb ***{0}*** is in the future tense form".format(verbs[i][1])
+                        explanation = "The verb ***{0}*** is in the future tense form".format(verbs[i][0])
                         break
             else:
                 if(verbs[i][1] == 'VBD'):
                     tense = "Past Simple"
-                    explanation = "The verb ***{0}*** is in the past tense form".format(verbs[i][1])
+                    explanation = "The verb ***{0}*** is in the past tense form".format(verbs[i][0])
                     break
                 elif(verbs[i][1] in ['VBP', 'VBZ']):
                     tense = "Present Simple"
-                    explanation = "The verb ***{0}*** is in the present tense form".format(verbs[i][1])
+                    explanation = "The verb ***{0}*** is in the present tense form".format(verbs[i][0])
                     break
                 elif(verbs[i][1] == 'VBG'):
                     tense = "Present Continuous"
-                    explanation = "The verb ***{0}*** is in the gerund/present participle form".format(verbs[i][1])
+                    explanation = "The verb ***{0}*** is in the gerund/present participle form".format(verbs[i][0])
                     break
                 elif(verbs[i][1] == 'MD'):
                     tense = "Future Simple"
-                    explanation = "The verb ***{0}*** is a modal - could/ will".format(verbs[i][1])
+                    explanation = "The verb ***{0}*** is a modal - could/ will".format(verbs[i][0])
                     break
         #print(tense)
         #print(explanation)
@@ -198,7 +196,7 @@ class Tenses:
         return self.detect_tense()
 
 if __name__ == "__main__":
-    sentence = "Jack attended the program. He was sad."
+    sentence = ['Jack attended the program','He was sad']
     ten_obj = Tenses(sentence, 1)
     #s = sim_obj.detect_similes()
     s1=ten_obj.execute()
