@@ -18,7 +18,7 @@ class Similes:
         self.similes=[dict() for number in range(len(text))]
         self.paragraph = paragraph
     
-    def detect_similes(self):
+    def detect_similes(self, text):
         index=0
         for list_index in range(len(text)):
             self.similes[index]['Sentence']=text[list_index]
@@ -79,11 +79,10 @@ class Similes:
             print("Sentence:", self.similes[i]['Sentence'])
             print("Similes:",self.similes[i]['Simile'])
             print("**************************")
-            
     
     def execute(self):
         # Driver function
-        return self.detect_similes()
+        return self.detect_similes(self.text)
 
 if __name__ == "__main__":
     text = ["Rob was never as honest as Emily.","He paints like a rainbow in the sky.", "She is as pretty as a flock of birds.","This path meanders like a stream.",

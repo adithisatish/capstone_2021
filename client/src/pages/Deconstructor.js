@@ -1,7 +1,7 @@
 import React from "react"
 import { Dialog, DialogContent, Button, DialogTitle, DialogActions } from "@material-ui/core"
 import Layout from "../components/layout/Layout"
-import { levels, metaphors, metaphorLevel } from "../data"
+import { levels } from "../data"
 import { showAlert } from '../utils/alert'
 import { decServer } from "../utils/axios"
 import OutputSelector from "../utils/display_results"
@@ -14,30 +14,26 @@ const Deconstructor = () => {
     const [isAggregateOpen, setAggregateOpen] = React.useState(false)
     const [isIndividualOpen, setIndividualOpen] = React.useState(false)
     const [curAttrExplanation, setCurAttrExplanation] = React.useState(0)
-    const [isMetaphorOpen, setMetaphorOpen] = React.useState(false)
-    const [currentMetaphor, setCurrentMetaphor] = React.useState(metaphors[0].type)
-    const [isMetaphorDropdownOpen, setMetaphorDropdown] = React.useState(false)
     const [isLevelDropdownOpen, setLevelDropdown] = React.useState(false)
     const [inputText, setInputText] = React.useState('')
-    const [outputJSX, setOutputJSX] = React.useState(null)
+    const [outputJSXMap, setOutputJSXMap] = React.useState({})
     const [isLoading, setIsLoading] = React.useState(false)
    
     const handleAnalysis = () => {
-        if(isMetaphorDropdownOpen) setMetaphorDropdown(false);
-        if(isMetaphorOpen) setMetaphorOpen(false);        
-        
         const component = levels[currentLevel].attributes[currentAttribute].name
         const body = {
             component,
             text: inputText
         }
-        setOutputJSX(null)
+        
         setIsLoading(true)
         decServer.post("http://127.0.0.1:5000/deconstructor",body)
         .then(res => {
             setIsLoading(false)
-            setOutputJSX(OutputSelector(res.data,component))
-            console.log(res)
+            const newOutputJSXMap = {...outputJSXMap}
+            newOutputJSXMap[component] = OutputSelector(res.data,component)
+            setOutputJSXMap(newOutputJSXMap)
+            console.log(outputJSXMap)
         })
         .catch(err => {
             setIsLoading(false)
@@ -47,10 +43,10 @@ const Deconstructor = () => {
     }
     
     const handleSubmit = () => {
-        if (metaphorLevel[0] == currentLevel && metaphorLevel[1] === currentAttribute){
-            setMetaphorOpen(true)
-            return
-        }
+        // if (metaphorLevel[0] == currentLevel && metaphorLevel[1] === currentAttribute){
+        //     // setMetaphorOpen(true)
+        //     return
+        // }
         handleAnalysis()
     }
 
@@ -58,39 +54,6 @@ const Deconstructor = () => {
         setCurrentAttribute(0)
         setCurrentLevel(level)
     }
-
-    const metaphorDropdown = (
-        <div className="relative">
-            <button 
-                className="relative z-10 block p-2 bg-white rounded-md dark:bg-gray-800 focus:outline-none flex shadow-md w-32"
-                onClick={(e) => {e.stopPropagation(); setMetaphorDropdown(!isMetaphorDropdownOpen)}}
-            >
-                <p className='flex-grow text-left'>
-                    {currentMetaphor}
-                </p>
-                <svg class="-mr-1 ml-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
-                </svg>
-                
-            </button>   
-         
-            {isMetaphorDropdownOpen ? (<div class="absolute right-0 z-20 mt-2 overflow-hidden bg-white rounded-md shadow-md w-80 dark:bg-gray-800 z-5">
-                <div>
-                    {metaphors.map(metaphor => (
-                        <div                         
-                            className={`flex flex-col px-4 py-3 -mx-2 transition-colors duration-200 transform border-b cursor-pointer ${currentMetaphor === metaphor.type ? 'bg-green-600 text-white hover:bg-green-500': 'hover:bg-gray-100 '}`}
-                            onClick={() => setCurrentMetaphor(metaphor.type)}
-                        >                        
-                            <p className="mx-2 text-sm font-bold">
-                                {metaphor.type}       
-                            </p>
-                        </div>
-                    ))}
-                </div>
-            </div>): null}
-        </div>
-    )
-
 
     return (
         <Layout page="deconstructor">
@@ -197,7 +160,7 @@ const Deconstructor = () => {
                             </textarea>
                         </div>
                         <div className="w-1/2 h-96 border-l border-green-800 rounded-br-xl bg-green-100 p-4 overflow-y-auto">
-                            {isLoading?<EllipsisLoader/>:outputJSX}
+                            {isLoading?<EllipsisLoader/>:outputJSXMap[levels[currentLevel].attributes[currentAttribute].name]}
                         </div>                
                     </div>
                     {/* <div className="flex">
@@ -267,56 +230,6 @@ const Deconstructor = () => {
                 </Button>
                 </DialogActions>
             </Dialog>
-                        
-            {isMetaphorOpen ? (
-                <div class="fixed z-10 inset-0 overflow-y-auto shadow-xl" aria-labelledby="modal-title" role="dialog" aria-modal="true">
-                    <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-                        <div 
-                            className="fixed inset-0 transition-opacity" aria-hidden="true"
-                            style={{backgroundColor: 'rgba(0, 0, 0, 0.5)'}}
-                            onClick={() => setMetaphorDropdown(false)}
-                        ></div>
-                        <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-                        <div 
-                            class="inline-block align-bottom bg-white rounded-lg text-left shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full"
-                            onClick={() => setMetaphorDropdown(false)}
-                        >
-                            <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4 rounded">
-                                <div class="sm:flex sm:items-start">                        
-                                    <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
-                                        <h3 class="text-lg leading-6 text-gray-900 mb-4" id="modal-title">
-                                            Choose Metaphor Type
-                                        </h3>
-                                        {metaphors.map(metaphor => (
-                                            <p className='text-base'><span className='font-bold'>{metaphor.type}</span>: {metaphor.description}</p>
-                                        ))}
-                                        <div class="mt-4">
-                                            {metaphorDropdown}
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse rounded">
-                                <button 
-                                    type="button" 
-                                    className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 text-base font-small text-blue-800 sm:ml-3 sm:w-auto sm:text-sm"
-                                    onClick={() => handleAnalysis()}
-                                >   
-                                    SUBMIT
-                                </button>
-                                <button 
-                                    type="button" 
-                                    class="mt-3 w-full inline-flex justify-center rounded-md px-4 py-2 text-base font-small text-blue-800 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
-                                    onClick={() => {setMetaphorOpen(false); setMetaphorDropdown(false)}}
-                                >
-                                    CANCEL
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            ): null}            
-
         </Layout>
     )
 }

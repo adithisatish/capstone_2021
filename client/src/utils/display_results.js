@@ -42,6 +42,7 @@ const Alliteration = ({obj}) => {
 
     return <p className="font-bold text-lg">No Alliterations Found!</p>
 }
+
 const SPO = ({obj}) => {
     // for each sentence
     //     display sentence
@@ -145,8 +146,78 @@ const SPO = ({obj}) => {
         </div>
     )
 
-        return res
+    return res
 
+}
+
+const Tense = ({obj}) => {
+    
+    // for each sentence
+    //     display sentence 
+    //     for each alliteration 
+    //         display joined
+    //         display explanation
+
+    const res = obj.map((sentence, index) => {
+        return (
+            <div>
+                <p className="text-lg">{index+1}. {sentence.sentence}</p>
+                <div className="ml-6">
+                    <p className="font-bold">Tense: {sentence.tense}</p>
+                    <p className="italic">{getMarkdown(sentence.explanation)}</p>
+                    <br></br>
+                </div>
+            </div>
+        )
+    })
+    
+    if(res.length){
+        return <React.Fragment>{res}</React.Fragment>
+    }
+
+    return <p className="font-bold text-lg">No Tense Found!</p>
+}
+
+const Simile = ({obj}) => {
+    
+    // for each sentence
+    //     display sentence 
+    //     for each alliteration 
+    //         display joined
+    //         display explanation
+    console.log(obj)
+    const res = obj.map((sentence, index) => {
+        return (
+            <div>
+                <p className="text-lg">{index+1}. {sentence.Sentence}</p>
+                <div className="ml-6">
+                {
+                    sentence.Simile.length?
+                    <React.Fragment>
+                        <p className="text-green-800 text-lg">Similes: </p>
+                        {
+                            sentence.Simile.map((simile, index) => {
+                                return (
+                                        <React.Fragment>
+                                            <p className="font-bold">{index+1}. {simile}</p>
+                                            {/* <p>{getMarkdown(allit.explanation)}</p> */}
+                                            <br></br>
+                                        </React.Fragment>
+                                )
+                            })}
+                    </React.Fragment>:
+                    <p className="font-bold text-lg">No Similes Found!</p>
+                }
+                </div>
+            </div>
+        )
+    })
+    
+    if(res.length){
+        return <React.Fragment>{res}</React.Fragment>
+    }
+
+    return <p className="font-bold text-lg">No Similes Found!</p>
 }
 
 const OutputSelector = (obj, type) => {
@@ -156,6 +227,10 @@ const OutputSelector = (obj, type) => {
             return <SPO obj={obj}></SPO>
         case "Alliteration":
             return <Alliteration obj = {obj}></Alliteration>
+        case "Tense":
+            return <Tense obj = {obj}></Tense>
+        case "Similes":
+            return <Simile obj = {obj}></Simile>
         default:
             return null
     }
