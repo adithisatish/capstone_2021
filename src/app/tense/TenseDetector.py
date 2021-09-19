@@ -76,9 +76,11 @@ class Tenses:
             if(i.dep_ == 'ROOT'):
                 mainClause['verb'] = i
                 mainClause['aux'] = []
+                mainClause['sub'] = ''
                 for j in i.children:
                     #print(j, j.dep_, j.tag_)
                     if(j.dep_ == 'aux'):
+                        #print(j.text, j.tag_)
                         mainClause['aux'].append(j.text)
                     elif(j.dep_ == 'nsubj'):
                         mainClause['sub'] = j.text
@@ -91,18 +93,20 @@ class Tenses:
         #print(mainClause)
         mainVerb = [mainClause['verb'].text, mainClause['verb'].tag_] # [verb, postag]
         #print(mainVerb)
+        auxVerb = []
         auxVerb = mainClause['aux'] #list
         subject = mainClause['sub'] #word
         modals = ['can', 'could', 'may', 'might', 'will', 'would', 'shall', 'should', 'must', 'ought']
 
         tense = ""
+        explanation = ""
 
         if auxVerb == []: #no auxilary verb sentences: she went/ she came/ she cried etc
             #print("no aux")
             if(mainVerb[1] == 'VBD'):
                 tense = "Past Simple"
                 explanation = "The verb ***{0}*** that describes the action of the subject ***{1}*** is in the past tense form. The verb and the subject comprise the main clause - a group of words made up of a subject and a predicate that together express a complete concept".format(mainVerb[0], subject)
-            elif(mainVerb[1] in ['VBP', 'VBZ']):
+            elif(mainVerb[1] in ['VBP', 'VBZ', 'VB']):
                 tense = "Present Simple"
                 explanation = "The verb ***{0}*** that describes the action of the subject ***{1}*** is in the present tense form. The verb and the subject comprise the main clause - a group of words made up of a subject and a predicate that together express a complete concept".format(mainVerb[0], subject)
             elif(mainVerb[1] == 'VBG'):
@@ -115,6 +119,7 @@ class Tenses:
         else:
             #future
             for i in modals:
+                #print(i)
                 if i in auxVerb:
                     if('be' in auxVerb and mainVerb[1] == 'VBG'):
                         tense = "Future Continuous"
@@ -122,13 +127,13 @@ class Tenses:
                     elif(('has' in auxVerb or 'have' in auxVerb) and 'been' in auxVerb and mainVerb[1] == 'VBG'):
                         tense = "Future Perfect Continuous"
                         explanation = "The verb ***{0}*** that describes the action of the subject ***{1}*** is in the form of a gerund/present participle taking and appears after 'has/have been'. The verb and the subject comprise the main clause - a group of words made up of a subject and a predicate that together express a complete concept".format(mainVerb[0], subject)
-                    elif(('have' in auxVerb) and 'been' in auxVerb and mainVerb[1] == 'VBN'):
+                    elif(('have' in auxVerb) and mainVerb[1] == 'VBN'):
                         tense = "Future Perfect"
                         explanation = "The verb ***{0}*** that describes the action of the subject ***{1}*** is in the form of a past participle and appears after 'have'. The verb and the subject comprise the main clause - a group of words made up of a subject and a predicate that together express a complete concept".format(mainVerb[0], subject)
                     else:
                         tense = "Future Simple"
                         explanation = "The verb ***{0}*** that describes the action of the subject ***{1}*** is in the future tense form. The verb and the subject comprise the main clause - a group of words made up of a subject and a predicate that together express a complete concept".format(mainVerb[0], subject)
-                    return tense
+                    return {'sentence': text, 'tense': tense, 'explanation': explanation}
 
             #past
             if(('was' in auxVerb or 'were' in auxVerb) and mainVerb[1] == 'VBG'):
@@ -151,10 +156,10 @@ class Tenses:
             elif(('has' in auxVerb or 'have' in auxVerb) and 'been' in auxVerb and mainVerb[1] == 'VBG'):
                 tense = "Present Perfect Continuous"
                 explanation = "The verb ***{0}*** that describes the action of the subject ***{1}*** is in the form of a gerund/present participle and appears after 'has/have been'. The verb and the subject comprise the main clause - a group of words made up of a subject and a predicate that together express a complete concept".format(mainVerb[0], subject)
-            elif(('has' in auxVerb or 'have' in auxVerb) and 'been' in auxVerb and mainVerb[1] == 'VBN'):
+            elif(('has' in auxVerb or 'have' in auxVerb) and mainVerb[1] == 'VBN'):
                 tense = "Present Perfect"
                 explanation = "The verb ***{0}*** that describes the action of the subject ***{1}*** is in the form of a past participle and appears after 'has/have'. The verb and the subject comprise the main clause - a group of words made up of a subject and a predicate that together express a complete concept".format(mainVerb[0], subject)
-            elif(mainVerb[1] in ['VBP', 'VBZ']):
+            elif(mainVerb[1] in ['VBP', 'VBZ', 'VB']):
                 tense = "Present Simple"
                 explanation = "The verb ***{0}*** that describes the action of the subject ***{1}*** is in the present tense form. The verb and the subject comprise the main clause - a group of words made up of a subject and a predicate that together express a complete concept".format(mainVerb[0], subject)
             elif(mainVerb[1] == 'VBG'):
@@ -171,6 +176,7 @@ class Tenses:
                 try:
                     #print(i)
                     result = self.tenseDetector(i)
+                    #print(result)
                     sentence_tense = {"sentence": result['sentence'], "tense": result['tense'], "explanation": result['explanation']}
                     #print(sentence_tense)
                     self.tense_list.append(sentence_tense)
@@ -194,7 +200,7 @@ class Tenses:
         return self.detect_tense()
 
 if __name__ == "__main__":
-    sentence = ['The crying child, with tears flowing like streams down both cheeks, managed to settle down only upon getting a chocolate.']
+    sentence = ["I am sure Helen will get a first class"]
     ten_obj = Tenses(sentence, 1)
     #s = sim_obj.detect_similes()
     s1=ten_obj.execute()
