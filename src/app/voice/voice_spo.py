@@ -6,12 +6,11 @@ import pandas as pd
 import numpy as np 
 import sys
 
-"""
 sys.path.append("..")
 
 from app.spo.SPODetector import SPO
-"""
-from SPODetector import SPO
+
+# from SPODetector import SPO
 
 class Voice_Spo:
     def __init__(self, text, paragraph = 0): 
