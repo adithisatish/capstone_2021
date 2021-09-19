@@ -1,5 +1,3 @@
-#Are you coming to school? - Are is recognised as proper Noun
-
 """
 TOKENS:
 Past:   
@@ -37,7 +35,8 @@ First Form: Verb
 Second Form: Past 
 Third Form: Past Participle
 """
-
+import spacy
+nlp = spacy.load("en_core_web_sm")
 from nltk import word_tokenize, pos_tag
 import nltk
 from nltk.corpus import stopwords
@@ -68,102 +67,101 @@ class Tenses:
             return preprocessed_para
         else:
             return [self.text]
+
+    def findVerbs(self, text): #takes input as single sentence, does not split at conjunction
+        text_doc = nlp(text)
+        #print(text_doc)
+        mainClause = {} #{verb, aux, sub}
+        for i in text_doc:
+            if(i.dep_ == 'ROOT'):
+                mainClause['verb'] = i
+                mainClause['aux'] = []
+                for j in i.children:
+                    #print(j, j.dep_, j.tag_)
+                    if(j.dep_ == 'aux'):
+                        mainClause['aux'].append(j.text)
+                    elif(j.dep_ == 'nsubj'):
+                        mainClause['sub'] = j.text
+        return mainClause
     
-    def tenseDetection(self, processed_text):
+    def tenseDetector(self, text):
+        #print(text)
+        #mainclause
+        mainClause = self.findVerbs(text)
+        #print(mainClause)
+        mainVerb = [mainClause['verb'].text, mainClause['verb'].tag_] # [verb, postag]
+        #print(mainVerb)
+        auxVerb = mainClause['aux'] #list
+        subject = mainClause['sub'] #word
+        modals = ['can', 'could', 'may', 'might', 'will', 'would', 'shall', 'should', 'must', 'ought']
+
         tense = ""
-        explanation = ""
-        sentence = processed_text
-        print(sentence)
-        text = word_tokenize(sentence)
-        tagged = pos_tag(text)
-        #print(tagged)
 
-        verbs = []
-        for i in tagged:
-            if(i[1] in ['VBN', 'VBD', 'VBP', 'VBG', 'VBZ', 'MD', 'VB']):
-                verbs.append(i)
-        #print(verbs)
-
-        for i in range(len(verbs)):
-            if(len(verbs) >= 2):
-                #past
-                if(re.search("was|were", verbs[i][0]) and verbs[i+1][1] == 'VBG'):
-                    tense = "Past Continuous"
-                    explanation = "The verb ***{0}*** is in the form of a gerund/present participle and appears after 'was/were'.\nRule for Past Continuous: was/were + verb + ing".format(verbs[i+1][0])
-                    break
-                elif(re.search("had", verbs[i][0]) and re.search("been", verbs[i+1][0]) and verbs[i+2][1] == 'VBG'):
-                    tense = "Past Perfect Continuous"
-                    explanation = "The verb ***{0}*** is in the form of a gerund/present participle and appears after 'had been'".format(verbs[i+2][0])
-                    break
-                elif(re.search("had", verbs[i][0]) and verbs[i+1][1] == 'VBN'):
-                    tense = "Past Perfect"
-                    explanation = "The verb ***{0}*** is in the form of a past participle and appears after 'had'".format(verbs[i+1][0])
-                    break
-                elif(verbs[i][1] == 'VBD'):
-                    tense = "Past Simple"
-                    explanation = "The verb ***{0}*** is in the past tense form".format(verbs[i][0])
-                    break
-
-                #present
-                elif(re.search("is|am|are", verbs[i][0]) and verbs[i+1][1] == 'VBG'):
-                    tense = "Present Continuous"
-                    explanation = "The verb ***{0}*** is in the form of a gerund/present participle and appears after 'is/am/are'".format(verbs[i+1][0])
-                    break
-                elif(re.search("has|have", verbs[i][0]) and re.search("been", verbs[i+1][0]) and verbs[i+2][1] == 'VBG'):
-                    tense = "Present Perfect Continuous"
-                    explanation = "The verb ***{0}*** is in the form of a gerund/present participle and appears after 'has/have been'".format(verbs[i+2][0])
-                    break
-                elif(re.search("has|have", verbs[i][0]) and verbs[i+1][1] == 'VBN'):
-                    tense = "Present Perfect"
-                    explanation = "The verb ***{0}*** is in the form of a past participle and appears after 'has/have'".format(verbs[i+1][0])
-                    break
-                elif(verbs[i][1] in ['VBP', 'VBZ']):
-                    tense = "Present Simple"
-                    explanation = "The verb ***{0}*** is in the present tense form".format(verbs[i][0])
-                    break
-                elif(verbs[i][1] == 'VBG'):
-                    tense = "Present Continuous"
-                    explanation = "The verb ***{0}*** is in the form of a gerund/present participle".format(verbs[i][0])
-                    break
-
-                #future
-                elif(verbs[i][1] == 'MD'):
-                    if(re.search("be", verbs[i + 1][0]) and verbs[i+2][1] == 'VBG'):
+        if auxVerb == []: #no auxilary verb sentences: she went/ she came/ she cried etc
+            #print("no aux")
+            if(mainVerb[1] == 'VBD'):
+                tense = "Past Simple"
+                explanation = "The verb ***{0}*** that describes the action of the subject ***{1}*** is in the past tense form. The verb and the subject comprise the main clause - a group of words made up of a subject and a predicate that together express a complete concept".format(mainVerb[0], subject)
+            elif(mainVerb[1] in ['VBP', 'VBZ']):
+                tense = "Present Simple"
+                explanation = "The verb ***{0}*** that describes the action of the subject ***{1}*** is in the present tense form. The verb and the subject comprise the main clause - a group of words made up of a subject and a predicate that together express a complete concept".format(mainVerb[0], subject)
+            elif(mainVerb[1] == 'VBG'):
+                tense = "Present Continuous"
+                explanation = "The verb ***{0}*** that describes the action of the subject ***{1}*** is in the gerund/present participle form. The verb and the subject comprise the main clause - a group of words made up of a subject and a predicate that together express a complete concept".format(mainVerb[0], subject)
+            elif(mainVerb[1] == 'MD'):
+                tense = "Future Simple"
+                explanation = "The verb ***{0}*** that describes the action of the subject ***{1}*** is a modal. The verb and the subject comprise the main clause - a group of words made up of a subject and a predicate that together express a complete concept".format(mainVerb[0], subject)
+        
+        else:
+            #future
+            for i in modals:
+                if i in auxVerb:
+                    if('be' in auxVerb and mainVerb[1] == 'VBG'):
                         tense = "Future Continuous"
-                        explanation = "The verb ***{0}*** is in the form of a gerund/present participle and appears after 'be'".format(verbs[i+2][0])
-                        break
-                    elif(re.search("has|have", verbs[i+1][0]) and re.search("been", verbs[i+2][0]) and verbs[i+3][1] == 'VBG'):
+                        explanation = "The verb ***{0}*** that describes the action of the subject ***{1}*** is in the form of a gerund/present participle and appears after 'be'. The verb and the subject comprise the main clause - a group of words made up of a subject and a predicate that together express a complete concept".format(mainVerb[0], subject)
+                    elif(('has' in auxVerb or 'have' in auxVerb) and 'been' in auxVerb and mainVerb[1] == 'VBG'):
                         tense = "Future Perfect Continuous"
-                        explanation = "The verb ***{0}*** is in the form of a gerund/present participle taking and appears after 'has/have been'".format(verbs[i+3][0])
-                        break
-                    elif(re.search("have", verbs[i + 1][0]) and verbs[i+2][1] == 'VBN'):
+                        explanation = "The verb ***{0}*** that describes the action of the subject ***{1}*** is in the form of a gerund/present participle taking and appears after 'has/have been'. The verb and the subject comprise the main clause - a group of words made up of a subject and a predicate that together express a complete concept".format(mainVerb[0], subject)
+                    elif(('have' in auxVerb) and 'been' in auxVerb and mainVerb[1] == 'VBN'):
                         tense = "Future Perfect"
-                        explanation = "The verb ***{0}*** is in the form of a past participle and appears after 'have'".format(verbs[i+1][0])
-                        break
+                        explanation = "The verb ***{0}*** that describes the action of the subject ***{1}*** is in the form of a past participle and appears after 'have'. The verb and the subject comprise the main clause - a group of words made up of a subject and a predicate that together express a complete concept".format(mainVerb[0], subject)
                     else:
                         tense = "Future Simple"
-                        explanation = "The verb ***{0}*** is in the future tense form".format(verbs[i][0])
-                        break
-            else:
-                if(verbs[i][1] == 'VBD'):
-                    tense = "Past Simple"
-                    explanation = "The verb ***{0}*** is in the past tense form".format(verbs[i][0])
-                    break
-                elif(verbs[i][1] in ['VBP', 'VBZ']):
-                    tense = "Present Simple"
-                    explanation = "The verb ***{0}*** is in the present tense form".format(verbs[i][0])
-                    break
-                elif(verbs[i][1] == 'VBG'):
-                    tense = "Present Continuous"
-                    explanation = "The verb ***{0}*** is in the gerund/present participle form".format(verbs[i][0])
-                    break
-                elif(verbs[i][1] == 'MD'):
-                    tense = "Future Simple"
-                    explanation = "The verb ***{0}*** is a modal - could/ will".format(verbs[i][0])
-                    break
-        #print(tense)
-        #print(explanation)
-        return {'sentence': sentence, 'tense': tense, 'explanation': explanation}
+                        explanation = "The verb ***{0}*** that describes the action of the subject ***{1}*** is in the future tense form. The verb and the subject comprise the main clause - a group of words made up of a subject and a predicate that together express a complete concept".format(mainVerb[0], subject)
+                    return tense
+
+            #past
+            if(('was' in auxVerb or 'were' in auxVerb) and mainVerb[1] == 'VBG'):
+                tense = "Past Continuous"
+                explanation = "The verb ***{0}*** that describes the action of the subject ***{1}*** is in the form of a gerund/present participle and appears after 'was/were'. The verb and the subject comprise the main clause - a group of words made up of a subject and a predicate that together express a complete concept".format(mainVerb[0], subject)
+            elif('had' in auxVerb and 'been' in auxVerb and mainVerb[1] == 'VBG'):
+                tense = "Past Perfect Continuous"
+                explanation = "The verb ***{0}*** that describes the action of the subject ***{1}*** describes the action of the subject ***{1}*** is in the form of a gerund/present participle and appears after 'had been'. The verb and the subject comprise the main clause - a group of words made up of a subject and a predicate that together express a complete concept".format(mainVerb[0], subject)
+            elif('had' in auxVerb and mainVerb[1] == 'VBN'):
+                tense = "Past Perfect"
+                explanation = "The verb ***{0}*** that describes the action of the subject ***{1}*** is in the form of a past participle and appears after 'had'. The verb and the subject comprise the main clause - a group of words made up of a subject and a predicate that together express a complete concept".format(mainVerb[0], subject)
+            elif(mainVerb[1] == 'VBD'):
+                tense = "Past Simple"
+                explanation = "The verb ***{0}*** that describes the action of the subject ***{1}*** is in the past tense form. The verb and the subject comprise the main clause - a group of words made up of a subject and a predicate that together express a complete concept".format(mainVerb[0], subject)
+            
+            #present
+            elif(('is' in auxVerb or 'am' in auxVerb or 'are' in auxVerb) and mainVerb[1] == 'VBG'):
+                tense = "Present Continuous"
+                explanation = "The verb ***{0}*** that describes the action of the subject ***{1}*** is in the form of a gerund/present participle and appears after 'is/am/are'. The verb and the subject comprise the main clause - a group of words made up of a subject and a predicate that together express a complete concept".format(mainVerb[0], subject)
+            elif(('has' in auxVerb or 'have' in auxVerb) and 'been' in auxVerb and mainVerb[1] == 'VBG'):
+                tense = "Present Perfect Continuous"
+                explanation = "The verb ***{0}*** that describes the action of the subject ***{1}*** is in the form of a gerund/present participle and appears after 'has/have been'. The verb and the subject comprise the main clause - a group of words made up of a subject and a predicate that together express a complete concept".format(mainVerb[0], subject)
+            elif(('has' in auxVerb or 'have' in auxVerb) and 'been' in auxVerb and mainVerb[1] == 'VBN'):
+                tense = "Present Perfect"
+                explanation = "The verb ***{0}*** that describes the action of the subject ***{1}*** is in the form of a past participle and appears after 'has/have'. The verb and the subject comprise the main clause - a group of words made up of a subject and a predicate that together express a complete concept".format(mainVerb[0], subject)
+            elif(mainVerb[1] in ['VBP', 'VBZ']):
+                tense = "Present Simple"
+                explanation = "The verb ***{0}*** that describes the action of the subject ***{1}*** is in the present tense form. The verb and the subject comprise the main clause - a group of words made up of a subject and a predicate that together express a complete concept".format(mainVerb[0], subject)
+            elif(mainVerb[1] == 'VBG'):
+                tense = "Present Continuous"
+                explanation = "The verb ***{0}*** that describes the action of the subject ***{1}*** is in the form of a gerund/present participle. The verb and the subject comprise the main clause - a group of words made up of a subject and a predicate that together express a complete concept".format(mainVerb[0], subject)
+            
+        return {'sentence': text, 'tense': tense, 'explanation': explanation}
 
     def detect_tense(self):
         # processed_text_list = self.preprocess_para()
@@ -172,7 +170,7 @@ class Tenses:
             for i in self.text:
                 try:
                     #print(i)
-                    result = self.tenseDetection(i)
+                    result = self.tenseDetector(i)
                     sentence_tense = {"sentence": result['sentence'], "tense": result['tense'], "explanation": result['explanation']}
                     #print(sentence_tense)
                     self.tense_list.append(sentence_tense)
@@ -182,7 +180,7 @@ class Tenses:
                     print(e)
         else:
             try: 
-                result = self.tenseDetection(self.text)
+                result = self.tenseDetector(self.text)
                 sentence_tense = {"sentence": result['sentence'], "tense": result['tense'], "explanation": result['explanation']}
                 self.tense_list.append(sentence_tense)
             except Exception as e:
@@ -196,7 +194,7 @@ class Tenses:
         return self.detect_tense()
 
 if __name__ == "__main__":
-    sentence = ['Jack attended the program','He was sad']
+    sentence = ['The crying child, with tears flowing like streams down both cheeks, managed to settle down only upon getting a chocolate.']
     ten_obj = Tenses(sentence, 1)
     #s = sim_obj.detect_similes()
     s1=ten_obj.execute()
