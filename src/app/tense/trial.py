@@ -10,7 +10,7 @@ a subject and a predicate that together express a complete concept.
 
 Predicate:
 the part of a sentence or clause containing a verb and stating something about the subject
-"""
+
 
 import spacy
 nlp = spacy.load("en_core_web_sm")
@@ -21,7 +21,7 @@ import re
 import pandas as pd 
 import numpy as np 
 
-"""
+
 piano_text = 'He will say that she is ill'
 piano_doc = nlp(piano_text)
 for token in piano_doc:
@@ -30,7 +30,7 @@ for token in piano_doc:
         print(token.text)
     elif(token.dep_ == 'aux'):
         print(token.text)
-"""
+
 
 def findVerbs(text): #takes input as single sentence, does not split at conjunction
     text_doc = nlp(text)
@@ -129,3 +129,9 @@ def tenseDetector(text):
         
 sentence = "The crying child, with tears flowing like streams down both cheeks, managed to settle down only upon getting a chocolate."
 print(tenseDetector(sentence))
+"""
+
+l = [0,1]
+length = len(l)
+for i in range(2):
+    print(i)

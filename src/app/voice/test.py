@@ -1,25 +1,24 @@
 import pandas as pd
-from TenseDetector import Tenses
+from voice_tense import Voice
 
-df = pd.read_csv('tense.csv')
+df = pd.read_csv('voice.csv')
 #print(df.to_string()) 
 sentences = df['sentence'].tolist()
-expected = df['tense'].tolist()
+expected = df['voice'].tolist()
 count = 0
-ten_obj = Tenses(sentences, 1)
-result_dict = ten_obj.execute()
-result_tense = []
+voice_obj = Voice(sentences, 1)
+result_dict = voice_obj.execute()
+result_voice = []
 for i in result_dict:
-    result_tense.append(i['tense'])
+    result_voice.append(i['voice'])
 
 count = 0
 total = 0
 for i in range(len(expected)):
-    print(i)
     total += 1
-    if(expected[i] != result_tense[i]):
-        #print(sentences[i])
-        #print("Expected: {0}, Observed: {1}".format(expected[i], result_tense[i]))
+    if(expected[i] != result_voice[i]):
+        print(sentences[i])
+        print("Expected: {0}, Observed: {1}".format(expected[i], result_voice[i]))
         count += 1
 
 print("Total = {0}".format(total))
