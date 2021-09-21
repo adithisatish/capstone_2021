@@ -1,10 +1,10 @@
-from nltk import text
+# from nltk import text
 import sys 
 
-if __name__ == "deconstructor":
+if __name__ != "__main__":
     sys.path.append("..")
     from app.metaphor.noun_metaphors import NounMetaphor
-
+    
 class Metaphor:
     
     def __init__(self, text, paragraph = 0) -> None:

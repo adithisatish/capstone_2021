@@ -3,12 +3,17 @@ Active: Circumstances will oblige me to go
 Passive: I shall be obliged to go
 
 """
-from TenseDetector import Tenses
+
 import nltk
 # nltk.download('averaged_perceptron_tagger')
 from nltk import word_tokenize, pos_tag
 import re
 from nltk.corpus import stopwords
+
+if __name__ != "__main__":
+    import sys
+    sys.path.append("..")
+    from app.tense.TenseDetector import Tenses
 
 class Voice:
     def __init__(self, text, paragraph = 0): 
@@ -37,7 +42,7 @@ class Voice:
     def voiceDetection(self, sentence):
         tense = Tenses(sentence)
         s = tense.execute()
-        print(s)
+        # print(s)
         tense = s[0]['tense']
         text = word_tokenize(sentence)
         tagged = pos_tag(text)
@@ -165,7 +170,7 @@ class Voice:
             except Exception as e:
                 print("!! Text that caused error: {0}!!\n".format(result['sentence']))
                 print(e)
-
+        # print(self.voice_list)
         return self.voice_list
 
     def execute(self):
@@ -173,6 +178,8 @@ class Voice:
         return self.detect_voice()
 
 if __name__ == "__main__":
+    from TenseDetector import Tenses
+
     sentence = ["I shall be obliged to go"]
     voice_obj = Voice(sentence, 1)
     s1=voice_obj.execute()

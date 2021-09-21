@@ -131,8 +131,12 @@ class NounMetaphor:
         # print(index_subj, index_obj)
 
         if index_obj == -1 or index_subj == -1:
-            print("Error: Synsets not found")
-            return (None, None)
+            if index_obj == -1:
+                synset_err = obj
+            else:
+                synset_err = subj
+            print("Error: Synsets not found for {0}".format(synset_err))
+            return ("The algorithm could not detect any metaphors in this sentence!", None)
         
         wup_result = self.wu_palmer_similarity(subj_syn, index_subj, attr_syn, index_obj)
 
@@ -143,7 +147,7 @@ class NounMetaphor:
         if wup_result[0] >= 0.3:
             message, metaphor = self.compare_categories(subj, obj, subj_syn, attr_syn)
         else:
-            message = "Metaphor due to low Wu-Palmer score"
+            message = "Metaphor due to low Wu-Palmer score of {0}".format(wup_result[0])
             metaphor = True
 
         return (message,metaphor)
@@ -166,6 +170,8 @@ class NounMetaphor:
                     dependency = "attr"
                 elif "acomp" in self.dependencies:
                     dependency = "acomp"
+                else:
+                    return("No noun metaphor found!", False)
                 for dep in self.dependencies[dependency]:
                     # print(dep, subj_syn, subj, dependency)
                     msg, is_metaphor = self.is_noun_metaphor(dep, subj_syn, subj)
