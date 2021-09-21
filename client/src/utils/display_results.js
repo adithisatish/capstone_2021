@@ -220,6 +220,34 @@ const Simile = ({obj}) => {
     return <p className="font-bold text-lg">No Similes Found!</p>
 }
 
+const Voice = ({obj}) => {
+    
+    // for each sentence
+    //     display sentence 
+    //     for each alliteration 
+    //         display joined
+    //         display explanation
+
+    const res = obj.map((sentence, index) => {
+        return (
+            <div>
+                <p className="text-lg">{index+1}. {sentence.sentence}</p>
+                <div className="ml-6">
+                    <p className="font-bold">Voice: {sentence.voice}</p>
+                    <p className="italic">{getMarkdown(sentence.explanation)}</p>
+                    <br></br>
+                </div>
+            </div>
+        )
+    })
+    
+    if(res.length){
+        return <React.Fragment>{res}</React.Fragment>
+    }
+
+    return <p className="font-bold text-lg">No Voice Found!</p>
+}
+
 const OutputSelector = (obj, type) => {
     // const display_result = {Alliteration, SPO}
     switch(type){
@@ -231,6 +259,8 @@ const OutputSelector = (obj, type) => {
             return <Tense obj = {obj}></Tense>
         case "Similes":
             return <Simile obj = {obj}></Simile>
+        case "Voice":
+            return <Voice obj = {obj}></Voice>
         default:
             return null
     }
