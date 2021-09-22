@@ -4,7 +4,8 @@ import sys
 if __name__ != "__main__":
     sys.path.append("..")
     from app.metaphor.noun_metaphors import NounMetaphor
-    
+    from app.metaphor.verb_metaphors import VerbMetaphor
+
 class Metaphor:
     
     def __init__(self, text, paragraph = 0) -> None:
@@ -48,6 +49,7 @@ class Metaphor:
 
 if __name__ == "__main__":
     from noun_metaphors import NounMetaphor
+    from verb_metaphors import VerbMetaphor
     
     texts = ["My eyes are an ocean of blue",\
             "Today is a prison and I am the inmate.",\

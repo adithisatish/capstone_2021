@@ -6,6 +6,8 @@ from nltk.util import pr
 import requests
 from nltk.corpus import stopwords
 import spacy
+import sys
+import os
 
 # Possible grey areas
 # 1. What to do when synsets can't be found?
@@ -114,8 +116,6 @@ class NounMetaphor:
                 message = "\nMain categories are different => {0} and {1} are METAPHORICAL".format(subj, obj)
                 metaphor = True
             else:
-                # What to do here??
-
                 message = "The algorithm cannot determine whether a metaphor exists in this sentence."
                 metaphor = False
         
@@ -181,6 +181,9 @@ class NounMetaphor:
 
         except Exception as e:
             print("Error:",e)
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
             return None
 
         # return self.metaphors
