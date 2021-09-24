@@ -143,6 +143,7 @@ class RhymeScheme:
             print("Letter:",rhymes[j]['Letter'])
             print("Word:",rhymes[j]['Word'])
             print("***************")
+        return rhymes
             
     def execute(self):
         # Driver function
@@ -150,7 +151,7 @@ class RhymeScheme:
         self.perfect_rhymes()
         self.eye_rhyme()
         self.identical_rhymes()
-        self.display()
+        return self.display()
         
 
 if __name__ == "__main__":
