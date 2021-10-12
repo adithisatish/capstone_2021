@@ -20,6 +20,7 @@ class MetaphorUtil:
 
     def return_synsets(self, word):
         # Function that returns wordnet synsets for a particular word
+        # print("Return Synsets")
         synsets = wn.synsets(word)
         return synsets
 

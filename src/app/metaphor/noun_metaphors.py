@@ -2,7 +2,11 @@ import spacy
 import sys
 import os
 
-from app.metaphor.MetaphorUtil import MetaphorUtil
+if __name__ != "__main__":
+    sys.path.append("..")
+    from app.metaphor.MetaphorUtil import MetaphorUtil
+else:
+    from MetaphorUtil import MetaphorUtil
 
 # Possible grey areas
 # 1. What to do when synsets can't be found?
@@ -17,9 +21,11 @@ class NounMetaphor(MetaphorUtil):
         self.text = text
         self.dependencies = {} # Overwritten for every sentence
         self.metaphors = [] # Overwritten for every sentence
+        self.wup_scores =[]
         # self.paragraph = paragraph
 
     def compare_categories(self, subj, obj, subj_syn, attr_syn):
+        # print("Compare Categories")
         # Extracts and compares the categories of the two noun 
         metaphor = False
 
@@ -47,6 +53,7 @@ class NounMetaphor(MetaphorUtil):
     
     def is_noun_metaphor(self, obj, subj_syn, subj):
         # Driver function to check if two nouns form a noun metaphor
+        # print("Is Noun Metaphor")
         attr_syn = self.return_synsets(obj)
         # print(attr_syn)
         index_subj = self.index_synset(subj_syn, subj)
@@ -68,7 +75,10 @@ class NounMetaphor(MetaphorUtil):
         # print(subj, ",", obj)
         # print("WU-Palmer Score:",wup_result)
 
-        if wup_result[0] >= 0.3:
+        self.wup_scores.append(wup_result[0])
+        # print("WUP",self.wup_scores)
+
+        if wup_result[0] >= 0.24:
             message, metaphor = self.compare_categories(subj, obj, subj_syn, attr_syn)
         else:
             message = "Metaphor due to low Wu-Palmer score of {0}".format(wup_result[0])
@@ -78,6 +88,7 @@ class NounMetaphor(MetaphorUtil):
 
     def noun_metaphor_util(self, doc):
         # Utility funtion that extracts pos dependencies for the sentence and extracts the 2 nouns
+        # print("Noun Metaphor Util")
         for token in doc:
             if token.dep_ in self.dependencies:
                 self.dependencies[token.dep_] += [token]
@@ -86,24 +97,32 @@ class NounMetaphor(MetaphorUtil):
 
         # print(self.dependencies)
         try:
-            for subject in self.dependencies['nsubj']:
-                subj = subject.text
-                subj_syn = self.return_synsets(subj)
-                # print(subj_syn)
-                for child in subject.children:
-                    if child.dep_ == "attr":
-                        dependency = "attr"
-                        dep = child.text
-                    elif child.dep_ == "acomp":
-                        dependency = "acomp"
-                        dep = child.text
-                    else:
-                        return("No noun metaphor found!", False)
-                
-                    msg, is_metaphor = self.is_noun_metaphor(dependency, subj_syn, subj)
-                    
-                    if is_metaphor == True:
-                        self.metaphors.append(("{0} and {1} are metaphorical".format(subj, dep),msg))
+            sentences = list(doc.sents)
+            aux_verb = sentences[0].root
+
+            for child in aux_verb.children:
+                if child.dep_ == "nsubj":
+                    subj = child.text
+                    subj_syn = self.return_synsets(subj)      
+
+            obj_flag = 0
+            for child in aux_verb.children:    
+                if child.dep_ == "attr":
+                    dependency = "attr"
+                    dep = child.text
+                    obj_flag = 1
+                elif child.dep_ == "acomp":
+                    dependency = "acomp"
+                    dep = child.text
+                    obj_flag = 1
+            
+            if obj_flag == 0:
+                return ("No noun metaphors found!",None)
+
+            msg, is_metaphor = self.is_noun_metaphor(dep, subj_syn, subj)
+            
+            if is_metaphor == True:
+                self.metaphors.append(("{0} and {1} are metaphorical".format(subj, dep),msg))
 
         except Exception as e:
             print("Error:",e)
@@ -148,6 +167,8 @@ if __name__ == "__main__":
         NM_Trial.text = text
         NM_Trial.detect_noun_metaphor()
         print(NM_Trial.metaphors)
+    
+    # print("WUP SCORE AVERAGE:", sum(NM_Trial.wup_scores)/len(NM_Trial.wup_scores)) = 0.2308
     # doc = nlp(texts[0])
 
     # for token in doc:

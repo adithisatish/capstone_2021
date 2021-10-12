@@ -2,7 +2,12 @@ import spacy
 import sys
 import os
 
-from app.metaphor.MetaphorUtil import MetaphorUtil
+if __name__ != "__main__":
+    sys.path.append("..")
+    from app.metaphor.MetaphorUtil import MetaphorUtil
+else:
+    from MetaphorUtil import MetaphorUtil
+
 nlp = spacy.load("en_core_web_sm")
 
 class VerbMetaphor(MetaphorUtil):
@@ -57,7 +62,7 @@ class VerbMetaphor(MetaphorUtil):
         wup_result = self.wu_palmer_similarity(verb_syn, index_verb, obj_syn, index_obj)
         # print(wup_result)
 
-        if wup_result[0] < 0.3:
+        if wup_result[0] < 0.3: # Need to set threshold after checking
             metaphor = True
             message = "Metaphor due to low Wu-Palmer score of {0}".format(wup_result[0])
         else:

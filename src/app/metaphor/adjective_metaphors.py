@@ -2,7 +2,12 @@ import spacy
 import sys
 import os
 
-from app.metaphor.MetaphorUtil import MetaphorUtil
+if __name__ != "__main__":
+    sys.path.append("..")
+    from app.metaphor.MetaphorUtil import MetaphorUtil
+else:
+    from MetaphorUtil import MetaphorUtil
+
 nlp = spacy.load("en_core_web_sm")
 
 class AdjectiveMetaphor(MetaphorUtil):
