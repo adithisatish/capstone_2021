@@ -1,10 +1,13 @@
 # from nltk import text
-import sys 
+import sys
+
+from nltk.corpus.reader import verbnet 
 
 if __name__ != "__main__":
     sys.path.append("..")
     from app.metaphor.noun_metaphors import NounMetaphor
     from app.metaphor.verb_metaphors import VerbMetaphor
+    from app.metaphor.adjective_metaphors import AdjectiveMetaphor
 
 class Metaphor:
     
@@ -24,12 +27,20 @@ class Metaphor:
         return nm_result
     
     def find_verb_metaphors(self, text):
-        # YET TO BE DONE
-        return None
+        VM = VerbMetaphor(text)
+        vm_result = VM.detect_verb_metaphor()
+        verb_met = {"sentence":text, "verb metaphor": vm_result}
+        self.verb_metaphors.append(verb_met)
+        return vm_result
+        # return None
 
     def find_adj_metaphors(self, text):
-        # YET TO BE DONE
-        return None
+        AM = AdjectiveMetaphor(text)
+        am_result = AM.detect_adj_metaphor()
+        adj_met = {"sentence":text, "adj metaphor": am_result}
+        self.adj_metaphors.append(adj_met)
+        return am_result
+        # return None
 
     def detect_metaphors(self):
         if self.paragraph == 1:
@@ -50,6 +61,7 @@ class Metaphor:
 if __name__ == "__main__":
     from noun_metaphors import NounMetaphor
     from verb_metaphors import VerbMetaphor
+    from adjective_metaphors import AdjectiveMetaphor
     
     texts = ["My eyes are an ocean of blue",\
             "Today is a prison and I am the inmate.",\
