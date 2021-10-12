@@ -41,55 +41,52 @@ class AdjectiveMetaphor(MetaphorUtil):
         
         return (message, metaphor)
     
-    def is_adj_metaphor(self):
-        adj_syn = self.return_synsets(self.dependencies['ROOT'])
-        obj_syn = self.return_synsets(self.dependencies['dobj'])
-
-        adj = self.dependencies['ROOT']
-        obj = self.dependencies['dobj']
+    def is_adj_metaphor(self, noun, adjective):
+        adj_syn = self.return_synsets(adjective)
+        noun_syn = self.return_synsets(noun)
         
-        index_adj = self.index_synset(adj_syn, self.dependencies['ROOT'])
-        index_obj = self.index_synset(obj_syn, self.dependencies['dobj'])
+        index_adj = self.index_synset(adj_syn, adjective)
+        index_noun = self.index_synset(noun_syn, noun)
 
-        if index_obj == -1 or index_adj == -1:
-            if index_obj == -1:
-                synset_err = self.dependencies['dobj']
+        if index_noun == -1 or index_adj == -1:
+            if index_noun == -1:
+                synset_err = noun
             else:
-                synset_err = self.dependencies['ROOT']
+                synset_err = adjective
             print("Error: Synsets not found for {0}".format(synset_err))
             return ("The algorithm could not detect any metaphors in this sentence!", None)
         
-        wup_result = self.wu_palmer_similarity(adj_syn, index_adj, obj_syn, index_obj)
+        wup_result = self.wu_palmer_similarity(adj_syn, index_adj, noun_syn, index_noun)
         # print(wup_result)
 
         if wup_result[0] < 0.3:
             metaphor = True
             message = "Metaphor due to low Wu-Palmer score of {0}".format(wup_result[0])
         else:
-            message, metaphor = self.compare_categories(adj, obj, adj_syn, obj_syn)
+            message, metaphor = self.compare_categories(adjective, noun, adj_syn, noun_syn)
 
         return (message, metaphor)
     
     def adj_metaphor_util(self, doc):
-        for token in doc:
-            if token.dep_ == "ROOT":
-                self.dependencies['ROOT'] = token.text
         
-        sentences = list(doc.sents)
-        root_token = sentences[0].root
-
-        for child in root_token.children:
-            if child.dep_ == "nsubj":
-                self.dependencies['nsubj'] = child.text
-            elif child.dep_ == "dobj":
-                self.dependencies['dobj'] = child.text
+        # Find all adj-noun pairs
+        noun_adj_pairs = {}
+        for chunk in doc.noun_chunks:
+            adj = []
+            noun = ""
+            for tok in chunk:
+                if tok.pos_ == "NOUN":
+                    noun = tok.text
+                if tok.pos_ == "ADJ" or tok.pos_ == "CCONJ":
+                    adj.append(tok.text)
+            if noun:
+                noun_adj_pairs.update({noun:adj})
         
-        # print(self.dependencies)
-
-        msg, is_metaphor = self.is_adj_metaphor()        
-        if is_metaphor == True:
-            self.metaphors.append(("{0} and {1} are metaphorical".format(self.dependencies['ROOT'], self.dependencies['dobj']),msg))
-
+        for noun in noun_adj_pairs:
+            for adjective in noun_adj_pairs[noun]:
+                msg, is_metaphor = self.is_adj_metaphor(noun, adjective)
+                if is_metaphor == True:
+                    self.metaphors.append(("{0} and {1} are metaphorical".format(noun, adjective),msg))
     
     def detect_adj_metaphor(self):
         # Driver function
@@ -101,7 +98,7 @@ class AdjectiveMetaphor(MetaphorUtil):
 
 
 if __name__ == "__main__":
-    texts = ["She ate her feelings."]
+    texts = ["The old woman had an cold, open heart."]
     AM_Trial = AdjectiveMetaphor(None)
 
     for text in texts:

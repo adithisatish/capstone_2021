@@ -77,3 +77,8 @@ class MetaphorUtil:
             if (name.lower() == syn_name.lower() or stemmed_name == stemmed_syn or lemmatized_name == lemmatized_syn) and index == -1:
                 index = i 
         return index
+
+if __name__ == "__main__":
+    obj = MetaphorUtil()
+    # syn = obj.return_synsets("woman")
+    # print(obj.index_synset(syn))

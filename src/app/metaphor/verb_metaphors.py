@@ -1,6 +1,8 @@
 import spacy
 import sys
 import os
+from nltk.tokenize import word_tokenize
+from nltk import pos_tag
 
 if __name__ != "__main__":
     sys.path.append("..")
@@ -42,6 +44,7 @@ class VerbMetaphor(MetaphorUtil):
         return (message, metaphor)
     
     def is_verb_metaphor(self):
+        # try:
         verb_syn = self.return_synsets(self.dependencies['ROOT'])
         obj_syn = self.return_synsets(self.dependencies['dobj'])
 
@@ -73,16 +76,24 @@ class VerbMetaphor(MetaphorUtil):
     def verb_metaphor_util(self, doc):
         for token in doc:
             if token.dep_ == "ROOT":
+                nltk_tokens = word_tokenize(self.text)
+                pos_tags = pos_tag(nltk_tokens)
                 self.dependencies['ROOT'] = token.text
         
         sentences = list(doc.sents)
         root_token = sentences[0].root
 
+        obj_flag = 0
         for child in root_token.children:
             if child.dep_ == "nsubj":
                 self.dependencies['nsubj'] = child.text
             elif child.dep_ == "dobj":
                 self.dependencies['dobj'] = child.text
+                obj_flag = 1
+        
+        if obj_flag == 0:
+            self.metaphors.append(("No object found in the sentence => Verb metaphors cannot be found!"))
+            return
         
         # print(self.dependencies)
 
@@ -101,7 +112,7 @@ class VerbMetaphor(MetaphorUtil):
 
 
 if __name__ == "__main__":
-    texts = ["She ate her feelings."]
+    texts = ["She ate her feelings.", "Her eyes are an ocean.", "The falling snowflakes are dancers."]
     VM_Trial = VerbMetaphor(None)
 
     for text in texts:
