@@ -1,13 +1,8 @@
-from nltk import stem
-from nltk.corpus import wordnet as wn
-from nltk.stem import PorterStemmer, WordNetLemmatizer
-from nltk.tag import pos_tag
-from nltk.util import pr
-import requests
-from nltk.corpus import stopwords
 import spacy
 import sys
 import os
+
+from app.metaphor.MetaphorUtil import MetaphorUtil
 
 # Possible grey areas
 # 1. What to do when synsets can't be found?
@@ -16,84 +11,13 @@ import os
 
 nlp = spacy.load("en_core_web_sm")
 
-class NounMetaphor:
+class NounMetaphor(MetaphorUtil):
 
     def __init__(self, text):
         self.text = text
         self.dependencies = {} # Overwritten for every sentence
         self.metaphors = [] # Overwritten for every sentence
         # self.paragraph = paragraph
-
-    def remove_stopwords(self, text):
-        # Function that removes stopwords from a sentence
-        words = stopwords.words("english")
-        convert = lambda x: " ".join([i for i in x.split() if i not in words])
-
-        processed_text = convert(text).lower()
-        # return processed_text
-        if len(processed_text) != 0:
-            return processed_text
-        else:
-            return text
-
-    def return_synsets(self, word):
-        # Function that returns wordnet synsets for a particular word
-        synsets = wn.synsets(word)
-        return synsets
-
-    def extract_lexical_categories(self, synsets):
-        # Function to extract lexical categories given the synsets for a word
-        # synsets = wn.synsets(word)
-        categories = set()
-        if len(synsets) != 0:
-            for synset in synsets:
-                name = str(synset.lexname())
-                categories.add(name)
-                # definition = str(synset.definition())
-                # print(name, definition)
-        return categories
-
-    def find_main_category(self, noun, categories):
-        # Finding main category of the word using ConceptNet
-        main_cat = ''
-        max_rel = -99999
-        for cat in categories:
-            if "noun" in cat:
-                current_category = cat[5:]
-                path = 'http://api.conceptnet.io//relatedness?node1=/c/en/'+noun+'&node2=/c/en/'+current_category
-                result = requests.get(path).json()
-                # print(current_category, result['value'])
-                if result['value'] > max_rel:
-                    max_rel = result['value']
-                    main_cat = current_category
-        
-        return main_cat
-
-    def wu_palmer_similarity(self, syn1, index1, syn2, index2):
-        # Computes Wu-Palmer Similarity for two synsets and returns the score as well as the shortest path distance
-        # print(syn1)
-        # print(syn2)
-        wu_palmer_score = syn1[index1].wup_similarity(syn2[index2])
-        shortest_path_distance = syn1[index1].shortest_path_distance(syn2[index2])
-
-        return (wu_palmer_score, shortest_path_distance)
-    
-    def index_synset(self, synset, name):
-        # Returns the index of the right synset to use after comparing with stemmed and lemmatized forms
-        ps = PorterStemmer()
-        lem = WordNetLemmatizer()
-        stemmed_name = ps.stem(name)
-        lemmatized_name = lem.lemmatize(name)
-        index = -1
-        for i, syn in enumerate(synset):
-            syn_name = syn.name().split(".")[0]
-            stemmed_syn = ps.stem(syn_name)
-            lemmatized_syn = lem.lemmatize(syn_name)
-            # print("Stemming:",stemmed_name, stemmed_syn)
-            # print("Lemmatized:", lemmatized_name, lemmatized_syn)
-            if (name.lower() == syn_name.lower() or stemmed_name == stemmed_syn or lemmatized_name == lemmatized_syn) and index == -1:
-                index = i 
-        return index
 
     def compare_categories(self, subj, obj, subj_syn, attr_syn):
         # Extracts and compares the categories of the two noun 
@@ -156,25 +80,27 @@ class NounMetaphor:
         # Utility funtion that extracts pos dependencies for the sentence and extracts the 2 nouns
         for token in doc:
             if token.dep_ in self.dependencies:
-                self.dependencies[token.dep_] += [token.text]
+                self.dependencies[token.dep_] += [token]
             else:
-                self.dependencies[token.dep_] = [token.text]
+                self.dependencies[token.dep_] = [token]
 
         # print(self.dependencies)
         try:
-            for subj in self.dependencies['nsubj']:
+            for subject in self.dependencies['nsubj']:
+                subj = subject.text
                 subj_syn = self.return_synsets(subj)
                 # print(subj_syn)
-
-                if "attr" in self.dependencies:
-                    dependency = "attr"
-                elif "acomp" in self.dependencies:
-                    dependency = "acomp"
-                else:
-                    return("No noun metaphor found!", False)
-                for dep in self.dependencies[dependency]:
-                    # print(dep, subj_syn, subj, dependency)
-                    msg, is_metaphor = self.is_noun_metaphor(dep, subj_syn, subj)
+                for child in subject.children:
+                    if child.dep_ == "attr":
+                        dependency = "attr"
+                        dep = child.text
+                    elif child.dep_ == "acomp":
+                        dependency = "acomp"
+                        dep = child.text
+                    else:
+                        return("No noun metaphor found!", False)
+                
+                    msg, is_metaphor = self.is_noun_metaphor(dependency, subj_syn, subj)
                     
                     if is_metaphor == True:
                         self.metaphors.append(("{0} and {1} are metaphorical".format(subj, dep),msg))
