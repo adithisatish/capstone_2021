@@ -2,7 +2,9 @@ import spacy
 import sys
 import os
 
-if __name__ != "__main__":
+# print(__name__)
+
+if __name__  not in ["__main__","noun_metaphors"]:
     sys.path.append("..")
     from app.metaphor.MetaphorUtil import MetaphorUtil
 else:

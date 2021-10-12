@@ -4,7 +4,7 @@ import os
 from nltk.tokenize import word_tokenize
 from nltk import pos_tag
 
-if __name__ != "__main__":
+if __name__  not in ["__main__","verb_metaphors"]:
     sys.path.append("..")
     from app.metaphor.MetaphorUtil import MetaphorUtil
 else:

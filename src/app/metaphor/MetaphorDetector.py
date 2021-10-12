@@ -59,6 +59,8 @@ class Metaphor:
 
 
 if __name__ == "__main__":
+    print(__name__)
+    
     from noun_metaphors import NounMetaphor
     from verb_metaphors import VerbMetaphor
     from adjective_metaphors import AdjectiveMetaphor
@@ -82,3 +84,4 @@ if __name__ == "__main__":
     met_obj = Metaphor(texts, 1)
     nmet = met_obj.execute()
     print(nmet)
+    
