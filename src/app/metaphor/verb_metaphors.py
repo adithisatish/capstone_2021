@@ -4,6 +4,8 @@ import os
 from nltk.tokenize import word_tokenize
 from nltk import pos_tag
 
+# ONLY works for <nsubj> <ROOT VERB> <prep> <dobj/pobj> patterns where <prep> may or may not be present
+
 if __name__  not in ["__main__","verb_metaphors"]:
     sys.path.append("..")
     from app.metaphor.MetaphorUtil import MetaphorUtil
@@ -19,6 +21,7 @@ class VerbMetaphor(MetaphorUtil):
         self.dependencies = {} # Overwritten for every sentence
         self.metaphors = [] # Overwritten for every sentence
         # self.paragraph = paragraph
+        self.wup_scores = []
 
     def compare_categories(self, verb, object, verb_syn, obj_syn):
         metaphor = False
@@ -28,14 +31,14 @@ class VerbMetaphor(MetaphorUtil):
 
         common_categories = cat_verb.intersection(cat_obj)
         if len(common_categories) == 0:
-            message = "\nNo overlap => {0} and {1} are METAPHORICAL".format(verb, object)
+            message = "\nNo overlap => {0} and {1} could be metaphorical".format(verb, object)
             metaphor = True
         else:
             main_cat_verb = self.find_main_category(verb, cat_verb, key="verb")
             main_cat_object = self.find_main_category(object, cat_obj, key="noun")
 
             if main_cat_verb != main_cat_object: # Different main categories
-                message = "\nMain categories are different => {0} and {1} are METAPHORICAL".format(verb, object)
+                message = "\nMain categories are different => {0} and {1} could be metaphorical".format(verb, object)
                 metaphor = True
             else:
                 message = "The algorithm cannot determine whether a metaphor exists in this sentence."
@@ -46,17 +49,17 @@ class VerbMetaphor(MetaphorUtil):
     def is_verb_metaphor(self):
         # try:
         verb_syn = self.return_synsets(self.dependencies['ROOT'])
-        obj_syn = self.return_synsets(self.dependencies['dobj'])
+        obj_syn = self.return_synsets(self.dependencies['obj'])
 
         verb = self.dependencies['ROOT']
-        obj = self.dependencies['dobj']
+        obj = self.dependencies['obj']
         
         index_verb = self.index_synset(verb_syn, self.dependencies['ROOT'])
-        index_obj = self.index_synset(obj_syn, self.dependencies['dobj'])
+        index_obj = self.index_synset(obj_syn, self.dependencies['obj'])
 
         if index_obj == -1 or index_verb == -1:
             if index_obj == -1:
-                synset_err = self.dependencies['dobj']
+                synset_err = self.dependencies['obj']
             else:
                 synset_err = self.dependencies['ROOT']
             print("Error: Synsets not found for {0}".format(synset_err))
@@ -65,7 +68,9 @@ class VerbMetaphor(MetaphorUtil):
         wup_result = self.wu_palmer_similarity(verb_syn, index_verb, obj_syn, index_obj)
         # print(wup_result)
 
-        if wup_result[0] < 0.3: # Need to set threshold after checking
+        self.wup_scores.append(wup_result[0])
+
+        if wup_result[0] < 0.21177: # Need to set threshold after checking
             metaphor = True
             message = "Metaphor due to low Wu-Palmer score of {0}".format(wup_result[0])
         else:
@@ -87,9 +92,16 @@ class VerbMetaphor(MetaphorUtil):
         for child in root_token.children:
             if child.dep_ == "nsubj":
                 self.dependencies['nsubj'] = child.text
-            elif child.dep_ == "dobj":
-                self.dependencies['dobj'] = child.text
-                obj_flag = 1
+            else:
+                if child.dep_ in ["dobj", "pobj"]:
+                    self.dependencies['obj'] = child.text
+                    obj_flag = 1
+                elif child.dep_ == "prep" and 'obj' not in self.dependencies.keys():
+                    prep = child
+                    for prep_child in prep.children:
+                        if prep_child.dep_ in ["dobj", "pobj"]:
+                            self.dependencies['obj'] = prep_child.text
+                            obj_flag = 1
         
         if obj_flag == 0:
             self.metaphors.append(("No object found in the sentence => Verb metaphors cannot be found!"))
@@ -99,7 +111,7 @@ class VerbMetaphor(MetaphorUtil):
 
         msg, is_metaphor = self.is_verb_metaphor()        
         if is_metaphor == True:
-            self.metaphors.append(("{0} and {1} are metaphorical".format(self.dependencies['ROOT'], self.dependencies['dobj']),msg))
+            self.metaphors.append(("{0} and {1} could be metaphorical".format(self.dependencies['ROOT'], self.dependencies['obj']),msg))
 
     
     def detect_verb_metaphor(self):
@@ -112,10 +124,26 @@ class VerbMetaphor(MetaphorUtil):
 
 
 if __name__ == "__main__":
-    texts = ["She ate her feelings.", "Her eyes are an ocean.", "The falling snowflakes are dancers."]
+    texts = ["She ate her feelings.",\
+            "Broken in flight, the bird scythed down to the waiting moor.", \
+            "He cut his friend off mid sentence.","I carried his name.",\
+            "Inflation ate all my savings",\
+            "He shot down all of my arguments.",\
+            "My heart fills with pleasure",\
+            "My heart dances with daffodils.",\
+            "The breaking news stirred my excitement",\
+            "The veiws she held were downright disgusting.",\
+            "She held views that were downright disgusting.",\
+            "His head was spinning with ideas",\
+            "It's raining cats and dogs",\
+            "She melted into his arms when he apologized.",\
+            "She watched in horror as the dead bird floated down from the sky."\
+            ] # Inflation has EATEN => error, no synsets for 'eaten'
     VM_Trial = VerbMetaphor(None)
 
     for text in texts:
         VM_Trial.text = text
         VM_Trial.detect_verb_metaphor()
         print(VM_Trial.metaphors)
+
+    # print(sum(VM_Trial.wup_scores)/len(VM_Trial.wup_scores))

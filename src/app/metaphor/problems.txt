@@ -1,0 +1,9 @@
+1. Some pronouns like "she", "me","her" etc are not recognized by WordNet while finding synsets. 
+2. No other function/library to perform Wu-Palmer similarity except for WordNet
+3. A lot of false positives, like a LOT, especially with adjective metaphors (identifies everything as a metaphor)
+4. Context is not taken into consideration in the algorithm 
+5. Proper nouns don't have synsets => cannot be detected
+
+
+Note: Pronouns pose an issue in general as there is no context. 
+For example, "he barked at Sam loudly" could either be literal if the "he" was a dog, or metaphorical if "he" was a person

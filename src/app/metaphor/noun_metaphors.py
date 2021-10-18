@@ -15,6 +15,8 @@ else:
 # 2. Check for false positives 
 # 3. "You dog!" not equated to "you are a dog" => results in error
 
+# ONLY works with <nsubj> <aux> <det> <attr> pattern
+
 nlp = spacy.load("en_core_web_sm")
 
 class NounMetaphor(MetaphorUtil):
@@ -27,25 +29,21 @@ class NounMetaphor(MetaphorUtil):
         # self.paragraph = paragraph
 
     def compare_categories(self, subj, obj, subj_syn, attr_syn):
-        # print("Compare Categories")
-        # Extracts and compares the categories of the two noun 
         metaphor = False
 
         cat_subj = self.extract_lexical_categories(subj_syn) # Categories of subject
-            # for attr in self.dependencies[dependency]:
         cat_attr = self.extract_lexical_categories(attr_syn) # Categories of object
-        # print(cat_subj, cat_attr)
-
+        
         common_categories = cat_subj.intersection(cat_attr)
         if len(common_categories) == 0: # No common categories
-            message = "\nNo overlap => {0} and {1} are METAPHORICAL".format(subj, obj)
+            message = "\nNo overlap => {0} and {1} could be metaphorical".format(subj, obj)
             metaphor = True
         else:
             main_cat_subj = self.find_main_category(subj, cat_subj)
             main_cat_attr = self.find_main_category(obj, cat_attr)
 
             if main_cat_attr != main_cat_subj: # Different main categories
-                message = "\nMain categories are different => {0} and {1} are METAPHORICAL".format(subj, obj)
+                message = "\nMain categories are different => {0} and {1} could be metaphorical".format(subj, obj)
                 metaphor = True
             else:
                 message = "The algorithm cannot determine whether a metaphor exists in this sentence."
@@ -124,7 +122,7 @@ class NounMetaphor(MetaphorUtil):
             msg, is_metaphor = self.is_noun_metaphor(dep, subj_syn, subj)
             
             if is_metaphor == True:
-                self.metaphors.append(("{0} and {1} are metaphorical".format(subj, dep),msg))
+                self.metaphors.append(("{0} and {1} could be metaphorical".format(subj, dep),msg))
 
         except Exception as e:
             print("Error:",e)
@@ -158,7 +156,7 @@ if __name__ == "__main__":
             "Chaos is a friend of mine.",\
             "His eyes are saucers.",\
             "She is an early bird.",\
-            "His memories were cloudy."]
+            "His memories were cloudy.", "All the world is a stage"]
 
     NM_Trial = NounMetaphor(None)
 
