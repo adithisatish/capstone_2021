@@ -15,7 +15,7 @@ def preprocess(comp, text):
         # print(sentences)
         # What is the delimiter??
     else:
-        sentences = []
+        sentences = list(filter(lambda x: x,map(lambda x: x.strip(),text.split("\n"))))
     if len(sentences[-1]) == 0:
         return sentences[:-1]
     else:

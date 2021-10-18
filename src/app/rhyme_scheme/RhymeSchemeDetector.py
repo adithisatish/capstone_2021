@@ -12,20 +12,22 @@ class RhymeScheme:
     
     def __init__(self,text,paragraph):
         self.text=text
+        self.og_text = list(text)
         self.paragraph=paragraph
         self.count=0
         self.finalwords = [[0 for k in range(4)] for j in range(len(self.text))]
         foo='ABCDEFGHIJKLMNOPQRSTUVWXYZ'
         self.alphabet=dict(enumerate(foo))
+        self.rhymes = []
         
     def preprocess(self):
         slicedwords=[]
         lastwords=[]
         j=0
-        for i in range(len(text)):
+        for i in range(len(self.text)):
             self.text[i]=re.sub(r'(?<=[.,?;:!])(?=[^\s])', r' ', self.text[i]) 
             self.text[i] = re.sub('[^a-zA-Z0-9 \n]', '', self.text[i]) 
-            text[i]=text[i].lower()
+            self.text[i]=self.text[i].lower()
             self.text[i]=self.text[i].rstrip()
             tokenized_text=word_tokenize(self.text[i])
             lastwords.append(tokenized_text[len(tokenized_text)-1])
@@ -111,6 +113,13 @@ class RhymeScheme:
                                 self.finalwords[x][2]=1
                                 
     def display(self):
+        for j in range(len(self.rhymes)):
+            print("Line:",self.rhymes[j]['Line'])
+            print("Letter:",self.rhymes[j]['Letter'])
+            print("Word:",self.rhymes[j]['Word'])
+            print("***************")        
+
+    def detect_rhyme_scheme(self):
         a=0
         foo='ABCDEFGHIJKLMNOPQRSTUVWXYZ'
         for i in range(len(self.finalwords)):
@@ -129,26 +138,26 @@ class RhymeScheme:
                     self.finalwords[i][3]=foo[a]
                     self.finalwords[i][2]=1
                     a+=1
-        rhymes=[dict() for number in range(len(self.text))]
+        
+        # self.create_rhyme_dict()
+        self.rhymes=[dict() for number in range(len(self.text))]
+        
         for i in range(len(self.text)):
-            rhymes[i]['Line']=self.text[i]
-            rhymes[i]['Letter']=self.finalwords[i][3]
-            rhymes[i]['Word']=self.finalwords[i][1][0]
+            self.rhymes[i]['Line']=self.og_text[i]
+            self.rhymes[i]['Letter']=self.finalwords[i][3]
+            self.rhymes[i]['Word']=self.finalwords[i][1][0]
 
-        for j in range(len(rhymes)):
-            print("Line:",rhymes[j]['Line'])
-            print("Letter:",rhymes[j]['Letter'])
-            print("Word:",rhymes[j]['Word'])
-            print("***************")
-        return rhymes
+        
+        return self.rhymes
             
     def execute(self):
         # Driver function
+        # print("Execute - RS")
         self.preprocess()
         self.perfect_rhymes()
         self.eye_rhyme()
         self.identical_rhymes()
-        return self.display()
+        return self.detect_rhyme_scheme()
         
 
 if __name__ == "__main__":

@@ -248,6 +248,39 @@ const Voice = ({obj}) => {
     return <p className="font-bold text-lg">No Voice Found!</p>
 }
 
+const RhymeScheme = ({obj}) => {
+    
+    // for each sentence
+    //     display sentence 
+    //     for each alliteration 
+    //         display joined
+    //         display explanation
+
+    const schemeSentence = obj.map(sentence => sentence.Letter).join(", ")
+    
+    
+    const res = obj.map((sentence, index) => {
+        return (
+            <div>
+                <p className="text-lg">{index+1}. {sentence.Line}</p>
+                <div className="ml-6">
+                    <p className="font-bold">Scheme: {sentence.Letter}</p>
+                    <p className="italic">Rhyming Word: {sentence.Word}</p>
+                    <br></br>
+                </div>
+            </div>
+        )
+    })
+    
+    if(res.length){
+        return <React.Fragment>
+            <p className="text-xl font-bold mb-2">Rhyme Scheme: {schemeSentence}</p>
+            {res}</React.Fragment>
+    }
+
+    return <p className="font-bold text-lg">No Voice Found!</p>
+}
+
 const OutputSelector = (obj, type) => {
     // const display_result = {Alliteration, SPO}
     switch(type){
@@ -261,6 +294,8 @@ const OutputSelector = (obj, type) => {
             return <Simile obj = {obj}></Simile>
         case "Voice":
             return <Voice obj = {obj}></Voice>
+        case "Rhyme Scheme":
+            return <RhymeScheme obj = {obj}></RhymeScheme>
         default:
             return null
     }
