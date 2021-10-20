@@ -16,6 +16,7 @@ class AdjectiveMetaphor(MetaphorUtil):
         self.text = text
         self.dependencies = {} # Overwritten for every sentence
         self.metaphors = [] # Overwritten for every sentence
+        self.sim_scores = []
         # self.paragraph = paragraph
 
     def compare_categories(self, adj, object, adj_syn, obj_syn):
@@ -48,24 +49,33 @@ class AdjectiveMetaphor(MetaphorUtil):
         index_adj = self.index_synset(adj_syn, adjective)
         index_noun = self.index_synset(noun_syn, noun)
 
-        if index_noun == -1 or index_adj == -1:
-            if index_noun == -1:
-                synset_err = noun
-            else:
-                synset_err = adjective
-            print("Error: Synsets not found for {0}".format(synset_err))
-            return ("The algorithm could not detect any metaphors in this sentence!", None)
-        
-        wup_result = self.wu_palmer_similarity(adj_syn, index_adj, noun_syn, index_noun)
-        # print(wup_result)
+        sim_result = self.spacy_similarity(adjective, noun)
+        print("Similarity:", sim_result)
 
-        if wup_result[0] < 0.3:
-            metaphor = True
-            message = "Metaphor due to low Wu-Palmer score of {0}".format(wup_result[0])
-        else:
-            message, metaphor = self.compare_categories(adjective, noun, adj_syn, noun_syn)
+        # if index_adj == -1 or index_noun == -1:
+        #     if sim_result > 0.4:
+        #         message = "Similarity score found to be high at {0}".format(sim_result)
+        #         metaphor = "Maybe"
+        #     else:
+        #         message = "Metaphor due to low similarity score of {0}".format(sim_result)
+        #         metaphor = True
 
-        return (message, metaphor)
+        #     # Can't proceed further because comparison of categories needs synsets again :( => can only check with Spacy)
+
+        # else:
+        #     wup_result = self.wu_palmer_similarity(adj_syn, index_adj, noun_syn, index_noun)[0]
+        #     sim_result = self.spacy_similarity(adjective, noun)
+
+        #     sim_score = max(wup_result, sim_result)
+        #     self.sim_scores.append(sim_score)
+
+        #     if sim_score < 0.3:
+        #         metaphor = True
+        #         message = "Metaphor due to low similarity score of {0}".format(sim_score)
+        #     else:
+        #         message, metaphor = self.compare_categories(adjective, noun, adj_syn, noun_syn)
+
+        # return (message, metaphor)
     
     def adj_metaphor_util(self, doc):
         

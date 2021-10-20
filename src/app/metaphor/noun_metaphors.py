@@ -1,6 +1,7 @@
 import spacy
 import sys
 import os
+import pandas as pd
 
 # print(__name__)
 
@@ -25,7 +26,7 @@ class NounMetaphor(MetaphorUtil):
         self.text = text
         self.dependencies = {} # Overwritten for every sentence
         self.metaphors = [] # Overwritten for every sentence
-        self.wup_scores =[]
+        self.sim_scores =[]
         # self.paragraph = paragraph
 
     def compare_categories(self, subj, obj, subj_syn, attr_syn):
@@ -51,6 +52,23 @@ class NounMetaphor(MetaphorUtil):
         
         return (message, metaphor)
     
+    def return_similarities(self, obj, subj_syn, subj):
+        attr_syn = self.return_synsets(obj)
+        # print(attr_syn)
+        index_subj = self.index_synset(subj_syn, subj)
+        index_obj = self.index_synset(attr_syn, obj)
+
+        # print(index_subj, index_obj)
+
+        if index_obj == -1 or index_subj == -1:
+            sim_result = self.spacy_similarity(subj, obj)
+            return (sim_result, None)
+        else:
+            wup_result = self.wu_palmer_similarity(subj_syn, index_subj, attr_syn, index_obj)[0]
+            sim_result = self.spacy_similarity(subj, obj)
+
+            return (sim_result, wup_result)
+        
     def is_noun_metaphor(self, obj, subj_syn, subj):
         # Driver function to check if two nouns form a noun metaphor
         # print("Is Noun Metaphor")
@@ -61,8 +79,9 @@ class NounMetaphor(MetaphorUtil):
 
         # print(index_subj, index_obj)
 
-        if index_obj == -1 or index_subj == -1:
-            sim_result = self.spacy_similarity(subj, obj)
+        sim_result, wup_result = self.return_similarities(self, obj, subj_syn, subj)
+
+        if wup_result == None:
 
             if sim_result > 0.4:
                 message = "Similarity score found to be high at {0}".format(sim_result)
@@ -72,32 +91,20 @@ class NounMetaphor(MetaphorUtil):
                 metaphor = True
 
             # Can't proceed further because comparison of categories needs synsets again :( => can only check with Spacy)
-
-            # if index_obj == -1:
-            #     synset_err = obj
-            # else:
-            #     synset_err = subj
-            # print("Error: Synsets not found for {0}".format(synset_err))
-            # return ("The algorithm could not detect any metaphors in this sentence!", None)
         else:
-            sim_result = self.wu_palmer_similarity(subj_syn, index_subj, attr_syn, index_obj)[0]
-
-            # print()
-            # print(subj, ",", obj)
-            # print("WU-Palmer Score:",wup_result)
-
-            self.wup_scores.append(sim_result)
-            # print("WUP",self.wup_scores)
+            sim_score = max(wup_result, sim_result)
+            self.sim_scores.append(sim_score)
+            # print("WUP",self.sim_scores)
 
             if sim_result >= 0.24:
                 message, metaphor = self.compare_categories(subj, obj, subj_syn, attr_syn)
             else:
-                message = "Metaphor due to low Wu-Palmer score of {0}".format(sim_result)
+                message = "Metaphor due to low similarity score of {0}".format(sim_result)
                 metaphor = True
 
         return (message,metaphor)
 
-    def noun_metaphor_util(self, doc):
+    def noun_metaphor_util(self, doc, test=0):
         # Utility funtion that extracts pos dependencies for the sentence and extracts the 2 nouns
         # print("Noun Metaphor Util")
         for token in doc:
@@ -128,7 +135,13 @@ class NounMetaphor(MetaphorUtil):
                     obj_flag = 1
             
             if obj_flag == 0:
+                if test == 1:
+                    return (None, None)
+                
                 return ("No noun metaphors found!",None)
+            
+            if test == 1:
+                return self.return_similarities(dep, subj_syn, subj)
 
             msg, is_metaphor = self.is_noun_metaphor(dep, subj_syn, subj)
             
@@ -146,56 +159,42 @@ class NounMetaphor(MetaphorUtil):
 
         # return self.metaphors
 
-    def detect_noun_metaphor(self):
+    def detect_noun_metaphor(self, test = 0):
         # Driver function
         doc = nlp(self.text)
         self.dependencies = {}
         self.metaphors = []
+
+        if test == 1:
+            return self.noun_metaphor_util(doc, test)
+        
         self.noun_metaphor_util(doc)
         return self.metaphors
 
 if __name__ == "__main__":
     # text = "Today is a prison and I am the inmate => figure out a logical split
-    texts = ["My eyes are an ocean of blue",\
-            "Today is a prison and I am the inmate.",\
-            "I am a prisoner","You dog!",\
-            "The snow is a white blanket.",\
-            "Her long hair was a flowing golden river.",\
-            "Tom's eyes were ice as he stared at her.",\
-            "The children were flowers grown in concrete gardens.",\
-            "The falling snowflakes are dancers.",\
-            "The calm lake was a mirror.",\
-            "John's suggestion was just a Band-Aid for the problem.",\
-            "Chaos is a friend of mine.",\
-            "His eyes are saucers.",\
-            "She is an early bird.",\
-            "His memories were cloudy.", "All the world is a stage"]
+    
+    with open("nm_data/NM_data.txt","r") as file:
+        data = list(map(lambda x: x.strip("\n"),file.readlines()))
+
+    # print(data)
 
     NM_Trial = NounMetaphor(None)
 
-    for text in texts:
-        print()
-        print("---------------------------------------------------")
-        print(text)
+    spacy_scores = []
+    wup_scores = []
+
+    for text in data:
+        # print()
+        # print("---------------------------------------------------")
+        # print(text)
         NM_Trial.text = text
-        NM_Trial.detect_noun_metaphor()
-        print(NM_Trial.metaphors)
-    
-    # print("WUP SCORE AVERAGE:", sum(NM_Trial.wup_scores)/len(NM_Trial.wup_scores)) = 0.2308
-    # doc = nlp(texts[0])
+        spac, wup = NM_Trial.detect_noun_metaphor(test=1)
+        spacy_scores.append(spac)
+        wup_scores.append(wup)
 
-    # for token in doc:
-    #     print(token.text, token.dep_)
+    # # print(spacy_scores)
+    data = {"Text": data, "Spacy":spacy_scores, "WUP": wup_scores}
+    df = pd.DataFrame(data)
 
-    #     except Exception as e:
-    #         print("\n")
-    #         print(text)
-    #         print(e)
-    #         print("----------------")
-    # COCA Collocation Dataset required
-
-    # print("MCA:", main_cat_attr)
-    # print("MCS:",main_cat_subj)
-        
-    # pass
-
+    df.to_csv("nm_data/NM_similarities.csv")

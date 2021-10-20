@@ -21,7 +21,7 @@ class VerbMetaphor(MetaphorUtil):
         self.dependencies = {} # Overwritten for every sentence
         self.metaphors = [] # Overwritten for every sentence
         # self.paragraph = paragraph
-        self.wup_scores = []
+        self.sim_scores = []
 
     def compare_categories(self, verb, object, verb_syn, obj_syn):
         metaphor = False
@@ -78,13 +78,14 @@ class VerbMetaphor(MetaphorUtil):
         else:
         
             wup_result = self.wu_palmer_similarity(verb_syn, index_verb, obj_syn, index_obj)
-            # print(wup_result)
+            sim_result = self.spacy_similarity(verb, obj)
 
-            self.wup_scores.append(wup_result[0])
+            sim_score = max(wup_result, sim_result)
+            self.sim_scores.append(sim_score)
 
-            if wup_result[0] < 0.21177: 
+            if sim_score < 0.21177: 
                 metaphor = True
-                message = "Metaphor due to low Wu-Palmer score of {0}".format(wup_result[0])
+                message = "Metaphor due to low similarity score of {0}".format(sim_score)
             else:
                 message, metaphor = self.compare_categories(verb, obj, verb_syn, obj_syn)
 
@@ -158,4 +159,4 @@ if __name__ == "__main__":
         VM_Trial.detect_verb_metaphor()
         print(VM_Trial.metaphors)
 
-    # print(sum(VM_Trial.wup_scores)/len(VM_Trial.wup_scores))
+    # print(sum(VM_Trial.sim_scores)/len(VM_Trial.sim_scores))
