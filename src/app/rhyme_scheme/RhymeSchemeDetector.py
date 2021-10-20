@@ -97,10 +97,11 @@ class RhymeScheme:
                 for i in range(len(self.finalwords)): #start the check from the beginning.
                     counter= 0
                     if(i!=x): #we dont to check word against the same word
-                        for k in range(len(self.finalwords[x][1][0])-1,len(self.finalwords[x][1][0])-4,-1):
-                            for j in range(len(self.finalwords[i][1][0])-1,len(self.finalwords[i][1][0])-4,-1): #check only the last 4 words 
-                                if(k>0 and self.finalwords[x][1][0][k]==self.finalwords[i][1][0][j]):
-                                    counter+=1
+                        k=len(self.finalwords[x][1][0])-1
+                        for j in range(len(self.finalwords[i][1][0])-1,len(self.finalwords[i][1][0])-4,-1): #check only the last 4 words 
+                            if(k>=0 and j>=0 and self.finalwords[x][1][0][k]==self.finalwords[i][1][0][j]):
+                                counter+=1
+                            k-=1;
                         if(counter>=3):
                             if(self.finalwords[i][2]==0 and self.finalwords[x][2]==0):
                                 self.finalwords[x][3]=self.alphabet[self.count] 
