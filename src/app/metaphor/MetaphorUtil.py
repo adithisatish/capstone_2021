@@ -4,6 +4,11 @@ from nltk.tag import pos_tag
 from nltk.util import pr
 import requests
 from nltk.corpus import stopwords
+import gensim.downloader
+from gensim.models import Word2Vec
+import spacy
+
+nlp = spacy.load("en_core_web_md")
 
 class MetaphorUtil:
     def remove_stopwords(self, text):
@@ -60,6 +65,20 @@ class MetaphorUtil:
         shortest_path_distance = syn1[index1].shortest_path_distance(syn2[index2])
 
         return (wu_palmer_score, shortest_path_distance)
+
+    def spacy_similarity(self, word1, word2):
+        words = " ".join([word1, word2])
+        tokens = nlp(words)
+        token1, token2 = tokens[0], tokens[1]
+
+        if token1.is_oov == False and token2.is_oov == False:
+            return token1.similarity(token2)
+
+    
+    def word2vec_similarity(self, word1, word2):
+        model = Word2Vec.load("word2vec.model")
+        similarity = model.wv.similarity(word1, word2)
+        print("GENSIM-Word2Vec:", similarity)
     
     def index_synset(self, synset, name):
         # Returns the index of the right synset to use after comparing with stemmed and lemmatized forms
@@ -80,5 +99,6 @@ class MetaphorUtil:
 
 if __name__ == "__main__":
     obj = MetaphorUtil()
+    obj.word2vec_similarity("king","queen")
     # syn = obj.return_synsets("woman")
     # print(obj.index_synset(syn))

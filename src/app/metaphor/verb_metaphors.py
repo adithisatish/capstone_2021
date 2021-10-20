@@ -58,23 +58,35 @@ class VerbMetaphor(MetaphorUtil):
         index_obj = self.index_synset(obj_syn, self.dependencies['obj'])
 
         if index_obj == -1 or index_verb == -1:
-            if index_obj == -1:
-                synset_err = self.dependencies['obj']
+            sim_result = self.spacy_similarity(verb, obj)
+
+            if sim_result > 0.4:
+                message = "Similarity score found to be high at {0}".format(sim_result)
+                metaphor = "Maybe"
             else:
-                synset_err = self.dependencies['ROOT']
-            print("Error: Synsets not found for {0}".format(synset_err))
-            return ("The algorithm could not detect any metaphors in this sentence!", None)
-        
-        wup_result = self.wu_palmer_similarity(verb_syn, index_verb, obj_syn, index_obj)
-        # print(wup_result)
+                message = "Metaphor due to low similarity score of {0}".format(sim_result)
+                metaphor = True
 
-        self.wup_scores.append(wup_result[0])
+            # Can't proceed further because comparison of categories needs synsets again :( => can only check with Spacy)
 
-        if wup_result[0] < 0.21177: # Need to set threshold after checking
-            metaphor = True
-            message = "Metaphor due to low Wu-Palmer score of {0}".format(wup_result[0])
+            # if index_obj == -1:
+            #     synset_err = obj
+            # else:
+            #     synset_err = subj
+            # print("Error: Synsets not found for {0}".format(synset_err))
+            # return ("The algorithm could not detect any metaphors in this sentence!", None)
         else:
-            message, metaphor = self.compare_categories(verb, obj, verb_syn, obj_syn)
+        
+            wup_result = self.wu_palmer_similarity(verb_syn, index_verb, obj_syn, index_obj)
+            # print(wup_result)
+
+            self.wup_scores.append(wup_result[0])
+
+            if wup_result[0] < 0.21177: 
+                metaphor = True
+                message = "Metaphor due to low Wu-Palmer score of {0}".format(wup_result[0])
+            else:
+                message, metaphor = self.compare_categories(verb, obj, verb_syn, obj_syn)
 
         return (message, metaphor)
     
@@ -132,7 +144,7 @@ if __name__ == "__main__":
             "My heart fills with pleasure",\
             "My heart dances with daffodils.",\
             "The breaking news stirred my excitement",\
-            "The veiws she held were downright disgusting.",\
+            "The views she held were downright disgusting.",\
             "She held views that were downright disgusting.",\
             "His head was spinning with ideas",\
             "It's raining cats and dogs",\

@@ -62,27 +62,38 @@ class NounMetaphor(MetaphorUtil):
         # print(index_subj, index_obj)
 
         if index_obj == -1 or index_subj == -1:
-            if index_obj == -1:
-                synset_err = obj
+            sim_result = self.spacy_similarity(subj, obj)
+
+            if sim_result > 0.4:
+                message = "Similarity score found to be high at {0}".format(sim_result)
+                metaphor = "Maybe"
             else:
-                synset_err = subj
-            print("Error: Synsets not found for {0}".format(synset_err))
-            return ("The algorithm could not detect any metaphors in this sentence!", None)
-        
-        wup_result = self.wu_palmer_similarity(subj_syn, index_subj, attr_syn, index_obj)
+                message = "Metaphor due to low similarity score of {0}".format(sim_result)
+                metaphor = True
 
-        # print()
-        # print(subj, ",", obj)
-        # print("WU-Palmer Score:",wup_result)
+            # Can't proceed further because comparison of categories needs synsets again :( => can only check with Spacy)
 
-        self.wup_scores.append(wup_result[0])
-        # print("WUP",self.wup_scores)
-
-        if wup_result[0] >= 0.24:
-            message, metaphor = self.compare_categories(subj, obj, subj_syn, attr_syn)
+            # if index_obj == -1:
+            #     synset_err = obj
+            # else:
+            #     synset_err = subj
+            # print("Error: Synsets not found for {0}".format(synset_err))
+            # return ("The algorithm could not detect any metaphors in this sentence!", None)
         else:
-            message = "Metaphor due to low Wu-Palmer score of {0}".format(wup_result[0])
-            metaphor = True
+            sim_result = self.wu_palmer_similarity(subj_syn, index_subj, attr_syn, index_obj)[0]
+
+            # print()
+            # print(subj, ",", obj)
+            # print("WU-Palmer Score:",wup_result)
+
+            self.wup_scores.append(sim_result)
+            # print("WUP",self.wup_scores)
+
+            if sim_result >= 0.24:
+                message, metaphor = self.compare_categories(subj, obj, subj_syn, attr_syn)
+            else:
+                message = "Metaphor due to low Wu-Palmer score of {0}".format(sim_result)
+                metaphor = True
 
         return (message,metaphor)
 
@@ -123,6 +134,8 @@ class NounMetaphor(MetaphorUtil):
             
             if is_metaphor == True:
                 self.metaphors.append(("{0} and {1} could be metaphorical".format(subj, dep),msg))
+            elif is_metaphor == "Maybe":
+                self.metaphors.append(("{0} and {1} seem to be similar so they might not be metaphorical".format(subj, dep), msg))
 
         except Exception as e:
             print("Error:",e)

@@ -98,7 +98,7 @@ class AdjectiveMetaphor(MetaphorUtil):
 
 
 if __name__ == "__main__":
-    texts = ["The old woman had an cold, open heart."]
+    texts = ["The old woman had a cold heart."]
     AM_Trial = AdjectiveMetaphor(None)
 
     for text in texts:
