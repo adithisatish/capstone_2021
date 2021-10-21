@@ -1,3 +1,4 @@
+from nltk import text
 import numpy
 import spacy
 import sys
@@ -231,30 +232,29 @@ class NounMetaphor(MetaphorUtil):
         return self.metaphors
 
 if __name__ == "__main__":
-    # text = "Today is a prison and I am the inmate => figure out a logical split
-    start = time.time()
-    print("Start Time:", start)
-    print()
 
-    # with open("nm_data/NM_data.txt","r") as file:
-    #     data = list(map(lambda x: x.strip("\n"),file.readlines()))
+    NM = NounMetaphor(text="She was a lion in the battlefield")
+    print(NM.detect_noun_metaphor())
 
-    df = pd.read_csv("nm_data/NM_similarities.csv")
-    # print(df['Metaphor'])
 
-    train_X, test_X, train_Y, test_Y = train_test_split(df["Text"],df['Metaphor'], stratify=df["Metaphor"], shuffle=True, test_size=0.10, random_state=42)
+    # REFER TO NM_STATS FOR PERFORMANCE METRICS
+    # start = time.time()
+    # print("Start Time:", start)
+    # print()
+    # df = pd.read_csv("nm_data/NM_similarities.csv")
+    # # print(df['Metaphor'])
 
-    # print(train_X, train_Y)
+    # train_X, test_X, train_Y, test_Y = train_test_split(df["Text"],df['Metaphor'], stratify=df["Metaphor"], shuffle=True, test_size=0.10, random_state=42)
 
-    NM_Trial = NounMetaphor()
-    NM_Trial.train(train_X, train_Y)
-    print("\n\n")
-    NM_Trial.test(test_X, test_Y)
-    # find_optimal_weights()
+    # # print(train_X, train_Y)
 
-    print()
-    end = time.time()
-    print("End Time:", end)
-    print("Time taken:{0} minutes", (end - start)/60)
+    # NM_Trial = NounMetaphor()
+    # NM_Trial.train(train_X, train_Y)
+    # print("\n\n")
+    # NM_Trial.test(test_X, test_Y)
+    # # find_optimal_weights()
 
-# To find best weights - combo => get average threshold => predict => find accuracy => repeat until optimal weights are found (max accuracy)
+    # print()
+    # end = time.time()
+    # print("End Time:", end)
+    # print("Time taken:{0} minutes", (end - start)/60)
