@@ -1,8 +1,11 @@
+import numpy
 import spacy
 import sys
 import os
 import pandas as pd
 from sklearn.metrics import accuracy_score
+from sklearn.model_selection import train_test_split
+import time
 # print(__name__)
 
 if __name__  not in ["__main__","noun_metaphors"]:
@@ -22,11 +25,15 @@ nlp = spacy.load("en_core_web_sm")
 
 class NounMetaphor(MetaphorUtil):
 
-    def __init__(self, text = "", sp_w = 0.75, wp_w = 0.25, threshold = 0):
+    # Code 0 => Check if sentence is metaphor, Code 1 => Find individual similarity and add to CSV, Code 2 => Find Optimal weights
+
+    def __init__(self, text = "", sp_w = 0.00, wp_w = 0.00, threshold = 0):
         self.text = text
         self.dependencies = {} # Overwritten for every sentence
         self.metaphors = [] # Overwritten for every sentence
         self.sim_scores =[]
+
+        # Set all three to optimum by default so direct detection can be done
         self.spacy_weight = sp_w
         self.wupalmer_weight = wp_w
         self.threshold = threshold
@@ -72,7 +79,7 @@ class NounMetaphor(MetaphorUtil):
 
             return (sim_result, wup_result)
         
-    def is_noun_metaphor(self, obj, subj_syn, subj):
+    def return_similarity_score(self, obj, subj_syn, subj, code = 1):
         # Driver function to check if two nouns form a noun metaphor
         # print("Is Noun Metaphor")
         attr_syn = self.return_synsets(obj)
@@ -83,6 +90,9 @@ class NounMetaphor(MetaphorUtil):
         # print(index_subj, index_obj)
 
         sim_result, wup_result = self.return_similarities(obj, subj_syn, subj)
+
+        if code == 2:
+            return (sim_result, wup_result)
 
         weighted_score = self.spacy_weight*sim_result + self.wupalmer_weight*wup_result
 
@@ -112,7 +122,7 @@ class NounMetaphor(MetaphorUtil):
 
         return (message,metaphor)'''
 
-    def noun_metaphor_util(self, doc, test=0):
+    def noun_metaphor_util(self, doc, code=0):
         # Utility funtion that extracts pos dependencies for the sentence and extracts the 2 nouns
         # print("Noun Metaphor Util")
         for token in doc:
@@ -143,17 +153,32 @@ class NounMetaphor(MetaphorUtil):
                     obj_flag = 1
             
             if obj_flag == 0:
-                if test == 1:
+                if code == 1:
                     return 0.00
+                elif code == 2:
+                    return (0.00, 0.00)
                 
                 return ("No noun metaphors found!",None)
             
-            if test == 1:
-                final_score = self.is_noun_metaphor(dep, subj_syn, subj) 
+            if code == 1: # FINDING OPTIMAL WEIGHTS
+                final_score = self.return_similarity_score(dep, subj_syn, subj) 
                 if final_score > self.threshold:
                     return ("N", final_score)
                 else:
                     return ("Y", final_score)
+            
+            elif code == 2: # ADD SIM TO CSV
+                return self.return_similarity_score(dep, subj_syn, subj, code = 2)
+
+            else:
+                similarity = self.return_similarity_score(dep, subj_syn, subj)
+
+                if similarity < self.threshold:
+                    self.metaphors.append(("{0} and {1} could be metaphorical as similarity score is low".format(subj, dep),"Y"))
+                else:
+                    self.metaphors.append(("{0} and {1} are probably not metaphorical as similarity score is high".format(subj, dep),"N"))
+
+
 
             # msg, is_metaphor = self.is_noun_metaphor(dep, subj_syn, subj)
             
@@ -171,67 +196,7 @@ class NounMetaphor(MetaphorUtil):
 
         # return self.metaphors
 
-    
-    def detect_noun_metaphor(self, test = 0):
-        # Driver function
-        doc = nlp(self.text)
-        self.dependencies = {}
-        self.metaphors = []
-
-        if test == 1:
-            return self.noun_metaphor_util(doc, test)
-        
-        self.noun_metaphor_util(doc)
-        return self.metaphors
-
-if __name__ == "__main__":
-    # text = "Today is a prison and I am the inmate => figure out a logical split
-    
-    def find_accuracy(predictions):
-        df = pd.read_csv("nm_data/NM_similarities.csv")
-        true_values = df["Metaphor"]
-        return accuracy_score(true_values, predictions)
-
-    def find_optimal_weights():
-        with open("nm_data/NM_data.txt","r") as file:
-            data = list(map(lambda x: x.strip("\n"),file.readlines()))
-
-        # print(data)
-        max_acc = 0.00
-        best_threshold = 0.00
-        optimal_weights = (0.00,0.00)
-
-        new_threshold = 0.00
-
-        for spw in range(0,1,0.2):
-            for wpw in range(0,1,0.2):
-                NM_Trial = NounMetaphor(threshold = new_threshold, sp_w=spw, wp_w=wpw)
-
-                predictions = []
-                scores = []
-
-                for text in data:
-                    # print()
-                    # print("---------------------------------------------------")
-                    # print(text)
-                    NM_Trial.text = text
-                    pred,score = NM_Trial.detect_noun_metaphor(test=1)
-
-                    predictions.append(pred)
-                    scores.append(score)
-
-                new_threshold = sum(scores)/len(scores)
-                
-                acc = find_accuracy(predictions)
-                if acc > max_acc:
-                    max_acc = acc
-                    best_threshold = new_threshold
-                    optimal_weights = (spw, wpw)
-        
-        print("Optimal Threshold:", best_threshold)
-        print("Optimal Weights:", optimal_weights)
-
-    def add_individual_scores():
+    def add_individual_scores(self):
         spacy_scores = []
         wup_scores = []
        
@@ -242,7 +207,7 @@ if __name__ == "__main__":
         
         for text in data:
           NM_Trial.text = text
-          spac, wup = NM_Trial.detect_noun_metaphor(test = 2)
+          spac, wup = NM_Trial.noun_metaphor_util(code = 2)
 
         spacy_scores.append(spac)
         wup_scores.append(wup)
@@ -252,5 +217,88 @@ if __name__ == "__main__":
         df = pd.DataFrame(data)
 
         df.to_csv("nm_data/NM_similarities.csv")
+    
+    def find_accuracy(self, predictions, true_values):
+        return accuracy_score(true_values, predictions)
+
+    def train(self,data, true_values):
+
+        # train, test = train_test_split()
+        # print(data)
+        max_acc = 0.00
+        best_threshold = 0.00
+        optimal_weights = (0.00,0.00)
+
+        new_threshold = 0.00
+
+        for spw in numpy.arange(0,1,0.001):
+            wpw = 1 - spw
+            self.threshold = new_threshold, 
+            self.spacy_weight =spw
+            self.wupalmer_weight =wpw
+
+            predictions = []
+            scores = []
+
+            for text in data:
+                # print()
+                # print("---------------------------------------------------")
+                # print(text)
+                # self.text = text
+                doc = nlp(text)
+                self.dependencies = {}
+                pred,score = self.noun_metaphor_util(doc, code=1)
+
+                predictions.append(pred)
+                scores.append(score)
+
+            new_threshold = sum(scores)/len(scores)
+            
+            acc = self.find_accuracy(predictions, true_values)
+            if acc > max_acc:
+                max_acc = acc
+                best_threshold = new_threshold
+                optimal_weights = (spw, wpw)
+        
+        print("Maximum Accuracy:", max_acc)
+        print("Optimal Threshold:", best_threshold)
+        print("Optimal Weights:", optimal_weights)
+
+        self.threshold = best_threshold
+        self.spacy_weight, self.wupalmer_weight = optimal_weights
+    
+    def detect_noun_metaphor(self):
+        # Driver function
+        doc = nlp(self.text)
+        self.dependencies = {}
+        self.metaphors = []
+        
+        self.noun_metaphor_util(doc, code = 0)
+        return self.metaphors
+
+if __name__ == "__main__":
+    # text = "Today is a prison and I am the inmate => figure out a logical split
+    start = time.time()
+    print("Start Time:", start)
+    print()
+
+    # with open("nm_data/NM_data.txt","r") as file:
+    #     data = list(map(lambda x: x.strip("\n"),file.readlines()))
+
+    df = pd.read_csv("nm_data/NM_similarities.csv")
+    # print(df['Metaphor'])
+
+    train_X, test_X, train_Y, test_Y = train_test_split(df["Text"],df['Metaphor'], stratify=df["Metaphor"], shuffle=True, test_size=0.10)
+
+    # print(train_X, train_Y)
+
+    NM_Trial = NounMetaphor()
+    NM_Trial.train(train_X, train_Y)
+    # find_optimal_weights()
+
+    print()
+    end = time.time()
+    print("End Time:", end)
+    print("Time taken to find weights:{0} minutes", (end - start)/60)
 
 # To find best weights - combo => get average threshold => predict => find accuracy => repeat until optimal weights are found (max accuracy)
