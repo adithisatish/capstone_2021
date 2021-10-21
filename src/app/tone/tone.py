@@ -1,9 +1,13 @@
 # save and load a file
 import pickle
+import sys
 
 # Importing explanability module
 import eli5
 from eli5.formatters import format_as_dict
+
+if __name__ != "__main__":
+    sys.path.append("..")
 
 class Tone:
 
@@ -14,9 +18,15 @@ class Tone:
 
     def detect_tone(self, text):
         # Loading models and vectorizer
-        s = "models/tfidf_svc.sav"
-        l = "models/tfidf_lr.sav"
-        v = "vectorizers/tfidf.sav"
+        if __name__ != "__main__":
+            s = "app/tone/models/tfidf_svc.sav"
+            l = "app/tone/models/tfidf_lr.sav"
+            v = "app/tone/vectorizers/tfidf.sav"
+        else:
+            s = "models/tfidf_svc.sav"
+            l = "models/tfidf_lr.sav"
+            v = "vectorizers/tfidf.sav"
+
         svc = pickle.load(open(s, 'rb'))
         log = pickle.load(open(l, 'rb'))
         vect = pickle.load(open(l, 'rb'))
