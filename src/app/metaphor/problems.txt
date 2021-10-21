@@ -3,6 +3,7 @@
 3. A lot of false positives, like a LOT, especially with adjective metaphors (identifies everything as a metaphor)
 4. Context is not taken into consideration in the algorithm 
 5. Proper nouns don't have synsets => cannot be detected
+6. Sentences in the passive voice cannot be detected
 
 
 Note: Pronouns pose an issue in general as there is no context. 

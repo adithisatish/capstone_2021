@@ -206,26 +206,33 @@ class VerbMetaphor(MetaphorUtil):
 
 
 if __name__ == "__main__":
-    texts = ["She ate her feelings.",\
-            "Broken in flight, the bird scythed down to the waiting moor.", \
-            "He cut his friend off mid sentence.","I carried his name.",\
-            "Inflation ate all my savings",\
-            "He shot down all of my arguments.",\
-            "My heart fills with pleasure",\
-            "My heart dances with daffodils.",\
-            "The breaking news stirred my excitement",\
-            "The views she held were downright disgusting.",\
-            "She held views that were downright disgusting.",\
-            "His head was spinning with ideas",\
-            "It's raining cats and dogs",\
-            "She melted into his arms when he apologized.",\
-            "She watched in horror as the dead bird floated down from the sky."\
-            ] # Inflation has EATEN => error, no synsets for 'eaten'
-    VM_Trial = VerbMetaphor(None)
+    start = time.time()
+    print("Start Time:", start)
+    print()
 
-    for text in texts:
-        VM_Trial.text = text
-        VM_Trial.detect_verb_metaphor()
-        print(VM_Trial.metaphors)
+    with open("vm_data/VM_data.txt","r") as file:
+        data = list(map(lambda x: x.strip("\n"),file.readlines()))
+
+    
+    VM_Trial = VerbMetaphor()
+    VM_Trial.add_individual_scores()
+    
+    # df = pd.read_csv("vm_data/VM_similarities.csv")
+    # # print(df['Metaphor'])
+
+    # train_X, test_X, train_Y, test_Y = train_test_split(df["Text"],df['Metaphor'], stratify=df["Metaphor"], shuffle=True, test_size=0.10, random_state=42)
+
+    # # print(train_X, train_Y)
+
+    # VM_Trial = VerbMetaphor()
+    # VM_Trial.train(train_X, train_Y)
+    # print("\n\n")
+    # VM_Trial.test(test_X, test_Y)
+    # # find_optimal_weights()
+
+    # print()
+    # end = time.time()
+    # print("End Time:", end)
+    # print("Time taken:{0} minutes", (end - start)/60)
 
     # print(sum(VM_Trial.sim_scores)/len(VM_Trial.sim_scores))
