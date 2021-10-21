@@ -4,8 +4,7 @@ from nltk.tag import pos_tag
 from nltk.util import pr
 import requests
 from nltk.corpus import stopwords
-import gensim.downloader
-from gensim.models import Word2Vec
+from sklearn.metrics import accuracy_score
 import spacy
 
 nlp = spacy.load("en_core_web_md")
@@ -73,12 +72,6 @@ class MetaphorUtil:
 
         if token1.is_oov == False and token2.is_oov == False:
             return token1.similarity(token2)
-
-    
-    def word2vec_similarity(self, word1, word2):
-        model = Word2Vec.load("word2vec.model")
-        similarity = model.wv.similarity(word1, word2)
-        print("GENSIM-Word2Vec:", similarity)
     
     def index_synset(self, synset, name):
         # Returns the index of the right synset to use after comparing with stemmed and lemmatized forms
@@ -96,6 +89,63 @@ class MetaphorUtil:
             if (name.lower() == syn_name.lower() or stemmed_name == stemmed_syn or lemmatized_name == lemmatized_syn) and index == -1:
                 index = i 
         return index
+
+    def return_similarities(self, word1, word2):
+        w1_syn = self.return_synsets(word1)
+        w2_syn = self.return_synsets(word2)
+        # print(attr_syn)
+        index_w1 = self.index_synset(w1_syn, word1)
+        index_w2 = self.index_synset(w2_syn, word2)
+
+        # print(index_subj, index_obj)
+
+        if index_w1 == -1 or index_w2 == -1:
+            sim_result = self.spacy_similarity(word1, word2)
+            return (sim_result, 0.00)
+        else:
+            wup_result = self.wu_palmer_similarity(w1_syn, index_w1, w2_syn, index_w2)[0]
+            sim_result = self.spacy_similarity(word1, word2)
+
+            return (sim_result, wup_result)
+        
+    def return_similarity_score(self, word1, word2, code = 1):
+        # Driver function to check if two nouns form a noun metaphor
+
+        sim_result, wup_result = self.return_similarities(word1, word2)
+
+        if code == 2:
+            return (sim_result, wup_result)
+
+        weighted_score = self.spacy_weight*sim_result + self.wupalmer_weight*wup_result
+
+        return weighted_score
+
+        '''
+        if wup_result == None:
+
+            if sim_result > 0.4:
+                message = "Similarity score found to be high at {0}".format(sim_result)
+                metaphor = "Maybe"
+            else:
+                message = "Metaphor due to low similarity score of {0}".format(sim_result)
+                metaphor = True
+
+            # Can't proceed further because comparison of categories needs synsets again :( => can only check with Spacy)
+        else:
+            sim_score = max(wup_result, sim_result)
+            self.sim_scores.append(sim_score)
+            # print("WUP",self.sim_scores)
+
+            if sim_result >= 0.24:
+                message, metaphor = self.compare_categories(subj, obj, subj_syn, attr_syn)
+            else:
+                message = "Metaphor due to low similarity score of {0}".format(sim_result)
+                metaphor = True
+
+        return (message,metaphor)'''
+    
+    def find_accuracy(self, predictions, true_values):
+        return accuracy_score(true_values, predictions)
 
 if __name__ == "__main__":
     obj = MetaphorUtil()

@@ -3,7 +3,6 @@ import spacy
 import sys
 import os
 import pandas as pd
-from sklearn.metrics import accuracy_score
 from sklearn.model_selection import train_test_split
 import time
 # print(__name__)
@@ -61,59 +60,6 @@ class NounMetaphor(MetaphorUtil):
                 metaphor = False
         
         return (message, metaphor)
-    
-    def return_similarities(self, obj, subj_syn, subj):
-        attr_syn = self.return_synsets(obj)
-        # print(attr_syn)
-        index_subj = self.index_synset(subj_syn, subj)
-        index_obj = self.index_synset(attr_syn, obj)
-
-        # print(index_subj, index_obj)
-
-        if index_obj == -1 or index_subj == -1:
-            sim_result = self.spacy_similarity(subj, obj)
-            return (sim_result, 0.00)
-        else:
-            wup_result = self.wu_palmer_similarity(subj_syn, index_subj, attr_syn, index_obj)[0]
-            sim_result = self.spacy_similarity(subj, obj)
-
-            return (sim_result, wup_result)
-        
-    def return_similarity_score(self, obj, subj_syn, subj, code = 1):
-        # Driver function to check if two nouns form a noun metaphor
-
-        sim_result, wup_result = self.return_similarities(obj, subj_syn, subj)
-
-        if code == 2:
-            return (sim_result, wup_result)
-
-        weighted_score = self.spacy_weight*sim_result + self.wupalmer_weight*wup_result
-
-        return weighted_score
-
-        '''
-        if wup_result == None:
-
-            if sim_result > 0.4:
-                message = "Similarity score found to be high at {0}".format(sim_result)
-                metaphor = "Maybe"
-            else:
-                message = "Metaphor due to low similarity score of {0}".format(sim_result)
-                metaphor = True
-
-            # Can't proceed further because comparison of categories needs synsets again :( => can only check with Spacy)
-        else:
-            sim_score = max(wup_result, sim_result)
-            self.sim_scores.append(sim_score)
-            # print("WUP",self.sim_scores)
-
-            if sim_result >= 0.24:
-                message, metaphor = self.compare_categories(subj, obj, subj_syn, attr_syn)
-            else:
-                message = "Metaphor due to low similarity score of {0}".format(sim_result)
-                metaphor = True
-
-        return (message,metaphor)'''
 
     def noun_metaphor_util(self, doc, code=0):
         # Utility funtion that extracts pos dependencies for the sentence and extracts the 2 nouns
@@ -132,7 +78,7 @@ class NounMetaphor(MetaphorUtil):
             for child in aux_verb.children:
                 if child.dep_ == "nsubj":
                     subj = child.text
-                    subj_syn = self.return_synsets(subj)      
+                    # subj_syn = self.return_synsets(subj)      
 
             obj_flag = 0
             for child in aux_verb.children:    
@@ -154,17 +100,17 @@ class NounMetaphor(MetaphorUtil):
                 return ("No noun metaphors found!",None)
             
             if code == 1: # FINDING OPTIMAL WEIGHTS
-                final_score = self.return_similarity_score(dep, subj_syn, subj) 
+                final_score = self.return_similarity_score(subj, dep) 
                 if final_score > self.threshold:
                     return ("N", final_score)
                 else:
                     return ("Y", final_score)
             
             elif code == 2: # ADD SIM TO CSV
-                return self.return_similarity_score(dep, subj_syn, subj, code = 2)
+                return self.return_similarity_score(subj, dep, code = 2)
 
             else:
-                similarity = self.return_similarity_score(dep, subj_syn, subj)
+                similarity = self.return_similarity_score(subj, dep)
 
                 if similarity < self.threshold:
                     self.metaphors.append(("{0} and {1} could be metaphorical as similarity score is low".format(subj, dep),"Y"))
@@ -195,12 +141,10 @@ class NounMetaphor(MetaphorUtil):
        
         with open("nm_data/NM_data.txt","r") as file:
             data = list(map(lambda x: x.strip("\n"),file.readlines()))
-
-        NM_Trial = NounMetaphor()
         
         for text in data:
-          NM_Trial.text = text
-          spac, wup = NM_Trial.noun_metaphor_util(code = 2)
+          doc = nlp(text)
+          spac, wup = self.noun_metaphor_util(doc, code = 2)
 
         spacy_scores.append(spac)
         wup_scores.append(wup)
@@ -211,9 +155,6 @@ class NounMetaphor(MetaphorUtil):
 
         df.to_csv("nm_data/NM_similarities.csv")
     
-    def find_accuracy(self, predictions, true_values):
-        return accuracy_score(true_values, predictions)
-
     def train(self,data, true_values):
 
         # train, test = train_test_split()

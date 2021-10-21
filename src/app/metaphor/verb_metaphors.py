@@ -1,8 +1,11 @@
 import spacy
 import sys
-import os
 from nltk.tokenize import word_tokenize
 from nltk import pos_tag
+import numpy 
+import pandas as pd
+from sklearn.model_selection import train_test_split
+import time
 
 # ONLY works for <nsubj> <ROOT VERB> <prep> <dobj/pobj> patterns where <prep> may or may not be present
 
@@ -16,12 +19,16 @@ nlp = spacy.load("en_core_web_sm")
 
 class VerbMetaphor(MetaphorUtil):
 
-    def __init__(self, text):
+    def __init__(self, text='', sp_w = 0.00, wp_w = 0.00, threshold = 0.00):
         self.text = text
         self.dependencies = {} # Overwritten for every sentence
         self.metaphors = [] # Overwritten for every sentence
         # self.paragraph = paragraph
-        self.sim_scores = []
+        # Set all three to optimum by default so direct detection can be done
+        self.spacy_weight = sp_w
+        self.wupalmer_weight = wp_w
+        self.threshold = threshold
+        # self.paragraph = paragraph
 
     def compare_categories(self, verb, object, verb_syn, obj_syn):
         metaphor = False
@@ -46,52 +53,7 @@ class VerbMetaphor(MetaphorUtil):
         
         return (message, metaphor)
     
-    def is_verb_metaphor(self):
-        # try:
-        verb_syn = self.return_synsets(self.dependencies['ROOT'])
-        obj_syn = self.return_synsets(self.dependencies['obj'])
-
-        verb = self.dependencies['ROOT']
-        obj = self.dependencies['obj']
-        
-        index_verb = self.index_synset(verb_syn, self.dependencies['ROOT'])
-        index_obj = self.index_synset(obj_syn, self.dependencies['obj'])
-
-        if index_obj == -1 or index_verb == -1:
-            sim_result = self.spacy_similarity(verb, obj)
-
-            if sim_result > 0.4:
-                message = "Similarity score found to be high at {0}".format(sim_result)
-                metaphor = "Maybe"
-            else:
-                message = "Metaphor due to low similarity score of {0}".format(sim_result)
-                metaphor = True
-
-            # Can't proceed further because comparison of categories needs synsets again :( => can only check with Spacy)
-
-            # if index_obj == -1:
-            #     synset_err = obj
-            # else:
-            #     synset_err = subj
-            # print("Error: Synsets not found for {0}".format(synset_err))
-            # return ("The algorithm could not detect any metaphors in this sentence!", None)
-        else:
-        
-            wup_result = self.wu_palmer_similarity(verb_syn, index_verb, obj_syn, index_obj)
-            sim_result = self.spacy_similarity(verb, obj)
-
-            sim_score = max(wup_result, sim_result)
-            self.sim_scores.append(sim_score)
-
-            if sim_score < 0.21177: 
-                metaphor = True
-                message = "Metaphor due to low similarity score of {0}".format(sim_score)
-            else:
-                message, metaphor = self.compare_categories(verb, obj, verb_syn, obj_syn)
-
-        return (message, metaphor)
-    
-    def verb_metaphor_util(self, doc):
+    def verb_metaphor_util(self, doc, code=0):
         for token in doc:
             if token.dep_ == "ROOT":
                 nltk_tokens = word_tokenize(self.text)
@@ -121,18 +83,125 @@ class VerbMetaphor(MetaphorUtil):
             return
         
         # print(self.dependencies)
+        verb = self.dependencies['ROOT']
+        obj = self.dependencies['obj']
 
-        msg, is_metaphor = self.is_verb_metaphor()        
-        if is_metaphor == True:
-            self.metaphors.append(("{0} and {1} could be metaphorical".format(self.dependencies['ROOT'], self.dependencies['obj']),msg))
+        if code == 1: # FINDING OPTIMAL WEIGHTS
+                final_score = self.return_similarity_score(verb, obj, code) 
+                if final_score > self.threshold:
+                    return ("N", final_score)
+                else:
+                    return ("Y", final_score)
+            
+        elif code == 2: # ADD SIM TO CSV
+            return self.return_similarity_score(verb, obj, code = 2)
 
+        else:
+            similarity = self.return_similarity_score(verb, obj)
+
+            if similarity < self.threshold:
+                self.metaphors.append(("{0} and {1} could be metaphorical as similarity score is low".format(verb, obj),"Y"))
+            else:
+                self.metaphors.append(("{0} and {1} are probably not metaphorical as similarity score is high".format(verb, obj),"N"))
+
+        # msg, is_metaphor = self.is_verb_metaphor()        
+        # if is_metaphor == True:
+        #     self.metaphors.append(("{0} and {1} could be metaphorical".format(self.dependencies['ROOT'], self.dependencies['obj']),msg))
+
+    
+    def add_individual_scores(self):
+        spacy_scores = []
+        wup_scores = []
+       
+        with open("vm_data/VM_data.txt","r") as file:
+            data = list(map(lambda x: x.strip("\n"),file.readlines()))
+        
+        for text in data:
+          doc = nlp(text)
+          spac, wup = self.verb_metaphor_util(doc, code = 2)
+
+        spacy_scores.append(spac)
+        wup_scores.append(wup)
+
+        # print(spacy_scores)
+        data = {"Text": data, "Spacy":spacy_scores, "WUP": wup_scores}
+        df = pd.DataFrame(data)
+
+        df.to_csv("vm_data/VM_similarities.csv")
+
+    
+    def train(self,data, true_values):
+
+        # train, test = train_test_split()
+        # print(data)
+        max_acc = 0.00
+        best_threshold = 0.00
+        optimal_weights = (0.00,0.00)
+
+        new_threshold = 0.00
+
+        for spw in numpy.arange(0,1,0.001):
+            wpw = 1 - spw
+            self.threshold = new_threshold, 
+            self.spacy_weight =spw
+            self.wupalmer_weight =wpw
+
+            predictions = []
+            scores = []
+
+            for text in data:
+                # print()
+                # print("---------------------------------------------------")
+                # print(text)
+                # self.text = text
+                doc = nlp(text)
+                self.dependencies = {}
+                pred,score = self.verb_metaphor_util(doc, code=1)
+
+                predictions.append(pred)
+                scores.append(score)
+
+            new_threshold = sum(scores)/len(scores)
+            
+            acc = self.find_accuracy(predictions, true_values)
+            if acc > max_acc:
+                max_acc = acc
+                best_threshold = new_threshold
+                optimal_weights = (spw, wpw)
+        
+        print("Maximum Accuracy:", max_acc)
+        print("Optimal Threshold:", best_threshold)
+        print("Optimal Weights:", optimal_weights)
+
+        self.threshold = best_threshold
+        self.spacy_weight, self.wupalmer_weight = optimal_weights
+
+    def test(self, data, true_values):
+        scores = []
+        predictions = []
+
+        for text in data:
+                # print()
+                # print("---------------------------------------------------")
+                # print(text)
+                # self.text = text
+                doc = nlp(text)
+                self.dependencies = {}
+                pred,score = self.verb_metaphor_util(doc, code=1)
+
+                predictions.append(pred)
+                scores.append(score)
+
+        print("Weights - Spacy: {0} and Wu-Palmer: {1}".format(self.spacy_weight, self.wupalmer_weight))
+        print("Threshold:",self.threshold)
+        print("Test Accuracy:", self.find_accuracy(predictions, true_values))
     
     def detect_verb_metaphor(self):
         # Driver function
         doc = nlp(self.text)
         self.dependencies = {}
         self.metaphors = []
-        self.verb_metaphor_util(doc)
+        self.verb_metaphor_util(doc, code = 0)
         return self.metaphors
 
 
