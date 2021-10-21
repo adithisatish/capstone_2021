@@ -27,7 +27,7 @@ class NounMetaphor(MetaphorUtil):
 
     # Code 0 => Check if sentence is metaphor, Code 1 => Find individual similarity and add to CSV, Code 2 => Find Optimal weights
 
-    def __init__(self, text = "", sp_w = 0.00, wp_w = 0.00, threshold = 0):
+    def __init__(self, text = "", sp_w = 0.977, wp_w = 0.023, threshold = 0.31047393):
         self.text = text
         self.dependencies = {} # Overwritten for every sentence
         self.metaphors = [] # Overwritten for every sentence
@@ -81,13 +81,6 @@ class NounMetaphor(MetaphorUtil):
         
     def return_similarity_score(self, obj, subj_syn, subj, code = 1):
         # Driver function to check if two nouns form a noun metaphor
-        # print("Is Noun Metaphor")
-        attr_syn = self.return_synsets(obj)
-        # print(attr_syn)
-        index_subj = self.index_synset(subj_syn, subj)
-        index_obj = self.index_synset(attr_syn, obj)
-
-        # print(index_subj, index_obj)
 
         sim_result, wup_result = self.return_similarities(obj, subj_syn, subj)
 
@@ -266,7 +259,27 @@ class NounMetaphor(MetaphorUtil):
 
         self.threshold = best_threshold
         self.spacy_weight, self.wupalmer_weight = optimal_weights
-    
+
+    def test(self, data, true_values):
+        scores = []
+        predictions = []
+
+        for text in data:
+                # print()
+                # print("---------------------------------------------------")
+                # print(text)
+                # self.text = text
+                doc = nlp(text)
+                self.dependencies = {}
+                pred,score = self.noun_metaphor_util(doc, code=1)
+
+                predictions.append(pred)
+                scores.append(score)
+
+        print("Weights - Spacy: {0} and Wu-Palmer: {1}".format(self.spacy_weight, self.wupalmer_weight))
+        print("Threshold:",self.threshold)
+        print("Test Accuracy:", self.find_accuracy(predictions, true_values))
+
     def detect_noun_metaphor(self):
         # Driver function
         doc = nlp(self.text)
@@ -288,17 +301,19 @@ if __name__ == "__main__":
     df = pd.read_csv("nm_data/NM_similarities.csv")
     # print(df['Metaphor'])
 
-    train_X, test_X, train_Y, test_Y = train_test_split(df["Text"],df['Metaphor'], stratify=df["Metaphor"], shuffle=True, test_size=0.10)
+    train_X, test_X, train_Y, test_Y = train_test_split(df["Text"],df['Metaphor'], stratify=df["Metaphor"], shuffle=True, test_size=0.10, random_state=42)
 
     # print(train_X, train_Y)
 
     NM_Trial = NounMetaphor()
     NM_Trial.train(train_X, train_Y)
+    print("\n\n")
+    NM_Trial.test(test_X, test_Y)
     # find_optimal_weights()
 
     print()
     end = time.time()
     print("End Time:", end)
-    print("Time taken to find weights:{0} minutes", (end - start)/60)
+    print("Time taken:{0} minutes", (end - start)/60)
 
 # To find best weights - combo => get average threshold => predict => find accuracy => repeat until optimal weights are found (max accuracy)
