@@ -8,10 +8,15 @@ To run the AllenNLP modes, [PyTorch](https://pytorch.org/) is required (follow t
 Run ```pip install -r requirements.txt``` once all the prerequisites are satisfied.
 
 ### Execution
-To run the integrated program, navigate to the directory and run ```python sentence-deconstructor.py```
+1. Navigate to ```client``` and run ```npm start``` on the terminal.
+2. Navigate to ```src``` and run ```python server.py``` on another terminal.
 
 Note: Refer to the [Instructions](https://github.com/adithisatish/capstone_2021/blob/main/instructions.md) file for detailed directions on how to execute the individual components.
- 
+
+### Tech Specifications
+- Frontend: React
+- Backend: Python (Flask Server)
+- Database for authentication: Firebase
 
 ### Components Implemented
 - Alliterations
