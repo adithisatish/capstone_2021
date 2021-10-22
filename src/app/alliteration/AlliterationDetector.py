@@ -77,27 +77,59 @@ class Alliteration:
         similar_sounds = ['c*k','v*w']
         f_ph = ['f*ph','ph*f']
         r_wr = ["r*wr","wr*r"]
+        n_kn = ["n*kn", "kn*n"]
+        n_gn = ["n*gn", "gn*n"]
         trigram_tuples = {}
         for i in range(len(processed_text)-1):
-            trigram_tuples[i] = processed_text[i][0]+'*' + processed_text[i+1][:2]
+            trigram_tuples[i] = [processed_text[i][0]+'*' + processed_text[i+1][:2], processed_text[i][:2] + '*' + processed_text[i+1][0]]
         
         # print(trigram_tuples)
 
-        for i, trigram in trigram_tuples.items():
-            if trigram[:-1] in similar_sounds or trigram[:-1:-1] in similar_sounds or trigram in f_ph or trigram in r_wr:
+        for i, trigrams in trigram_tuples.items():
+            for trigram in trigrams:
+                if trigram[:-1] in similar_sounds or trigram[:-1:-1] in similar_sounds or trigram[1:] in similar_sounds or trigram[1::-1] in similar_sounds:
                 # print()
-                starting_letter = processed_text[i][0]
-                if starting_letter not in alliterations:
-                    alliterations[starting_letter] = []
-                if processed_text[i] not in alliterations[starting_letter]:
-                    alliterations[starting_letter].append((i,processed_text[i]))
+                    starting_letter = processed_text[i][0]
+                    if starting_letter not in alliterations:
+                        alliterations[starting_letter] = []
+                    if (i, processed_text[i]) not in alliterations[starting_letter]:
+                        alliterations[starting_letter].append((i,processed_text[i]))
 
-                    if i == len(processed_text) - 2:
-                        starting_letter = processed_text[i+1][0]
-                        if starting_letter not in alliterations:
-                            alliterations[starting_letter] = []
-                        if processed_text[i+1] not in alliterations[starting_letter]:
-                            alliterations[starting_letter].append((i+1,processed_text[i+1]))
+                        if i == len(processed_text) - 2:
+                            starting_letter = processed_text[i+1][0]
+                            if starting_letter not in alliterations:
+                                alliterations[starting_letter] = []
+                            if (i+1,processed_text[i+1]) not in alliterations[starting_letter]:
+                                alliterations[starting_letter].append((i+1,processed_text[i+1]))
+
+                if trigram in f_ph or trigram in r_wr or trigram in n_kn or trigram in n_gn:
+
+                    if trigram in f_ph:
+                        key = 'f'
+                    elif trigram in r_wr:
+                        key = 'r'
+                    elif trigram in n_kn or trigram in n_gn:
+                        key = 'n'
+                    # starting_letter = processed_text[i][0]
+                    if key not in alliterations:
+                        alliterations[key] = []
+                    if (i,processed_text[i]) not in alliterations[key]:
+                        alliterations[key].append((i,processed_text[i]))
+
+                        if i!= len(processed_text) - 1:
+                            if (i+1,processed_text[i+1]) not in alliterations[key]:
+                                alliterations[key].append((i+1, processed_text[i+1]))
+
+                        if i == len(processed_text) - 2:
+                            # starting_letter = processed_text[i+1][0]
+                            if key not in alliterations:
+                                alliterations[key] = []
+                            if (i,processed_text[i+1]) not in alliterations[key]:
+                                alliterations[key].append((i+1,processed_text[i+1]))
+                        
+                    else:
+                        if i != len(processed_text)-1 and (i+1,processed_text[i+1]) not in alliterations[key]:
+                            alliterations[key].append((i+1, processed_text[i+1]))
 
         # return alliterations
 
@@ -106,17 +138,19 @@ class Alliteration:
         alliterations = {}
         alliteration_list = []
 
+        # print(processed_text)
+
         self.consecutive_word_checker(processed_text,alliterations)
         self.phonetic_checker(processed_text,alliterations)
         
         for letter, alliteration in alliterations.items():
-            new_alliteration = {"begins_with": letter, "indexed": alliteration}
+            new_alliteration = {"alphabet_involved": letter, "indexed": alliteration}
 
             list_of_alliterations = list(map(lambda x: x[1],sorted(alliteration, key= lambda x: x[0])))
             joined_alliteration = '-'.join(list_of_alliterations)
 
             new_alliteration['joined'] = joined_alliteration
-            new_alliteration["explanation"] = self.explanation(new_alliteration['begins_with'], new_alliteration['joined'])
+            new_alliteration["explanation"] = self.explanation(new_alliteration['alphabet_involved'], new_alliteration['joined'])
             # print("New:",new_alliteration)
             alliteration_list.append(new_alliteration)
         
@@ -143,7 +177,7 @@ class Alliteration:
             print("**************************")
             if len(sent_allit['alliteration']) != 0:
                 for allit in sent_allit['alliteration']:
-                    print("Begins with:", allit['begins_with'])
+                    print("Alphabet Involved:", allit['alphabet_involved'])
                     print("Alliteration:", allit['joined'])
                     print(allit['explanation'])
                     print("___________________________________")
@@ -158,7 +192,7 @@ class Alliteration:
 
 if __name__ == "__main__":
     # text = input("Enter your sentence: ")
-    text = ["I knew you were trouble","Dana deserved to dance with the kind king."]
+    text = ["Ninjas gnashed their knives and nailed their targets.","She wrapped the rose neatly","Dana deserved to dance with the kind king.","She rarely reads; she’d rather write her own books.","The red roses were wrapped in ribbons."]
     # text = "the cruel king was kind in real life"
     
     allit_obj = Alliteration(text, 1)

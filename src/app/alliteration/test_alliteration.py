@@ -22,7 +22,7 @@ double_allit = []
 for i, alliteration in enumerate(alliterations):
     cur_letters = []
     for allit in alliteration["alliteration"]:
-        cur_letters.append(allit['begins_with'])
+        cur_letters.append(allit['alphabet_involved'])
     
     if len(cur_letters)==1:
         predicted_letters.append(cur_letters[0])
@@ -33,7 +33,8 @@ for i, alliteration in enumerate(alliterations):
         predicted_letters.append(label)
         double_allit.append((sentences[i],actual_letters[i],label))
 
-
+# check = pd.DataFrame({"Text":sentences, "True":actual_letters, "Predicted":predicted_letters})
+# check.to_csv("check_letters.csv")
 print("Accuracy with respect to alliteration letter: {0:2f}%".format(float(accuracy_score(actual_letters, predicted_letters)*100)))
 # print()
 # print("Incorrectly Predicted:")

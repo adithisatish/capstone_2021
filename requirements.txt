@@ -12,3 +12,4 @@ pronouncing
 allennlp
 allennlp-models
 beautifulsoup4
+eli5
