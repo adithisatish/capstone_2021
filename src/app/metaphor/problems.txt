@@ -4,6 +4,7 @@
 4. Context is not taken into consideration in the algorithm 
 5. Proper nouns don't have synsets => cannot be detected
 6. Sentences in the passive voice cannot be detected
+7. ONLY simple sentences work
 
 
 Note: Pronouns pose an issue in general as there is no context. 

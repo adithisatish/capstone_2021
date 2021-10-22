@@ -114,9 +114,9 @@ class NounMetaphor(MetaphorUtil):
                 similarity = self.return_similarity_score(subj, dep)
 
                 if similarity < self.threshold:
-                    self.metaphors.append(("{0} and {1} could be metaphorical as similarity score is low".format(subj, dep),"Y"))
+                    self.metaphors.append(((subj, dep),"Y", similarity))
                 else:
-                    self.metaphors.append(("{0} and {1} are probably not metaphorical as similarity score is high".format(subj, dep),"N"))
+                    self.metaphors.append(((subj, dep),"N", similarity))
 
 
 

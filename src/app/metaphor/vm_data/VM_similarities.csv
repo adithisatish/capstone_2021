@@ -1,0 +1,80 @@
+,Text,Spacy,WUP,Metaphor
+0,She ate her feelings.,0.224416241,0.235294118,Y
+1,"Broken in flight, the bird scythed down to the waiting moor.",0.072794467,0.133333333,Y
+2,He cut his friend off mid sentence.,0.228452191,0.166666667,Y
+3,I carried his name.,0.21079208,0.2,Y
+4,Inflation ate all my savings,0.069276772,0.210526316,Y
+5,He shot down all of my arguments.,0.233305618,0.142857143,Y
+6,My heart fills with pleasure,0.376321286,0.333333333,Y
+7,My heart dances with daffodils.,0.12146315,0.421052632,Y
+8,The breaking news stirred my excitement,0.345775694,0.153846154,Y
+9,She held views that were downright disgusting.,0.112676091,0.166666667,Y
+10,His head was spinning with ideas,0.23001802,0.375,Y
+11,It's raining cats and dogs,0.247341082,0.111111111,Y
+12,She melted into his arms when he apologized.,0.25194636,0.133333333,Y
+13,She watched in horror as the dead bird floated down from the sky.,0.436511636,0.181818182,Y
+14,"He cut me off, yet still I carried his name.",0.379834563,0,Y
+15,"For souls it is death to become water, and for water death to become earth.",0.198507383,0,Y
+16,She fights with her heart's desire. ,0.206244543,0.307692308,Y
+17,"Whatever it wishes to get, it purchases at the cost of soul.",0.507314146,0.266666667,Y
+18,"Uplift yourself from your lower self, even as an elephant draws himself out of a muddy swamp.",0.440300643,0,Y
+19,Did their brains melt into the back seat?,0.083876163,0.142857143,Y
+20,My mind had no choice but to drift into an elaborate fantasy realm.,0.314892828,0,Y
+21,You should follow your mind.,0.484275788,0.222222222,Y
+22,"You can't take your eyes off his eyes--blue and unblinking, as he confronts the world like a camera.",0.406483889,0.315789474,Y
+23,"Still, she locked them in her mind for an hour.",0.425062239,0,Y
+24,I massaged my brain.,0.159050152,0.142857143,Y
+25,They bleed from their sensitive souls.,0.321102977,0.2,Y
+26,Your hands were making artifacts in the corner of my mind.,0.209045872,0.545454545,Y
+27,One must explore their mind.,0.44950828,0.2,Y
+28,"When you direct your mental spotlight to the basketball passes, it leaves the rest of the world in darkness.",0.461638451,0.133333333,Y
+29,"If we do not kill these zombie ideas once and for all, they will do even more damage next time.",0.322518617,0.266666667,Y
+30,"They killed that idea, as it wasn't working.",0.240038529,0.222222222,Y
+31,"Like butterflies with frayed wings, thoughts fly at me in random and rapid succession.",0.104874156,0.105263158,Y
+32,"tell me, Bird, how soul inhabits the place of fire.",0.77471149,0,Y
+33,how soul dwells there in its trembling?,0.140565112,0.285714286,Y
+34,A person is created by feelings.,0.26723209,0.2,Y
+35,Her feelings were bruised by words.,0.110543191,0.153846154,Y
+36,"Shine on me baby, because it's raining in my heart.",0.221723557,0.166666667,Y
+37,Spiders swing through my heart.,0.251137912,0.266666667,Y
+38,Goldsmith deliberately sipping at the honey-pot of his mind.,0.269847959,0.142857143,Y
+39,"But if I can identify the lizard of envy crawling around in my psyche, I can usually tamp down the ire.",0.128826663,0,Y
+40,"Ayahuasca takes you to the swampland of your soul,",0.507554293,0,Y
+41,About once a month I run across a person who radiates an inner light.,0.271773279,0.133333333,Y
+42,"He told me that, while many people find that walking or jogging shakes ideas loose from the subconscious, he needs to quell all physical activity.",0.552364528,0,Y
+43,She was digging into her psyche.,0.243121326,0.142857143,Y
+44,"In some ways, it's like peeking into the black box of our mind, seeing the puzzle pieces that put our regular perception together.",0.32637164,0,Y
+45,A universe of information swirled around in his brain.,0.13308087,0.181818182,Y
+46,How can I kill a process?,0.216940194,0.4,Y
+47,"In his regime, there were turning wheels in motion.",0.3702209,0.095238095,Y
+48,Diana and Charles were mending their marriage,0.121831112,0.117647059,Y
+49,Sheila went to the house to grab a rake.,0.474673837,0,N
+50,The boy played the piano in the foyer.,0.435299844,0.142857143,N
+51,John visited the White House with his friends.,0.369094521,0.142857143,N
+52,Jill and Tommy held hands at the movies.,0.453472197,0.166666667,N
+53,Dan and Timmy loved their new toys.,0.328151792,0.153846154,N
+54,Terry adores her best friend.,0.563127518,0.2,N
+55,Connor broke the glass in his car and must replace the windshield.,0.241174534,0.25,N
+56,She gained invaluable knowledge from books.,0.459046721,0,N
+57,He is begging for her mother's life.,0.272631288,0.125,N
+58,David is writing a novel about wildlife heritage.,0.519575417,0.222222222,N
+59,You are coming right now at the seminar.,0.273966908,0.166666667,N
+60,She is smiling in front of the audience.,0.390354365,0.117647059,N
+61,They are selling their company's products to people.,0.515000582,0.133333333,N
+62,He apologized to the teachers.,0.177075297,0.166666667,N
+63,He left this bag here and went outside.,0.311729133,0.4,N
+64,We are knowing each other.,0.471305341,0.2,N
+65,Alcohol causes Cancer.,0.501449108,0.19047619,N
+66,He is riding his new bike all-day.,0.710180998,0,N
+67,We are participating in the cultural program.,0.445965141,0.153846154,N
+68,That Aeroplane was flying above the clouds.,0.458990127,0.181818182,N
+69,The police are asking about the incident that happened last night.,0.336820513,0.166666667,N
+70,This museum will close after an hour.,0.351225317,0.25,N
+71,Andrew is playing basketball at the college tournament.,0.461194336,0.583333333,N
+72,She loves exploring the coves down by the ocean. ,0.401098073,0.181818182,N
+73,We're building a new bookshelf. ,0.260792673,0.588235294,N
+74,The cat chased the mouse around the yard.,0.130527884,0.111111111,N
+75,My neighbor will check my mail when I go on vacation.,0.452593982,0.4,N
+76,"In order to collaborate on this project, our team met twice a week.",0.209929556,0,N
+77,"With family overseas, we're lucky that we can communicate through video chats.",0.298137635,0,N
+78,"First, I wrote some sentences.",0.249941498,0,N

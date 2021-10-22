@@ -1,7 +1,8 @@
+from logging import root
 import spacy
 import sys
 from nltk.tokenize import word_tokenize
-from nltk import pos_tag
+from nltk import pos_tag, text
 import numpy 
 import pandas as pd
 from sklearn.model_selection import train_test_split
@@ -19,7 +20,7 @@ nlp = spacy.load("en_core_web_sm")
 
 class VerbMetaphor(MetaphorUtil):
 
-    def __init__(self, text='', sp_w = 0.00, wp_w = 0.00, threshold = 0.00):
+    def __init__(self, text='', sp_w = 0.79, wp_w = 0.20999, threshold = 0.2916637):
         self.text = text
         self.dependencies = {} # Overwritten for every sentence
         self.metaphors = [] # Overwritten for every sentence
@@ -53,38 +54,46 @@ class VerbMetaphor(MetaphorUtil):
         
         return (message, metaphor)
     
-    def verb_metaphor_util(self, doc, code=0):
-        for token in doc:
-            if token.dep_ == "ROOT":
-                nltk_tokens = word_tokenize(self.text)
-                pos_tags = pos_tag(nltk_tokens)
-                self.dependencies['ROOT'] = token.text
-        
+    def get_verb_obj(self, doc):
         sentences = list(doc.sents)
         root_token = sentences[0].root
-
+        verb = root_token.text
+        
         obj_flag = 0
-        for child in root_token.children:
+        obj = None
+        for child in root_token.children:            
             if child.dep_ == "nsubj":
-                self.dependencies['nsubj'] = child.text
+                subject = child.text
             else:
                 if child.dep_ in ["dobj", "pobj"]:
-                    self.dependencies['obj'] = child.text
+                    obj = child.text
                     obj_flag = 1
-                elif child.dep_ == "prep" and 'obj' not in self.dependencies.keys():
+                    break
+                elif child.dep_ in ["prep", "agent"]:
                     prep = child
                     for prep_child in prep.children:
                         if prep_child.dep_ in ["dobj", "pobj"]:
-                            self.dependencies['obj'] = prep_child.text
                             obj_flag = 1
+                            obj = prep_child.text
+                            break
+        return (verb, obj, obj_flag)
+    
+    def verb_metaphor_util(self, doc, code=0):        
+        verb, obj, obj_flag = self.get_verb_obj(doc)
         
         if obj_flag == 0:
-            self.metaphors.append(("No object found in the sentence => Verb metaphors cannot be found!"))
-            return
-        
-        # print(self.dependencies)
-        verb = self.dependencies['ROOT']
-        obj = self.dependencies['obj']
+            print("FLAGGED AS NO OBJECT: ", doc)
+            print("ROOT TOKEN:", verb)
+            print("OBJ:", obj)
+
+        #     self.metaphors.append(("No object found in the sentence => Verb metaphors cannot be found!"))
+            if code == 1:
+                return 0.00
+            elif code == 2:
+                return (0.00, 0.00)
+
+        # print("Verb, Obj", verb, obj)
+        # exit(0)
 
         if code == 1: # FINDING OPTIMAL WEIGHTS
                 final_score = self.return_similarity_score(verb, obj, code) 
@@ -100,9 +109,9 @@ class VerbMetaphor(MetaphorUtil):
             similarity = self.return_similarity_score(verb, obj)
 
             if similarity < self.threshold:
-                self.metaphors.append(("{0} and {1} could be metaphorical as similarity score is low".format(verb, obj),"Y"))
+                self.metaphors.append(((verb, obj),"Y", similarity))
             else:
-                self.metaphors.append(("{0} and {1} are probably not metaphorical as similarity score is high".format(verb, obj),"N"))
+                self.metaphors.append(((verb, obj),"N", similarity))
 
         # msg, is_metaphor = self.is_verb_metaphor()        
         # if is_metaphor == True:
@@ -117,16 +126,17 @@ class VerbMetaphor(MetaphorUtil):
             data = list(map(lambda x: x.strip("\n"),file.readlines()))
         
         for text in data:
-          doc = nlp(text)
-          spac, wup = self.verb_metaphor_util(doc, code = 2)
+            doc = nlp(text)
+            # self.get_verb_obj(doc)
+            spac, wup = self.verb_metaphor_util(doc, code = 2)
 
-        spacy_scores.append(spac)
-        wup_scores.append(wup)
+            # print(text, spac, wup)
+            
+            spacy_scores.append(spac)
+            wup_scores.append(wup)
 
-        # print(spacy_scores)
-        data = {"Text": data, "Spacy":spacy_scores, "WUP": wup_scores}
-        df = pd.DataFrame(data)
-
+        dataset = {"Text": data, "Spacy":spacy_scores, "WUP": wup_scores}
+        df = pd.DataFrame(dataset)
         df.to_csv("vm_data/VM_similarities.csv")
 
     
@@ -206,21 +216,23 @@ class VerbMetaphor(MetaphorUtil):
 
 
 if __name__ == "__main__":
-    start = time.time()
-    print("Start Time:", start)
-    print()
+    VM = VerbMetaphor(text = "She ate her feelings")
+    print(VM.detect_verb_metaphor())
 
-    with open("vm_data/VM_data.txt","r") as file:
-        data = list(map(lambda x: x.strip("\n"),file.readlines()))
+
+    # with open("vm_data/VM_data.txt","r") as file:
+    #     data = list(map(lambda x: x.strip("\n"),file.readlines()))
 
     
-    VM_Trial = VerbMetaphor()
-    VM_Trial.add_individual_scores()
-    
+    # VM_Trial = VerbMetaphor()
+    # VM_Trial.add_individual_scores()
+    # start = time.time()
+    # print("Start Time:", start)
+    # print()
     # df = pd.read_csv("vm_data/VM_similarities.csv")
     # # print(df['Metaphor'])
 
-    # train_X, test_X, train_Y, test_Y = train_test_split(df["Text"],df['Metaphor'], stratify=df["Metaphor"], shuffle=True, test_size=0.10, random_state=42)
+    # train_X, test_X, train_Y, test_Y = train_test_split(df["Text"],df['Metaphor'], stratify=df["Metaphor"], shuffle=True, test_size=0.15, random_state=42)
 
     # # print(train_X, train_Y)
 
@@ -233,6 +245,4 @@ if __name__ == "__main__":
     # print()
     # end = time.time()
     # print("End Time:", end)
-    # print("Time taken:{0} minutes", (end - start)/60)
-
-    # print(sum(VM_Trial.sim_scores)/len(VM_Trial.sim_scores))
+    # print("Time taken:{0} minutes".format((end - start)/60))
