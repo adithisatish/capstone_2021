@@ -17,7 +17,7 @@ nlp = spacy.load("en_core_web_sm")
 
 class AdjectiveMetaphor(MetaphorUtil):
 
-    def __init__(self, text='', sp_w = 0.00, wp_w = 0.00, threshold = 0.00):
+    def __init__(self, text='', sp_w = 0.962, wp_w = 0.038, threshold = 0.30554027):
         self.text = text
         self.dependencies = {} # Overwritten for every sentence
         self.metaphors = [] # Overwritten for every sentence
@@ -100,9 +100,23 @@ class AdjectiveMetaphor(MetaphorUtil):
             if noun:
                 noun_adj_pairs.update({noun:adj})
         
+        # print(doc, noun_adj_pairs)
+        flag = 0
+        no_adj_nouns = []
+        for noun in noun_adj_pairs:
+            if len(noun_adj_pairs[noun]) == 0:
+                no_adj_nouns.append(noun)
+
+        for noun in no_adj_nouns:
+            noun_adj_pairs.pop(noun)
+        
+        if len(noun_adj_pairs)==0:
+            print(doc)
+            exit(0)
+        
         for noun in noun_adj_pairs:
             for adjective in noun_adj_pairs[noun]:
-
+                try:
                     if code == 1: # FINDING OPTIMAL WEIGHTS
                         final_score = self.return_similarity_score(noun, adjective, code) 
                         if final_score > self.threshold:
@@ -110,36 +124,24 @@ class AdjectiveMetaphor(MetaphorUtil):
                         else:
                             return ("Y", final_score)
             
-                    elif code == 2: # ADD SIM TO CSV
+                    elif code == 2: 
                         return self.return_similarity_score(noun, adjective, code = 2)
                     
                     else:
                         similarity = self.return_similarity_score(noun, adjective)
 
                         if similarity < self.threshold:
-                            self.metaphors.append(("{0} and {1} could be metaphorical as similarity score is low".format(noun, adjective),"Y"))
+                            self.metaphors.append(((noun, adjective),"Y", similarity))
                         else:
-                            self.metaphors.append(("{0} and {1} are probably not metaphorical as similarity score is high".format(noun, adjective),"N"))
-    
-    def add_individual_scores(self):
-        spacy_scores = []
-        wup_scores = []
-       
-        with open("am_data/AM_data.txt","r") as file:
-            data = list(map(lambda x: x.strip("\n"),file.readlines()))
+                            self.metaphors.append(((noun, adjective),"N",similarity))
+                except Exception as e:
+                    print("Error:",e)
+                    print("Sentence:", doc)
+                    exc_type, exc_obj, exc_tb = sys.exc_info()
+                    fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+                    print(exc_type, fname, exc_tb.tb_lineno)
+                    exit(0)
         
-        for text in data:
-          doc = nlp(text)
-          spac, wup = self.verb_metaphor_util(doc, code = 2)
-
-        spacy_scores.append(spac)
-        wup_scores.append(wup)
-
-        # print(spacy_scores)
-        data = {"Text": data, "Spacy":spacy_scores, "WUP": wup_scores}
-        df = pd.DataFrame(data)
-
-        df.to_csv("am_data/AM_similarities.csv")
     
     def train(self,data, true_values):
 
@@ -166,6 +168,7 @@ class AdjectiveMetaphor(MetaphorUtil):
                 # print(text)
                 # self.text = text
                 doc = nlp(text)
+                # print(doc, doc.noun_chunks)
                 self.dependencies = {}
                 pred,score = self.adj_metaphor_util(doc, code=1)
 
@@ -212,41 +215,50 @@ class AdjectiveMetaphor(MetaphorUtil):
         doc = nlp(self.text)
         self.dependencies = {}
         self.metaphors = []
-        self.adj_metaphor_util(doc)
+        self.adj_metaphor_util(doc, code=0)
         return self.metaphors
 
 
 if __name__ == "__main__":
+
+    # AM = AdjectiveMetaphor()
+    # dataset = pd.read_csv("am_data/adjectivemetaphors.csv")
+    # texts = dataset["Text"]
+
+    # spacy_score = []
+    # wup_score = []
+
+    # for text in texts:
+    #     doc = nlp(text)
+    #     sp, wp = AM.adj_metaphor_util(doc, code=2)
+    #     spacy_score.append(sp)
+    #     wup_score.append(wp)
+
+    # dataset["Spacy"] = spacy_score
+    # dataset["WUP"] = wup_score
+
+    # dataset.to_csv("am_data/checkAM.csv")
+    
     start = time.time()
     print("Start Time:", start)
     print()
+    df = pd.read_csv("am_data/adjectivemetaphors.csv")
+    # print(df['Metaphor'])
 
-    with open("vm_data/VM_data.txt","r") as file:
-        data = list(map(lambda x: x.strip("\n"),file.readlines()))
+    train_X, test_X, train_Y, test_Y = train_test_split(df["Text"],df['Metaphor'], stratify=df["Metaphor"], shuffle=True, test_size=0.15, random_state=42)
 
-    
+    # print(train_X, train_Y)
+
     AM_Trial = AdjectiveMetaphor()
-    AM_Trial.add_individual_scores()
-    
-    # df = pd.read_csv("am_data/AM_similarities.csv")
-    # # print(df['Metaphor'])
+    AM_Trial.train(train_X, train_Y)
+    print("\n\n")
+    AM_Trial.test(test_X, test_Y)
+    # find_optimal_weights()
 
-    # train_X, test_X, train_Y, test_Y = train_test_split(df["Text"],df['Metaphor'], stratify=df["Metaphor"], shuffle=True, test_size=0.10, random_state=42)
-
-    # # print(train_X, train_Y)
-
-    # AM_Trial = AdjectiveMetaphor()
-    # AM_Trial.train(train_X, train_Y)
-    # print("\n\n")
-    # AM_Trial.test(test_X, test_Y)
-    # # find_optimal_weights()
-
-    # print()
-    # end = time.time()
-    # print("End Time:", end)
-    # print("Time taken:{0} minutes", (end - start)/60)_name__ == "__main__":
-    
-    
+    print()
+    end = time.time()
+    print("End Time:", end)
+    print("Time taken:{0} minutes".format((end - start)/60))  
     # OLD CODE
     # texts = ["The old woman had a cold heart."]
     # AM_Trial = AdjectiveMetaphor(None)

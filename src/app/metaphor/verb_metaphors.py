@@ -117,29 +117,6 @@ class VerbMetaphor(MetaphorUtil):
         # if is_metaphor == True:
         #     self.metaphors.append(("{0} and {1} could be metaphorical".format(self.dependencies['ROOT'], self.dependencies['obj']),msg))
 
-    
-    def add_individual_scores(self):
-        spacy_scores = []
-        wup_scores = []
-       
-        with open("vm_data/VM_data.txt","r") as file:
-            data = list(map(lambda x: x.strip("\n"),file.readlines()))
-        
-        for text in data:
-            doc = nlp(text)
-            # self.get_verb_obj(doc)
-            spac, wup = self.verb_metaphor_util(doc, code = 2)
-
-            # print(text, spac, wup)
-            
-            spacy_scores.append(spac)
-            wup_scores.append(wup)
-
-        dataset = {"Text": data, "Spacy":spacy_scores, "WUP": wup_scores}
-        df = pd.DataFrame(dataset)
-        df.to_csv("vm_data/VM_similarities.csv")
-
-    
     def train(self,data, true_values):
 
         # train, test = train_test_split()
@@ -219,17 +196,10 @@ if __name__ == "__main__":
     VM = VerbMetaphor(text = "She ate her feelings")
     print(VM.detect_verb_metaphor())
 
-
-    # with open("vm_data/VM_data.txt","r") as file:
-    #     data = list(map(lambda x: x.strip("\n"),file.readlines()))
-
-    
-    # VM_Trial = VerbMetaphor()
-    # VM_Trial.add_individual_scores()
     # start = time.time()
     # print("Start Time:", start)
     # print()
-    # df = pd.read_csv("vm_data/VM_similarities.csv")
+    # df = pd.read_csv("vm_data/verbmetaphors.csv")
     # # print(df['Metaphor'])
 
     # train_X, test_X, train_Y, test_Y = train_test_split(df["Text"],df['Metaphor'], stratify=df["Metaphor"], shuffle=True, test_size=0.15, random_state=42)

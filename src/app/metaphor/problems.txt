@@ -5,6 +5,7 @@
 5. Proper nouns don't have synsets => cannot be detected
 6. Sentences in the passive voice cannot be detected
 7. ONLY simple sentences work
+8. Adjective metaphors work only for sentences that have atleast one <adj> <noun> pair in that order.
 
 
 Note: Pronouns pose an issue in general as there is no context. 

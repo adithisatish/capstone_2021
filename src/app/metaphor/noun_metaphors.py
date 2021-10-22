@@ -135,26 +135,6 @@ class NounMetaphor(MetaphorUtil):
             return None
 
         # return self.metaphors
-
-    def add_individual_scores(self):
-        spacy_scores = []
-        wup_scores = []
-       
-        with open("nm_data/NM_data.txt","r") as file:
-            data = list(map(lambda x: x.strip("\n"),file.readlines()))
-        
-        for text in data:
-          doc = nlp(text)
-          spac, wup = self.noun_metaphor_util(doc, code = 2)
-
-        spacy_scores.append(spac)
-        wup_scores.append(wup)
-
-        # print(spacy_scores)
-        data = {"Text": data, "Spacy":spacy_scores, "WUP": wup_scores}
-        df = pd.DataFrame(data)
-
-        df.to_csv("nm_data/NM_similarities.csv")
     
     def train(self,data, true_values):
 
@@ -241,7 +221,7 @@ if __name__ == "__main__":
     # start = time.time()
     # print("Start Time:", start)
     # print()
-    # df = pd.read_csv("nm_data/NM_similarities.csv")
+    # df = pd.read_csv("nm_data/nounmetaphors.csv")
     # # print(df['Metaphor'])
 
     # train_X, test_X, train_Y, test_Y = train_test_split(df["Text"],df['Metaphor'], stratify=df["Metaphor"], shuffle=True, test_size=0.10, random_state=42)
@@ -257,4 +237,4 @@ if __name__ == "__main__":
     # print()
     # end = time.time()
     # print("End Time:", end)
-    # print("Time taken:{0} minutes", (end - start)/60)
+    # print("Time taken:{0} minutes".format((end - start)/60))
