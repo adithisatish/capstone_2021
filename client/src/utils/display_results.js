@@ -278,11 +278,83 @@ const RhymeScheme = ({obj}) => {
             {res}</React.Fragment>
     }
 
-    return <p className="font-bold text-lg">No Voice Found!</p>
+    return <p className="font-bold text-lg">No Rhyme Scheme Found!</p>
 }
+
+const Metaphor = ({obj}) => {
+// Sentence:
+// Potential Noun Metaphors 
+// 1. <word1> and <word2>: exp
+// Potential Verb Metaphors
+// Potential Adjective Metaphors
+    const [page, setPage] = React.useState(0)
+
+    // console.log(obj)
+
+    const changePage = (delta) => {
+        setPage(Math.max(0, Math.min(page+delta, obj.length-1))) //max(0, min(page+delta, length))
+    }
+
+    const res = (
+            <React.Fragment>
+                <div>
+                    <div className="flex items-center">
+                        <div className="flex-grow"></div>
+                        <div className="flex items-center w-40 ">
+                            <div className="cursor-pointer flex flex-grow items-end flex-col" onClick={() => changePage(-1)}>
+                                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-chevron-left" width="44" height="44" viewBox="0 0 24 24" stroke-width="1.5" stroke="#2c3e50" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                <polyline points="15 6 9 12 15 18" />
+                                </svg>
+                            </div>
+                            <div>
+                                <p className="text-center">{page+1}/{obj.length}</p>
+                            </div>
+                            <div className="flex-grow cursor-pointer" onClick={() => changePage(1)}>
+                                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-chevron-right" width="44" height="44" viewBox="0 0 24 24" stroke-width="1.5" stroke="#2c3e50" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                <polyline points="9 6 15 12 9 18" />
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                    <p className="text-lg">{page+1}. {obj[page].sentence}</p>
+
+                    <p className="text-md font-bold mt-2">Possible Adjective Metaphors:</p>
+                    {obj[page].adj_metaphors.map((metaphor_maybe, index) => {
+                        if(["Y", "N"].includes(metaphor_maybe.result[1])){
+                            return <p className="ml-4">{index+1}. {metaphor_maybe.result[0].join(" and ")}: <span className="italic">{getMarkdown(metaphor_maybe.explanation)}</span></p>
+                        }
+                        return <p className = "italic ml-4">{getMarkdown(metaphor_maybe.explanation)}</p>
+                    })}
+
+                    <p className="text-md font-bold mt-2">Possible Noun Metaphors:</p>
+                    {obj[page].noun_metaphors.map((metaphor_maybe, index) => {
+                        if(["Y", "N"].includes(metaphor_maybe.result[1])){
+                            return <p className="ml-4">{index+1}. {metaphor_maybe.result[0].join(" and ")}: <span className="italic">{getMarkdown(metaphor_maybe.explanation)}</span></p>
+                        }
+                        return <p className = "italic ml-4">{getMarkdown(metaphor_maybe.explanation)}</p>
+                    })}
+
+                    <p className="text-md font-bold mt-2">Possible Verb Metaphors:</p>
+                    {obj[page].verb_metaphors.map((metaphor_maybe, index) => {
+                        if(["Y", "N"].includes(metaphor_maybe.result[1])){
+                            return <p className="ml-4">{index+1}. {metaphor_maybe.result[0].join(" and ")}: <span className="italic">{getMarkdown(metaphor_maybe.explanation)}</span></p>
+                        }
+                        return <p className = "italic ml-4">{getMarkdown(metaphor_maybe.explanation)}</p>
+                    })}
+                </div>
+            </React.Fragment>
+        )
+
+return res
+
+}
+
 
 const OutputSelector = (obj, type) => {
     // const display_result = {Alliteration, SPO}
+    console.log(type)
     switch(type){
         case "SPO":
             return <SPO obj={obj}></SPO>
@@ -296,6 +368,8 @@ const OutputSelector = (obj, type) => {
             return <Voice obj = {obj}></Voice>
         case "Rhyme Scheme":
             return <RhymeScheme obj = {obj}></RhymeScheme>
+        case "Metaphor":
+            return <Metaphor obj = {obj}></Metaphor>
         default:
             return null
     }

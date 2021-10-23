@@ -23,9 +23,9 @@ class Metaphor:
         if result[0] == (None, None):
             exp = result[1].split(": ")[1]
         elif result[1] == "Y":
-            exp = "__{0}__ and __{1}__ are **{2} metaphors** because they are **dissimilar** (i.e. not generally used in the same context) words being compared with each other".format(result[0][0], result[0][1], type)
+            exp = "__{0}__ and __{1}__ could be **{2} metaphors** because they are **dissimilar** (i.e. not generally used in the same context) words being compared with each other.".format(result[0][0], result[0][1], type)
         else:
-            exp = "__{0}__ and __{1}__ are NOT **{2} metaphors** because they are **similar** (i.e. generally used in the same context) words being compared with each other".format(result[0][0], result[0][1], type)
+            exp = "__{0}__ and __{1}__ might NOT be **{2} metaphors** because they are **similar** (i.e. generally used in the same context) words being compared with each other.".format(result[0][0], result[0][1], type)
         
         return exp
 
@@ -37,8 +37,8 @@ class Metaphor:
         metaphor_exp = []
         for result in nm_result:
             met_exp = {}
-            met_exp["Result"] = result
-            met_exp["Explanation"] = self.explanation(result, "NOUN")
+            met_exp["result"] = result
+            met_exp["explanation"] = self.explanation(result, "NOUN")
             metaphor_exp.append(met_exp)
 
         self.noun_metaphors.append(noun_met)
@@ -52,8 +52,8 @@ class Metaphor:
         metaphor_exp = []
         for result in vm_result:
             met_exp = {}
-            met_exp["Result"] = result
-            met_exp["Explanation"] = self.explanation(result, "VERB")
+            met_exp["result"] = result
+            met_exp["explanation"] = self.explanation(result, "VERB")
             metaphor_exp.append(met_exp)
 
         self.verb_metaphors.append(verb_met)
@@ -68,8 +68,8 @@ class Metaphor:
         metaphor_exp = []
         for result in am_result:
             met_exp = {}
-            met_exp["Result"] = result
-            met_exp["Explanation"] = self.explanation(result, "ADJECTIVE")
+            met_exp["result"] = result
+            met_exp["explanation"] = self.explanation(result, "ADJECTIVE")
             metaphor_exp.append(met_exp)
 
         self.adj_metaphors.append(adj_met)
