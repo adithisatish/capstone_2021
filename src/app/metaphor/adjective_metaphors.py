@@ -111,8 +111,8 @@ class AdjectiveMetaphor(MetaphorUtil):
             noun_adj_pairs.pop(noun)
         
         if len(noun_adj_pairs)==0:
-            print(doc)
-            exit(0)
+            self.metaphors.append(((None, None),"E: Uh-oh, no noun-adjective pairs were found! Our system is unable to detect any metaphors in this sentence!", None))
+            return
         
         for noun in noun_adj_pairs:
             for adjective in noun_adj_pairs[noun]:
@@ -140,7 +140,8 @@ class AdjectiveMetaphor(MetaphorUtil):
                     exc_type, exc_obj, exc_tb = sys.exc_info()
                     fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
                     print(exc_type, fname, exc_tb.tb_lineno)
-                    exit(0)
+                    self.metaphors.append(((None, None),"E: Uh-oh, no noun-adjective pairs were found! Our system is unable to detect any metaphors in this sentence!", None))
+                    return
         
     
     def train(self,data, true_values):
@@ -220,45 +221,43 @@ class AdjectiveMetaphor(MetaphorUtil):
 
 
 if __name__ == "__main__":
-
-    # AM = AdjectiveMetaphor()
-    # dataset = pd.read_csv("am_data/adjectivemetaphors.csv")
-    # texts = dataset["Text"]
-
-    # spacy_score = []
-    # wup_score = []
-
-    # for text in texts:
-    #     doc = nlp(text)
-    #     sp, wp = AM.adj_metaphor_util(doc, code=2)
-    #     spacy_score.append(sp)
-    #     wup_score.append(wp)
-
-    # dataset["Spacy"] = spacy_score
-    # dataset["WUP"] = wup_score
-
-    # dataset.to_csv("am_data/checkAM.csv")
     
-    start = time.time()
-    print("Start Time:", start)
-    print()
-    df = pd.read_csv("am_data/adjectivemetaphors.csv")
-    # print(df['Metaphor'])
+    texts = ["The white voice spoke to me and whispered horrible things.",\
+            "Forget the grey past and focus on the golden future.",\
+            "I met a homeless person in the city.",\
+            "His mind was a synthetic sky: blue, blank and cloudless.",\
+            "The old woman had a cold heart."]
 
-    train_X, test_X, train_Y, test_Y = train_test_split(df["Text"],df['Metaphor'], stratify=df["Metaphor"], shuffle=True, test_size=0.15, random_state=42)
+    AM = AdjectiveMetaphor()
+    for text in texts:
+        AM.text = text
+        print(text)
+        print(AM.detect_adj_metaphor())
+        print()
+    
+    # start = time.time()
+    # print("Start Time:", start)
+    # print()
+    # df = pd.read_csv("am_data/adjectivemetaphors.csv")
+    # # print(df['Metaphor'])
 
-    # print(train_X, train_Y)
+    # train_X, test_X, train_Y, test_Y = train_test_split(df["Text"],df['Metaphor'], stratify=df["Metaphor"], shuffle=True, test_size=0.15, random_state=42)
 
-    AM_Trial = AdjectiveMetaphor()
-    AM_Trial.train(train_X, train_Y)
-    print("\n\n")
-    AM_Trial.test(test_X, test_Y)
-    # find_optimal_weights()
+    # # print(train_X, train_Y)
 
-    print()
-    end = time.time()
-    print("End Time:", end)
-    print("Time taken:{0} minutes".format((end - start)/60))  
+    # AM_Trial = AdjectiveMetaphor()
+    # AM_Trial.train(train_X, train_Y)
+    # print("\n\n")
+    # AM_Trial.test(test_X, test_Y)
+    # # find_optimal_weights()
+
+    # print()
+    # end = time.time()
+    # print("End Time:", end)
+    # print("Time taken:{0} minutes".format((end - start)/60))  
+
+
+
     # OLD CODE
     # texts = ["The old woman had a cold heart."]
     # AM_Trial = AdjectiveMetaphor(None)

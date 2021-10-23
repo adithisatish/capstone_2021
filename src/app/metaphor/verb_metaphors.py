@@ -7,6 +7,7 @@ import numpy
 import pandas as pd
 from sklearn.model_selection import train_test_split
 import time
+import os
 
 # ONLY works for <nsubj> <ROOT VERB> <prep> <dobj/pobj> patterns where <prep> may or may not be present
 
@@ -91,28 +92,39 @@ class VerbMetaphor(MetaphorUtil):
                 return 0.00
             elif code == 2:
                 return (0.00, 0.00)
+            else:
+                self.metaphors.append(((None, None),"E: Uh-oh, no verb-object pairs were found! Our system is unable to detect verb metaphors in this sentence!", None))
+                return
 
         # print("Verb, Obj", verb, obj)
         # exit(0)
+        try:
+            if code == 1: # FINDING OPTIMAL WEIGHTS
+                    final_score = self.return_similarity_score(verb, obj, code) 
+                    if final_score > self.threshold:
+                        return ("N", final_score)
+                    else:
+                        return ("Y", final_score)
+                
+            elif code == 2: # ADD SIM TO CSV
+                return self.return_similarity_score(verb, obj, code = 2)
 
-        if code == 1: # FINDING OPTIMAL WEIGHTS
-                final_score = self.return_similarity_score(verb, obj, code) 
-                if final_score > self.threshold:
-                    return ("N", final_score)
-                else:
-                    return ("Y", final_score)
-            
-        elif code == 2: # ADD SIM TO CSV
-            return self.return_similarity_score(verb, obj, code = 2)
-
-        else:
-            similarity = self.return_similarity_score(verb, obj)
-
-            if similarity < self.threshold:
-                self.metaphors.append(((verb, obj),"Y", similarity))
             else:
-                self.metaphors.append(((verb, obj),"N", similarity))
+                similarity = self.return_similarity_score(verb, obj)
 
+                if similarity < self.threshold:
+                    self.metaphors.append(((verb, obj),"Y", similarity))
+                else:
+                    self.metaphors.append(((verb, obj),"N", similarity))
+
+        except Exception as e:
+            print("Error:",e)
+            print("Sentence:", doc)
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
+            self.metaphors.append(((None, None),"E: Uh-oh, no verb-object pairs were found! Our system is unable to detect any metaphors in this sentence!", None))
+            return
         # msg, is_metaphor = self.is_verb_metaphor()        
         # if is_metaphor == True:
         #     self.metaphors.append(("{0} and {1} could be metaphorical".format(self.dependencies['ROOT'], self.dependencies['obj']),msg))
@@ -193,8 +205,19 @@ class VerbMetaphor(MetaphorUtil):
 
 
 if __name__ == "__main__":
-    VM = VerbMetaphor(text = "She ate her feelings")
-    print(VM.detect_verb_metaphor())
+    texts = ["She ate her feelings",\
+            "My heart dances with daffodils",\
+            "His head was spinning with ideas",\
+            "It is raining cats and dogs",\
+            "Andrew is playing basketball at the college tournament",\
+            "They bleed from their sensitive souls."]
+    VM = VerbMetaphor()
+
+    for text in texts:
+        VM.text = text
+        print(text)
+        print(VM.detect_verb_metaphor())
+        print()
 
     # start = time.time()
     # print("Start Time:", start)
