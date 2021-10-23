@@ -67,18 +67,22 @@ if __name__ == "__main__":
     
     texts = ["My eyes are an ocean of blue",\
             "Today is a prison and I am the inmate.",\
-            "I am a prisoner","You are a dog!",\
             "The snow is a white blanket.",\
             "Her long hair was a flowing golden river.",\
             "Tom's eyes were ice as he stared at her.",\
             "The children were flowers grown in concrete gardens.",\
-            "The falling snowflakes are dancers.",\
-            "The calm lake was a mirror.",\
-            "John's suggestion was just a Band-Aid for the problem.",\
-            "Chaos is a friend of mine.",\
-            "His eyes are saucers.",\
-            "She is an early bird.",\
-            "His memories were cloudy."]
+            "I am a prisoner.",\
+            "She ate her feelings",\
+            "My heart dances with daffodils",\
+            "His head was spinning with ideas",\
+            "It is raining cats and dogs",\
+            "Andrew is playing basketball at the college tournament",\
+            "They bleed from their sensitive souls.",\
+            "The white voice spoke to me and whispered horrible things.",\
+            "Forget the grey past and focus on the golden future.",\
+            "I met a homeless person in the city.",\
+            "His mind was a synthetic sky: blue, blank and cloudless.",\
+            "The old woman had a cold heart."]
 
     
     met_obj = Metaphor(texts, 1)
