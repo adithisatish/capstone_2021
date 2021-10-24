@@ -1,5 +1,5 @@
 import pandas as pd
-from voice_tense import Voice
+from VoiceDetector import Voice
 
 df = pd.read_csv('voice.csv')
 #print(df.to_string()) 
@@ -14,6 +14,8 @@ for i in result_dict:
 
 count = 0
 total = 0
+print(len(expected))
+print(len(result_voice))
 for i in range(len(expected)):
     total += 1
     if(expected[i] != result_voice[i]):

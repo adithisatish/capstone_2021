@@ -13,7 +13,8 @@ from nltk.corpus import stopwords
 if __name__ != "__main__":
     import sys
     sys.path.append("..")
-    from app.tense.TenseDetector import Tenses
+    #from app.tense.TenseDetector import Tenses
+    from TenseDetector import Tenses
 
 class Voice:
     def __init__(self, text, paragraph = 0): 
@@ -46,13 +47,13 @@ class Voice:
         tense = s[0]['tense']
         text = word_tokenize(sentence)
         tagged = pos_tag(text)
-        print(tagged)
+        #print(tagged)
         verbs = []
         for i in tagged:
             if(i[1] in ['VBN', 'VBD', 'VBP', 'VBG', 'VBZ', 'MD', 'VB']):
                 verbs.append(i)
         tense = tense.split()
-        print(verbs)
+        #print(verbs)
         #print(tense)
         voice = ''
 
@@ -68,7 +69,7 @@ class Voice:
                             break
                 elif(tense[1] == 'Continuous'):
                     length = len(verbs)
-                    print(length)
+                    #print(length)
                     if(length > 2):
                         for i in range(len(verbs) - 1):
                             if(verbs[i][1] == 'VBG' and verbs[i + 1][1] == 'VBN'):
@@ -92,7 +93,7 @@ class Voice:
             elif(tense[0] == 'Past'):
                 if(tense[1] == 'Simple'):
                     for i in range(len(verbs)):
-                        print(verbs[i])
+                        #print(verbs[i])
                         if(verbs[i][0] in ['is', 'are', 'was', 'were']):
                             voice = 'Passive'
                             break
@@ -119,7 +120,7 @@ class Voice:
             elif(tense[0] == 'Future'):
                 if(tense[1] == 'Simple'):
                     for i in range(len(verbs) - 1, 0, -1):
-                        print(verbs[i])
+                        #print(verbs[i])
                         if(verbs[i][1] in ['VBD', 'VBN']):
                             voice = 'Passive'
                             break
@@ -137,7 +138,10 @@ class Voice:
             output = dict()
             output['sentence'] = sentence
             output['voice'] = voice
-            output['explanation'] = ''
+            if output['voice'] == 'Active':
+                output['explanation'] = 'The subject ***does*** the action'
+            else:
+                output['explanation'] = 'The action is ***done*** on the subject'
             return output
         
         else:
@@ -180,7 +184,7 @@ class Voice:
 if __name__ == "__main__":
     from TenseDetector import Tenses
 
-    sentence = ["I shall be obliged to go"]
+    sentence = ["i shall be obliged to go"]
     voice_obj = Voice(sentence, 1)
     s1=voice_obj.execute()
     print(s1)
