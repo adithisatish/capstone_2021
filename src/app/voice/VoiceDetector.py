@@ -13,8 +13,8 @@ from nltk.corpus import stopwords
 if __name__ != "__main__":
     import sys
     sys.path.append("..")
-    #from app.tense.TenseDetector import Tenses
-    from TenseDetector import Tenses
+    from app.tense.TenseDetector import Tenses
+    #from TenseDetector import Tenses
 
 class Voice:
     def __init__(self, text, paragraph = 0): 
@@ -64,7 +64,7 @@ class Voice:
                         if(verbs[i][0] in ['is', 'are', 'was', 'were']):
                             voice = 'Passive'
                             break
-                        elif(verbs[i][1] in ['VBP', 'VBZ']):
+                        elif(verbs[i][1] in ['VBP', 'VBZ', 'VB']):
                             voice = 'Active'
                             break
                 elif(tense[1] == 'Continuous'):
@@ -184,7 +184,7 @@ class Voice:
 if __name__ == "__main__":
     from TenseDetector import Tenses
 
-    sentence = ["i shall be obliged to go"]
+    sentence = ["Forget the grey past and move on"]
     voice_obj = Voice(sentence, 1)
     s1=voice_obj.execute()
     print(s1)
