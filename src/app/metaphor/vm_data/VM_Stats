@@ -1,5 +1,5 @@
 Number of Sentences: 79 (49 metaphors, 30 non-metaphors)
-Train-Test Split: 85-15%
+Train-Test Split: 90-10%
 
 Maximum Training Accuracy: 0.6865671641791045
 Optimal Threshold: 0.2916637400559425
