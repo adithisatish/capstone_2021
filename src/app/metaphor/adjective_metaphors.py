@@ -111,7 +111,7 @@ class AdjectiveMetaphor(MetaphorUtil):
             noun_adj_pairs.pop(noun)
         
         if len(noun_adj_pairs)==0:
-            self.metaphors.append(((None, None),"E: Uh-oh, no noun-adjective pairs were found! Our system is unable to detect any metaphors in this sentence!", None))
+            self.metaphors.append(((None, None),"E: Uh-oh, no noun-adjective pairs were found!", None))
             return
         
         for noun in noun_adj_pairs:
@@ -140,7 +140,7 @@ class AdjectiveMetaphor(MetaphorUtil):
                     exc_type, exc_obj, exc_tb = sys.exc_info()
                     fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
                     print(exc_type, fname, exc_tb.tb_lineno)
-                    self.metaphors.append(((None, None),"E: Uh-oh, no noun-adjective pairs were found! Our system is unable to detect any metaphors in this sentence!", None))
+                    self.metaphors.append(((None, None),"E: Uh-oh, no noun-adjective pairs were found!", None))
                     return
         
     

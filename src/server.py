@@ -3,6 +3,7 @@ from flask import request, jsonify
 from flask_cors import CORS, cross_origin
 import json
 from deconstructor import mapComponent
+import re
 
 app = flask.Flask(__name__)
 cors = CORS(app)
@@ -11,7 +12,7 @@ app.config["DEBUG"] = True
 
 def preprocess(comp, text):
     if comp != "Rhyme Scheme":
-        sentences = text.split(".")
+        sentences = list(map(lambda x: x.strip(),re.split(";|\.|\n", text)))
         # print(sentences)
         # What is the delimiter??
     else:

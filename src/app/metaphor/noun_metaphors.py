@@ -98,7 +98,7 @@ class NounMetaphor(MetaphorUtil):
                 elif code == 2:
                     return (0.00, 0.00)
                 else:
-                    self.metaphors.append(((None, None),"E: Uh-oh, no noun-noun descriptive pairs were found! Our system is unable to detect any metaphors in this sentence!", None))
+                    self.metaphors.append(((None, None),"E: Uh-oh, no noun-noun descriptive pairs were found!", None))
                     return              
             
             if code == 1: # FINDING OPTIMAL WEIGHTS
@@ -133,7 +133,7 @@ class NounMetaphor(MetaphorUtil):
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
-            self.metaphors.append(((None, None),"E: Uh-oh, no noun-noun descriptive pairs were found! Our system is unable to detect any metaphors in this sentence!", None))
+            self.metaphors.append(((None, None),"E: Uh-oh, no noun-noun descriptive pairs were found!", None))
             return
 
         # return self.metaphors

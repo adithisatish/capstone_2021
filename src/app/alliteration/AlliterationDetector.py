@@ -115,17 +115,20 @@ class Alliteration:
                         alliterations[key] = []
                     if (i,processed_text[i]) not in alliterations[key]:
                         alliterations[key].append((i,processed_text[i]))
+                        # print(alliterations)
 
                         if i!= len(processed_text) - 1:
                             if (i+1,processed_text[i+1]) not in alliterations[key]:
                                 alliterations[key].append((i+1, processed_text[i+1]))
+                                # print(alliterations)
 
                         if i == len(processed_text) - 2:
                             # starting_letter = processed_text[i+1][0]
                             if key not in alliterations:
                                 alliterations[key] = []
-                            if (i,processed_text[i+1]) not in alliterations[key]:
+                            if (i+1,processed_text[i+1]) not in alliterations[key]:
                                 alliterations[key].append((i+1,processed_text[i+1]))
+
                         
                     else:
                         if i != len(processed_text)-1 and (i+1,processed_text[i+1]) not in alliterations[key]:
@@ -193,7 +196,7 @@ class Alliteration:
 if __name__ == "__main__":
     # text = input("Enter your sentence: ")
     text = ["The gentle giants jumped with happiness", "Ninjas gnashed their knives and nailed their targets.","She wrapped the rose neatly","Dana deserved to dance with the kind king.","She rarely reads; she’d rather write her own books.","The red roses were wrapped in ribbons."]
-    # text = "the cruel king was kind in real life"
+    # text = ["She wrapped the rose"]
     
     allit_obj = Alliteration(text, 1)
     alliterations = allit_obj.detect_alliterations()
