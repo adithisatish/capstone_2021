@@ -90,8 +90,6 @@ class VerbMetaphor(MetaphorUtil):
         #     self.metaphors.append(("No object found in the sentence => Verb metaphors cannot be found!"))
             if code == 1:
                 return 0.00
-            elif code == 2:
-                return (0.00, 0.00)
             else:
                 self.metaphors.append(((None, None),"E: Uh-oh, no verb-object pairs were found!", None))
                 return
@@ -106,9 +104,6 @@ class VerbMetaphor(MetaphorUtil):
                     else:
                         return ("Y", final_score)
                 
-            elif code == 2: # ADD SIM TO CSV
-                return self.return_similarity_score(verb, obj, code = 2)
-
             else:
                 similarity = self.return_similarity_score(verb, obj)
 
@@ -159,14 +154,14 @@ class VerbMetaphor(MetaphorUtil):
 
                 predictions.append(pred)
                 scores.append(score)
-
-            new_threshold = sum(scores)/len(scores)
             
             acc = self.find_accuracy(predictions, true_values)
             if acc > max_acc:
                 max_acc = acc
                 best_threshold = new_threshold
                 optimal_weights = (spw, wpw)
+            
+            new_threshold = sum(scores)/len(scores)
         
         print("Maximum Accuracy:", max_acc)
         print("Optimal Threshold:", best_threshold)

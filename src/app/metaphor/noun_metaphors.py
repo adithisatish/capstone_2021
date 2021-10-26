@@ -27,7 +27,7 @@ class NounMetaphor(MetaphorUtil):
 
     # Code 0 => Check if sentence is metaphor, Code 1 => Find individual similarity and add to CSV, Code 2 => Find Optimal weights
 
-    def __init__(self, text = "", sp_w = 0.977, wp_w = 0.023, threshold = 0.31047393):
+    def __init__(self, text = "", sp_w = 0.977, wp_w = 0.023, threshold = 0.3104739):
         self.text = text
         self.dependencies = {} # Overwritten for every sentence
         self.metaphors = [] # Overwritten for every sentence
@@ -95,8 +95,6 @@ class NounMetaphor(MetaphorUtil):
             if obj_flag == 0:
                 if code == 1:
                     return 0.00
-                elif code == 2:
-                    return (0.00, 0.00)
                 else:
                     self.metaphors.append(((None, None),"E: Uh-oh, no noun-noun descriptive pairs were found!", None))
                     return              
@@ -108,9 +106,6 @@ class NounMetaphor(MetaphorUtil):
                 else:
                     return ("Y", final_score)
             
-            elif code == 2: # ADD SIM TO CSV
-                return self.return_similarity_score(subj, dep, code = 2)
-
             else:
                 similarity = self.return_similarity_score(subj, dep)
 
@@ -151,9 +146,8 @@ class NounMetaphor(MetaphorUtil):
         for spw in numpy.arange(0,1,0.001):
             wpw = 1 - spw
             self.threshold = new_threshold, 
-            self.spacy_weight =spw
-            self.wupalmer_weight =wpw
-
+            self.spacy_weight = spw
+            self.wupalmer_weight = wpw
             predictions = []
             scores = []
 
@@ -168,14 +162,14 @@ class NounMetaphor(MetaphorUtil):
 
                 predictions.append(pred)
                 scores.append(score)
-
-            new_threshold = sum(scores)/len(scores)
             
             acc = self.find_accuracy(predictions, true_values)
             if acc > max_acc:
                 max_acc = acc
                 best_threshold = new_threshold
                 optimal_weights = (spw, wpw)
+            
+            # new_threshold = sum(scores)/len(scores)
         
         print("Maximum Accuracy:", max_acc)
         print("Optimal Threshold:", best_threshold)

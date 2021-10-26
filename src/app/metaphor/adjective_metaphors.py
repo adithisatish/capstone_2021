@@ -124,9 +124,6 @@ class AdjectiveMetaphor(MetaphorUtil):
                         else:
                             return ("Y", final_score)
             
-                    elif code == 2: 
-                        return self.return_similarity_score(noun, adjective, code = 2)
-                    
                     else:
                         similarity = self.return_similarity_score(noun, adjective)
 
@@ -157,8 +154,8 @@ class AdjectiveMetaphor(MetaphorUtil):
         for spw in np.arange(0,1,0.001):
             wpw = 1 - spw
             self.threshold = new_threshold, 
-            self.spacy_weight =spw
-            self.wupalmer_weight =wpw
+            self.spacy_weight = spw
+            self.wupalmer_weight = wpw
 
             predictions = []
             scores = []
@@ -176,20 +173,22 @@ class AdjectiveMetaphor(MetaphorUtil):
                 predictions.append(pred)
                 scores.append(score)
 
-            new_threshold = sum(scores)/len(scores)
+            # new_threshold = sum(scores)/len(scores)
             
             acc = self.find_accuracy(predictions, true_values)
             if acc > max_acc:
                 max_acc = acc
                 best_threshold = new_threshold
-                optimal_weights = (spw, wpw)
+                optimal_weights = (spw,wpw)
+            
+            new_threshold = sum(scores)/len(scores)
         
         print("Maximum Accuracy:", max_acc)
         print("Optimal Threshold:", best_threshold)
         print("Optimal Weights:", optimal_weights)
 
         self.threshold = best_threshold
-        self.spacy_weight, self.wupalmer_weight = optimal_weights
+        self.spacy_weight = optimal_weights
 
     def test(self, data, true_values):
         scores = []
@@ -228,33 +227,33 @@ if __name__ == "__main__":
             "His mind was a synthetic sky: blue, blank and cloudless.",\
             "The old woman had a cold heart."]
 
-    AM = AdjectiveMetaphor()
-    for text in texts:
-        AM.text = text
-        print(text)
-        print(AM.detect_adj_metaphor())
-        print()
+    # AM = AdjectiveMetaphor()
+    # for text in texts:
+    #     AM.text = text
+    #     print(text)
+    #     print(AM.detect_adj_metaphor())
+    #     print()
     
-    # start = time.time()
-    # print("Start Time:", start)
-    # print()
-    # df = pd.read_csv("am_data/adjectivemetaphors.csv")
-    # # print(df['Metaphor'])
+    start = time.time()
+    print("Start Time:", start)
+    print()
+    df = pd.read_csv("am_data/adjectivemetaphors.csv")
+    # print(df['Metaphor'])
 
-    # train_X, test_X, train_Y, test_Y = train_test_split(df["Text"],df['Metaphor'], stratify=df["Metaphor"], shuffle=True, test_size=0.15, random_state=42)
+    train_X, test_X, train_Y, test_Y = train_test_split(df["Text"],df['Metaphor'], stratify=df["Metaphor"], shuffle=True, test_size=0.15, random_state=42)
 
-    # # print(train_X, train_Y)
+    # print(train_X, train_Y)
 
-    # AM_Trial = AdjectiveMetaphor()
-    # AM_Trial.train(train_X, train_Y)
-    # print("\n\n")
-    # AM_Trial.test(test_X, test_Y)
-    # # find_optimal_weights()
+    AM_Trial = AdjectiveMetaphor()
+    AM_Trial.train(train_X, train_Y)
+    print("\n\n")
+    AM_Trial.test(test_X, test_Y)
+    # find_optimal_weights()
 
-    # print()
-    # end = time.time()
-    # print("End Time:", end)
-    # print("Time taken:{0} minutes".format((end - start)/60))  
+    print()
+    end = time.time()
+    print("End Time:", end)
+    print("Time taken:{0} minutes".format((end - start)/60))  
 
 
 

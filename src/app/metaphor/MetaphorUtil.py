@@ -98,24 +98,19 @@ class MetaphorUtil:
         index_w2 = self.index_synset(w2_syn, word2)
 
         # print(index_subj, index_obj)
+        sim_result = self.spacy_similarity(word1, word2)
+        # return (sim_result, 0.00)
 
         if index_w1 == -1 or index_w2 == -1:
-            sim_result = self.spacy_similarity(word1, word2)
             return (sim_result, 0.00)
         else:
             wup_result = self.wu_palmer_similarity(w1_syn, index_w1, w2_syn, index_w2)[0]
-            sim_result = self.spacy_similarity(word1, word2)
-
             return (sim_result, wup_result)
         
-    def return_similarity_score(self, word1, word2, code = 1):
+    def return_similarity_score(self, word1, word2):
         # Driver function to check if two nouns form a noun metaphor
 
         sim_result, wup_result = self.return_similarities(word1, word2)
-
-        if code == 2:
-            return (sim_result, wup_result)
-
         weighted_score = self.spacy_weight*sim_result + self.wupalmer_weight*wup_result
 
         return weighted_score
