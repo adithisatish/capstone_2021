@@ -7,12 +7,16 @@ Optimal Weights: (0.977, 0.02300000000000002)
 Test Accuracy: 0.6666666666666666
 
 
----------------------
 Start Time: 1635161935.473146
 
-Weights - Spacy: 0.465 and Wu-Palmer: 0.023
+Weights - Spacy: 0.465
 Threshold: 0.1456265
 Test Accuracy: 0.6666666666666666
 
 End Time: 1635161935.5774193
-Time taken:0.0017378886540730795 minutes
+Time taken: 0.0017378886540730795 minutes
+
+With th = 0.3104, "She is the queen" classified incorrectly as metaphorical
+With th = 0.1456, "She is a star" classified incorrectly as literal. 
+
+Both mis-classify "Robin is a hard-working person" to be metaphorical

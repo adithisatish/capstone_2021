@@ -1,0 +1,222 @@
+Start Time: 1635163347.2569528
+
+
+---------------------------------------------------
+Love is a nutrient.
+Score: 0.05234115712344647 	 Predicted: Y 	 Actual: Y
+
+---------------------------------------------------
+She is a lawyer.
+Score: 0.16290753588080406 	 Predicted: N 	 Actual: N
+
+---------------------------------------------------
+Love is war.
+Score: 0.14109640091657638 	 Predicted: Y 	 Actual: Y
+
+---------------------------------------------------
+Money is power.
+Score: 0.1592355327308178 	 Predicted: N 	 Actual: Y
+
+---------------------------------------------------
+She is a clever girl.
+Score: 0.3066513150930405 	 Predicted: N 	 Actual: N
+
+---------------------------------------------------
+The night sky was a blanket of stars.
+Score: 0.1499326591193676 	 Predicted: N 	 Actual: Y
+
+---------------------------------------------------
+Shaun is an exciting cricketer.
+Score: 0.06629214853048325 	 Predicted: Y 	 Actual: N
+
+---------------------------------------------------
+Love is a fluid in a container.
+Score: 0.05713726881891489 	 Predicted: Y 	 Actual: Y
+
+---------------------------------------------------
+He was a pig at dinner.
+Score: 0.14154677465558052 	 Predicted: Y 	 Actual: Y
+
+---------------------------------------------------
+She was a girl.
+Score: 0.3066513150930405 	 Predicted: N 	 Actual: N
+
+---------------------------------------------------
+Love is a fine wine.
+Score: 0.12314536482095718 	 Predicted: Y 	 Actual: Y
+
+---------------------------------------------------
+His memories were cloudy.
+Score: 0.10138964831829071 	 Predicted: Y 	 Actual: Y
+
+---------------------------------------------------
+Love is fire.
+Score: 0.13896791070699693 	 Predicted: Y 	 Actual: Y
+
+---------------------------------------------------
+Love is a natural force.
+Score: 0.12982173040509223 	 Predicted: Y 	 Actual: Y
+
+---------------------------------------------------
+My eyes are an ocean of blue.
+Score: 0.14562644094228747 	 Predicted: Y 	 Actual: Y
+
+---------------------------------------------------
+She is a girl.
+Score: 0.3066513150930405 	 Predicted: N 	 Actual: N
+
+---------------------------------------------------
+The children were flowers grown in concrete gardens.
+Score: 0.10735320277512074 	 Predicted: Y 	 Actual: Y
+
+---------------------------------------------------
+Love is a river.
+Score: 0.11163257092237473 	 Predicted: Y 	 Actual: Y
+
+---------------------------------------------------
+She is a brilliant student.
+Score: 0.19790367767214775 	 Predicted: N 	 Actual: N
+
+---------------------------------------------------
+The calm lake was a mirror.
+Score: 0.08388648457825185 	 Predicted: Y 	 Actual: Y
+
+---------------------------------------------------
+Tom's eyes were ice as he stared at her.
+Score: 0.1189110839366913 	 Predicted: Y 	 Actual: Y
+
+---------------------------------------------------
+I am a prisoner.
+Score: 0.07818157732486725 	 Predicted: Y 	 Actual: Y
+
+---------------------------------------------------
+The snow is a white blanket.
+Score: 0.17551716908812523 	 Predicted: N 	 Actual: Y
+
+---------------------------------------------------
+He is an artist. 
+Score: 0.15853062763810158 	 Predicted: N 	 Actual: N
+
+---------------------------------------------------
+He is a cricketer.
+Score: 0.1114737018942833 	 Predicted: Y 	 Actual: N
+
+---------------------------------------------------
+All the world is a stage.
+Score: 0.15861554995179178 	 Predicted: N 	 Actual: Y
+
+---------------------------------------------------
+Her long hair was a flowing golden river.
+Score: 0.07677886940538883 	 Predicted: Y 	 Actual: Y
+
+---------------------------------------------------
+Information is power.
+Score: 0.11191290602087975 	 Predicted: Y 	 Actual: Y
+
+---------------------------------------------------
+The alligator's teeth are white daggers.
+Score: 0.1325977809727192 	 Predicted: Y 	 Actual: Y
+
+---------------------------------------------------
+Love is a battlefield.
+Score: 0.0762457074970007 	 Predicted: Y 	 Actual: Y
+
+---------------------------------------------------
+The classroom was a zoo.
+Score: 0.11365704931318761 	 Predicted: Y 	 Actual: Y
+
+---------------------------------------------------
+My pulse is a race car.
+Score: 0.05132620867341757 	 Predicted: Y 	 Actual: Y
+
+---------------------------------------------------
+She is a woman.
+Score: 0.309400564134121 	 Predicted: N 	 Actual: N
+
+---------------------------------------------------
+Love is a thrill ride.
+Score: 0.16703018993139268 	 Predicted: N 	 Actual: Y
+
+---------------------------------------------------
+Chaos is a friend of mine.
+Score: 0.07303785301744939 	 Predicted: Y 	 Actual: Y
+
+---------------------------------------------------
+Watson is a dashing man.
+Score: 0.04984247948974371 	 Predicted: Y 	 Actual: N
+
+---------------------------------------------------
+Love is rapture.
+Score: 0.09600872911512852 	 Predicted: Y 	 Actual: Y
+
+---------------------------------------------------
+His eyes are saucers.
+Score: 0.07893625371158124 	 Predicted: Y 	 Actual: Y
+
+---------------------------------------------------
+They are an activist.
+Score: 0.07172147400677205 	 Predicted: Y 	 Actual: N
+
+---------------------------------------------------
+Time is money.
+Score: 0.22843771174550057 	 Predicted: N 	 Actual: Y
+
+---------------------------------------------------
+Love is a journey.
+Score: 0.19632709935307505 	 Predicted: N 	 Actual: Y
+
+---------------------------------------------------
+He is a man.
+Score: 0.3176467314362526 	 Predicted: N 	 Actual: N
+
+---------------------------------------------------
+She is a student.
+Score: 0.19790367767214775 	 Predicted: N 	 Actual: N
+
+---------------------------------------------------
+He is a boy.
+Score: 0.26561399281024933 	 Predicted: N 	 Actual: N
+
+---------------------------------------------------
+Love is a captive animal.
+Score: 0.14452335163950922 	 Predicted: Y 	 Actual: Y
+
+---------------------------------------------------
+The falling snowflakes are dancers.
+Score: 0.07060318239033223 	 Predicted: Y 	 Actual: Y
+
+---------------------------------------------------
+He is the king.
+Score: 0.1847361043095589 	 Predicted: N 	 Actual: N
+
+---------------------------------------------------
+That is an interesting novel.
+Score: 0.14775407195091247 	 Predicted: N 	 Actual: N
+
+---------------------------------------------------
+John's suggestion was just a Band-Aid for the problem.
+Score: 0.13975772425532343 	 Predicted: Y 	 Actual: Y
+
+---------------------------------------------------
+The teenager's stomach was a bottomless pit.
+Score: 0.15068329587578774 	 Predicted: N 	 Actual: Y
+
+---------------------------------------------------
+He was a boy.
+Score: 0.26561399281024933 	 Predicted: N 	 Actual: N
+
+---------------------------------------------------
+Love is a garden.
+Score: 0.16118080526590348 	 Predicted: N 	 Actual: Y
+
+---------------------------------------------------
+Alex is a nice person.
+Score: 0.0641606441885233 	 Predicted: Y 	 Actual: N
+
+
+Weights - Spacy: 0.465
+Threshold: 0.1456265
+Test Accuracy: 0.7358490566037735
+
+End Time: 1635163347.8195693
+Time taken:0.009376943111419678 minutes

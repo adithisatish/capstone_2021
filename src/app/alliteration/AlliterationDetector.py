@@ -192,7 +192,7 @@ class Alliteration:
 
 if __name__ == "__main__":
     # text = input("Enter your sentence: ")
-    text = ["Ninjas gnashed their knives and nailed their targets.","She wrapped the rose neatly","Dana deserved to dance with the kind king.","She rarely reads; she’d rather write her own books.","The red roses were wrapped in ribbons."]
+    text = ["The gentle giants jumped with happiness", "Ninjas gnashed their knives and nailed their targets.","She wrapped the rose neatly","Dana deserved to dance with the kind king.","She rarely reads; she’d rather write her own books.","The red roses were wrapped in ribbons."]
     # text = "the cruel king was kind in real life"
     
     allit_obj = Alliteration(text, 1)

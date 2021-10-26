@@ -1,0 +1,34 @@
+Start Time: 1635163308.5251586
+
+
+---------------------------------------------------
+Love is a physical force.
+Score: 0.12982173040509223 	 Predicted: Y 	 Actual: Y
+
+---------------------------------------------------
+She is a star.
+Score: 0.15134407684206963 	 Predicted: N 	 Actual: Y
+
+---------------------------------------------------
+She is the queen.
+Score: 0.18714005157351496 	 Predicted: N 	 Actual: N
+
+---------------------------------------------------
+Today is a prison and I am the inmate.
+Score: 0.11448857568204404 	 Predicted: Y 	 Actual: Y
+
+---------------------------------------------------
+She is an early bird.
+Score: 0.1412773458659649 	 Predicted: Y 	 Actual: Y
+
+---------------------------------------------------
+Robin is a hard-working person.  
+Score: 0.0475345791131258 	 Predicted: Y 	 Actual: N
+
+
+Weights - Spacy: 0.465
+Threshold: 0.1456265
+Test Accuracy: 0.6666666666666666
+
+End Time: 1635163308.5929465
+Time taken:0.0011297980944315591 minutes
