@@ -18,59 +18,96 @@ class Similes:
         self.similes=[dict() for number in range(len(text))]
         self.paragraph = paragraph
     
-    def detect_similes(self, text):
+    def detect_similes(self,text):
         index=0
-        for list_index in range(len(text)):
-            self.similes[index]['Sentence']=text[list_index]
-            text[list_index] = re.sub('[^a-zA-Z0-9 \n\.]', '', text[list_index])
-            self.similes[index]['Simile']=list()
-            flag=0
-            val=0
-            tokenized_text=word_tokenize(self.text[list_index])
-            final=nltk.pos_tag(tokenized_text)
-            words = self.text[list_index].split()
-
-        # For "like" occuring in the sentense
-            for x in range(len(words)):
-                if(words[x]in ['like','Like']):
+        POS_tagged=[]
+        for i in range(len(text)):
+            self.similes[i]['Sentence']=text[i]
+            text[i]=re.split(', |\n', text[i])
+            self.similes[i]['Simile']=set()
+            self.similes[i]['Explanantion']=[]
+            for j in range(len(text[i])):
+                text[i][j] = re.sub('[^a-zA-Z0-9 \.]', '', text[i][j])
+                text[i][j] = text[i][j].replace(".", "")
+                text[i][j]=text[i][j].lower()
+                tokenized_text=word_tokenize(text[i][j])
+                POS_tagged.append(nltk.pos_tag(tokenized_text))
+        flag=0
+        temp=[]
+        for i in range(len(self.similes)):
+            temp.append(re.sub('[^a-zA-Z0-9 \.]', '', self.similes[i]['Sentence']))
+            temp[i]=temp[i].lower()
+        for i in range(len(POS_tagged)):
+            flag=0 
+            key=-1
+            for j in range(len(POS_tagged[i])): 
+                if(POS_tagged[i][j][0]=='like'):
                     flag=1
-            if flag==1:
-                for j in range(len(final)-3):
-                    if (final[j][1] in ['VB','VBD','VBG','VBN','VBP','VBZ']):
-                        if(final[j+1][0]in ['like','Like']):
-                            if(final[j+2][1]=='DT'):
-                                if(final[j+3][1] in ["NN","NNS","NNP","JJ"]):
-                                    self.similes[index]['Simile'].append(' '.join(tokenized_text[j:j+4]))
-                                    val=1
+                    key=j
+                elif(POS_tagged[i][j][0]=='as' and key==-1):
+                    flag=2
+                    key=j
+                if(key!=-1):
+                    d_simile=POS_tagged[i][key][0]+' '
+                    if( key+1<len(POS_tagged[i])):
+                        d_simile=d_simile+POS_tagged[i][key+1][0]
+                        if(key+2<len(POS_tagged[i])):
+                            d_simile=d_simile+' '+POS_tagged[i][key+2][0]
+                        if((key-1)>=0):
+                            d_simile=POS_tagged[i][key-1][0]+' '+d_simile
 
-                            elif final[j+2][1] in ["NN","NNS","NNP","JJ","VBG"]:
-                                self.similes[index]['Simile'].append(' '.join(tokenized_text[j:j+3]))
-                                val=1
+            if(flag==1):# start check for like
 
-                    elif final[j][1] in ["RB","JJ","NN","NNS"]:
-                        if(final[j+1][0] in ['like','Like']):
-                            if(final[j+2][1]=='DT'):
-                                if(final[j+3][1] in ["NN","NNS","NNP","JJ"]):
-                                    self.similes[index]['Simile'].append(' '.join(tokenized_text[j:j+4]))
-                                    val=1
+                if(key-1>=0 and POS_tagged[i][key-1][1] in ['VB','VBD','VBG','VBN','VBP','VBZ'] ):
+                    index=0
+                    if(POS_tagged[i][key][0]=='like'):
+                        if(POS_tagged[i][key+1][1]=='DT'):
+                            if(key+2<len(POS_tagged[i]) and POS_tagged[i][key+2][1] in ["NN","NNS","NNP","JJ"]):
+                                while(re.search(d_simile,temp[index])==None):
+                                    index+=1
+                                self.similes[index]['Simile'].add(d_simile)
 
-            # For "as" occuring in the sentense 
-            if flag==0:
-                for i in range(len(words)-2):
-                    if (words[i] in ["as", "As"] and words[i+2] in ["as", "As"]):
-                        self.similes[index]['Simile'].append(' '.join(tokenized_text[i:i+5]))
-                        val=1
-                for j in range(len(final)-3):
-                    if val!=1 and j!=0 and final[j-1][0] in ["As", 'as'] and ' '.join(tokenized_text[j-1:j+4]) in self.similes:
-                        continue
-                    if (val!=1 and final[j][1] in ['JJ','NNP','NNS','NN','PRP','RB']):
-                            if(final[j+1][0] in ['As','as']):
-                                if(final[j+2][1] in ['JJ',"NN","NNS","NNP",'PRP'] or final[j+3][1] in ['JJ',"NN","NNS","NNP",'PRP'] ):
-                                    if val!=1 and j!=0 and final[j-1][0] in ["As, as"]:
-                                        continue
-                                    self.similes[index]['Simile'].append(' '.join(tokenized_text[j:j+4]))
-                                    val=1
-            index+=1
+                #rule 2
+                if(key-1>=0 and POS_tagged[i][key-1][1] in ['VB','VBD','VBG','VBN','VBP','VBZ']):
+                    index=0
+                    if(POS_tagged[i][key][0]=='like'):
+                        if(key+1<len(POS_tagged[i]) and POS_tagged[i][key+1][1] in ["NN","NNS","NNP","JJ","VBG"]):
+                            while(re.search(d_simile,temp[index])==None):
+                                index+=1
+                            self.similes[index]['Simile'].add(d_simile)
+
+
+                #rule 3
+                if(key-1>=0 and POS_tagged[i][key-1][1] in ["RB","JJ","NN","NNS"]):
+                    index=0
+                    if(POS_tagged[i][key][0]=='like'):
+                        if(key+1<len(POS_tagged[i]) and POS_tagged[i][key+1][1]=='DT'):
+                            if(key+2<len(POS_tagged[i]) and POS_tagged[i][key+2][1] in ["NN","NNS","NNP","JJ"]):
+                                while(re.search(d_simile,temp[index])==None):
+                                    index+=1
+                                self.similes[index]['Simile'].add(d_simile)
+
+
+            if(flag==2):
+                index=0
+                if(key-1>=0 and key-1>=0 and POS_tagged[i][key-1][1] in ['JJ','NNP','NNS','NN','PRP','RB']):
+                    if( POS_tagged[i][key][0]=='as'):
+                        if( key+1<len(POS_tagged[i]) and POS_tagged[i][key+1][1] in ['JJ',"NN","NNS","NNP",'PRP']):
+                            while(re.search(d_simile,temp[index])==None):
+                                index+=1
+                            self.similes[index]['Simile'].add(d_simile)
+                        elif(key+2<len(POS_tagged[i]) and POS_tagged[i][key+2][1] in ['JJ',"NN","NNS","NNP",'PRP']):
+                            while(re.search(d_simile,temp[index])==None):
+                                index+=1 
+                            self.similes[index]['Simile'].add(d_simile)
+
+
+            if(flag==2):
+                if(key+2<len(POS_tagged[i]) and POS_tagged[i][key+2][0]=='as'):
+                        while(re.search(d_simile,temp[index])==None):
+                            index+=1
+                        self.similes[index]['Simile'].add(d_simile)
+                            
         return self.similes
     
     def display(self):
