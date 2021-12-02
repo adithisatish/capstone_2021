@@ -58,7 +58,7 @@ const Deconstructor = () => {
     return (
         <Layout page="deconstructor">
             <div className="w-full">
-                <div className="mx-auto w-4/5 mt-3">
+                <div className="mx-auto lg:w-4/5 mt-3 ph:px-3">
                     <div className="flex">
                         <div className="flex-col">
                             <div className="px-2 py-1 text-xl">
@@ -103,22 +103,22 @@ const Deconstructor = () => {
                             </svg>
                         </button>
                     </div>
-                    <div className="flex">
-                        <div className="w-1/2"></div>
-                        <div className="w-1/2 flex">
+                    <div className="flex ph:mt-4">
+                        <div className="w-1/2 ph:hidden"></div>
+                        <div className="w-1/2 flex ph:w-full">
                             {
                                 levels[currentLevel].attributes.map((attr, index) => {
                                     let style = "border-white"
                                     if(index > 0) style += " border-l";
                                     if(index < levels[currentLevel].attributes.length - 1) style += " border-r";
-                                    if(index === 0) style += " rounded-tl-xl"
-                                    if(index === levels[currentLevel].attributes.length - 1) style += " rounded-tr-xl"
+                                    if(index === 0) style += " rounded-tl-xl ph:rounded-l-xl"
+                                    if(index === levels[currentLevel].attributes.length - 1) style += " rounded-tr-xl ph:rounded-r-xl"
                                     return (
                                         <div 
                                             className={`flex items-center justify-center flex-grow ${index==currentAttribute?'bg-yellow-600 border-2 border-blue-400 font-bold ':'bg-green-800'} text-white text-center p-3 ${style} cursor-pointer`}
                                             onClick= {() => {setCurrentAttribute(index)}}
                                         >
-                                            <p>{attr.name}</p>
+                                            <p className='ph:text-xs'>{attr.name}</p>
                                             <button className="ml-2" onClick={(e) => {
                                                 e.stopPropagation()
                                                 setCurAttrExplanation(index)
@@ -138,28 +138,28 @@ const Deconstructor = () => {
                             
                         </div>
                     </div>
-                    <div className="flex h-96">
-                        <div className="w-1/2 relative">
+                    <div className="flex lg:h-96 ph:flex-col">
+                        <div className="w-1/2 relative ph:w-full ph:mt-2 ph:h-52">
                             {/* Submit Button */}
                             <div 
-                                className="flex items-center justify-center w-12 h-12 bg-green-800 absolute bottom-4 right-4 rounded-3xl shadow-xl cursor-pointer"
+                                className="flex items-center justify-center w-12 h-12 ph:h-8 ph:w-8 bg-green-800 absolute bottom-4 right-4 rounded-3xl shadow-xl cursor-pointer"
                                 onClick={() => handleSubmit()}
                             >
-                                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-send" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="lightgrey" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-send ph:w-4 w-6" viewBox="0 0 24 24" stroke-width="2" stroke="lightgrey" fill="none" stroke-linecap="round" stroke-linejoin="round">
                                     <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
                                     <line x1="10" y1="14" x2="21" y2="3"></line>
                                     <path d="M21 3l-6.5 18a0.55 .55 0 0 1 -1 0l-3.5 -7l-7 -3.5a0.55 .55 0 0 1 0 -1l18 -6.5"></path>
                                 </svg>
                             </div>
                             <textarea 
-                                className="form-textarea w-full h-full p-4 bg-green-100 border-transparent focus:border-green-800 focus:ring-0 rounded-l-xl resize-none text-justify"
+                                className="form-textarea w-full h-full p-4 bg-green-100 border-transparent focus:border-green-800 focus:ring-0 rounded-l-xl resize-none text-justify ph:rounded-xl"
                                 placeholder='Enter text'
                                 onChange={e => setInputText(e.target.value)}
                                 value={inputText}
                             >
                             </textarea>
                         </div>
-                        <div className="w-1/2 h-96 border-l border-green-800 rounded-br-xl bg-green-100 p-4 overflow-y-auto">
+                        <div className="w-1/2 h-96 border-l lg:border-green-800 rounded-br-xl bg-green-100 p-4 overflow-y-auto ph:w-full ph:rounded-xl ph:mt-2 ph:h-52">
                             {isLoading?<EllipsisLoader/>:outputJSXMap[levels[currentLevel].attributes[currentAttribute].name]}
                         </div>                
                     </div>

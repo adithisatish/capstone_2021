@@ -64,7 +64,7 @@ const AlertBox = ({ message, type }) => (
 const Alert = (props) => {    
 
     return (
-		<div className='absolute right-0 bottom-0 p-6 z-50'>
+		<div className='absolute right-0 bottom-0 p-6 ph:p-3 z-50'>
 			{props.alert.alerts.map(alert => (
 				<AlertBox message={alert.message} type={alert.type} />
 			))}

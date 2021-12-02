@@ -186,18 +186,20 @@ const Login = () => {
 
     return (
         <Layout page="login">
-            <div className="w-96 absolute left-1/2 top-1/2 bg-green-200 transform -translate-x-1/2 -translate-y-1/2 rounded-3xl flex-col p-4">
-                <div className="flex">
-                    <div onClick={() => setIsLogin(true)} className={`mx-3 border-b-2 py-2 cursor-pointer ${isLogin? 'border-green-800': 'border-green-200'}`}>
-                        Login
-                    </div> 
-                    <div onClick={() => setIsLogin(false)} className={`mx-3 border-b-2 py-2 cursor-pointer ${!isLogin? 'border-green-800': 'border-green-200'}`}>
-                        Signup
-                    </div>                
+            <div className='absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full ph:px-4 ph:pt-8 flex justify-center'>
+                <div className="w-96 ph:w-full bg-green-200 rounded-3xl flex-col p-4">
+                    <div className="flex">
+                        <div onClick={() => setIsLogin(true)} className={`mx-3 border-b-2 py-2 cursor-pointer ${isLogin? 'border-green-800': 'border-green-200'}`}>
+                            Login
+                        </div> 
+                        <div onClick={() => setIsLogin(false)} className={`mx-3 border-b-2 py-2 cursor-pointer ${!isLogin? 'border-green-800': 'border-green-200'}`}>
+                            Signup
+                        </div>                
+                    </div>
+                    <div className="mt-6">
+                        {isLogin? LoginForm: SignUpForm}
+                    </div>                            
                 </div>
-                <div className="mt-6">
-                    {isLogin? LoginForm: SignUpForm}
-                </div>                            
             </div>
         </Layout>
     )
