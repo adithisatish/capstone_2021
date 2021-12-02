@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+import os
 
 # text preprocessing
 from nltk import word_tokenize
@@ -123,13 +124,16 @@ def serialize_data():
     lr_model = Pipeline([("tfidf", vect), ("clf", log),])
 
     # saving the models
-    s = "C:/Users/91974/OneDrive/Desktop/models/tfidf_svc.sav"
-    l = "C:/Users/91974/OneDrive/Desktop/models/tfidf_lr.sav"
+    # os.path.join(os.getcwd(),"models","tfidf_lr.sav")
+    s = os.path.join(os.getcwd(),"models","tfidf_svc.sav")
+    l = os.path.join(os.getcwd(),"models","tfidf_lr.sav")
+    # "C:/Users/91974/OneDrive/Desktop/models/tfidf_lr.sav"
     pickle.dump(svc_model, open(s, 'wb'))
     pickle.dump(lr_model, open(l, 'wb'))
 
     # saving the vectorizer
-    v = "C:/Users/91974/OneDrive/Desktop/vectorizers/tfidf.sav"
+    v = os.path.join(os.getcwd(),"vectorizers","tfidf.sav")
+    # "C:/Users/91974/OneDrive/Desktop/vectorizers/tfidf.sav"
     pickle.dump(vect, open(v, 'wb'))
 
 serialize_data()

@@ -115,7 +115,7 @@ const Deconstructor = () => {
                                     if(index === levels[currentLevel].attributes.length - 1) style += " rounded-tr-xl"
                                     return (
                                         <div 
-                                            className={`flex items-center justify-center flex-grow ${index==currentAttribute?'bg-green-600':'bg-green-800'} text-white text-center p-3 ${style} cursor-pointer`}
+                                            className={`flex items-center justify-center flex-grow ${index==currentAttribute?'bg-yellow-600 border-2 border-blue-400 font-bold ':'bg-green-800'} text-white text-center p-3 ${style} cursor-pointer`}
                                             onClick= {() => {setCurrentAttribute(index)}}
                                         >
                                             <p>{attr.name}</p>

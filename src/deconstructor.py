@@ -5,6 +5,6 @@ from app.metaphor.MetaphorDetector import Metaphor
 from app.tense.TenseDetector import Tenses
 from app.voice.VoiceDetector import Voice
 from app.rhyme_scheme.RhymeSchemeDetector import RhymeScheme
-from app.tone.tone import Tone
+from app.tone.ToneDetector import Tone
 
 mapComponent = {"SPO": SPO, "Alliteration": Alliteration, "Similes": Similes, "Metaphor": Metaphor, "Tense":Tenses, "Voice": Voice, "Rhyme Scheme":RhymeScheme, "Tone": Tone}
