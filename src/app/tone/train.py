@@ -99,36 +99,39 @@ def classifiers():
     ylog_pred = log.predict(X_test_vect)
 
     # Linear Support Vector Classifier
-    svc = LinearSVC(tol=1e-05)
-    svc.fit(X_train_vect, y_train)
-    ysvc_pred = svc.predict(X_test_vect)
+    #svc = LinearSVC(tol=1e-05)
+    #svc.fit(X_train_vect, y_train)
+    #ysvc_pred = svc.predict(X_test_vect)
 
     # Finding F1-score of each classifier
     f1Scores = dict()
-    clfs = {0:[ynb_pred, "NB"], 1:[yrf_pred, "RF"], 2:[ylog_pred, "LR"] , 3:[ysvc_pred, "SVC"]}
-    for i in range(4):
+    # clfs = {0:[ynb_pred, "NB"], 1:[yrf_pred, "RF"], 2:[ylog_pred, "LR"] , 3:[ysvc_pred, "SVC"]}
+    clfs = {0:[ynb_pred, "NB"], 1:[yrf_pred, "RF"], 2:[ylog_pred, "LR"]}
+    for i in range(3):
         f1Scores[i] = f1_score(y_test, clfs[i][0], average = "micro")
     
     # Identifying the best classifier
     max_key = max(f1Scores, key = lambda x : f1Scores[x])
     print("Best classifier: ", clfs[max_key][1])
 
-    return [vect, svc, log]
+    # return [vect, svc, log]
+    return [vect, log]
 
 def serialize_data():
     # Retreving relevant data to be serialized
-    vect, svc, log = classifiers()
+    # vect, svc, log = classifiers()
+    vect, log = classifiers()
 
     # Creating pipelines for models
-    svc_model = Pipeline([("tfidf", vect), ("clf", svc),])
+    # svc_model = Pipeline([("tfidf", vect), ("clf", svc),])
     lr_model = Pipeline([("tfidf", vect), ("clf", log),])
 
     # saving the models
     # os.path.join(os.getcwd(),"models","tfidf_lr.sav")
-    s = os.path.join(os.getcwd(),"models","tfidf_svc.sav")
+    # s = os.path.join(os.getcwd(),"models","tfidf_svc.sav")
     l = os.path.join(os.getcwd(),"models","tfidf_lr.sav")
     # "C:/Users/91974/OneDrive/Desktop/models/tfidf_lr.sav"
-    pickle.dump(svc_model, open(s, 'wb'))
+    # pickle.dump(svc_model, open(s, 'wb'))
     pickle.dump(lr_model, open(l, 'wb'))
 
     # saving the vectorizer
