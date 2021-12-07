@@ -12,6 +12,6 @@ These are the instructions to be followed before running the sentence deconstruc
     - After installing PyTorch, install the other required libraries using the command ```pip install -r requirements.txt```
 
 5. After all the libraries have been installed, the deconstructor can be run with the command ```python3 sentence-deconstructor.py```
-6. Each individual component can also be run by navigating to the **src** directory and running ```python3 <name of file>.py```
+6. Each individual component can also be run by navigating to the respective component directory inside the **src/app** directory and running ```python3 <name of file>.py```
 
 
