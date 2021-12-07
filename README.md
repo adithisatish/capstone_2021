@@ -3,7 +3,7 @@
 The framework implemented here intends to deconstruct English sentences and paragraphs to identify and highlight the different grammatical forms used. In addition to this, it also aims to provide interpretability by explaining the reasoning behind the identification. In doing this, we provide a tool that will help laymen understand and significantly improve their written English. 
 
 ### Required Libraries
-To run the AllenNLP modes, [PyTorch](https://pytorch.org/) is required (follow the installation steps on the website).
+To run the AllenNLP module, [PyTorch](https://pytorch.org/) is required (follow the installation steps on the website).
 
 Run ```pip install -r requirements.txt``` once all the prerequisites are satisfied.
 
@@ -20,7 +20,7 @@ Note: Refer to the [Instructions](https://github.com/adithisatish/capstone_2021/
 
 ### Components Implemented
 - Alliterations
-- Metaphors (ongoing)
+- Metaphors
 - Rhyme Scheme
 - Similes
 - Subject Predicate Object
