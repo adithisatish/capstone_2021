@@ -12,7 +12,7 @@ import requests
 flag=0
 
 
-class Similes:
+class Simile:
     def __init__(self,text, paragraph = 0):
         self.text = text
         self.similes=[dict() for number in range(len(text))]
@@ -152,5 +152,5 @@ if __name__ == "__main__":
            "She ran like the wind, swam like a fish"]
 
     
-    sim_obj = Similes(text)
+    sim_obj = Simile(text)
     s1=sim_obj.execute()

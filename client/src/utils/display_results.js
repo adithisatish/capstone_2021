@@ -200,7 +200,7 @@ const Simile = ({obj}) => {
                                 return (
                                         <React.Fragment>
                                             <p className="font-bold">{index+1}. {simile}</p>
-                                            {/* <p>{getMarkdown(allit.explanation)}</p> */}
+                                            {/* <p>{getMarkdown(simile.Explanation)}</p> */}
                                             <br></br>
                                         </React.Fragment>
                                 )
