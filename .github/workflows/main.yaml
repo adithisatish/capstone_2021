@@ -6,7 +6,7 @@ on:
       - main
  
 jobs:
-  authserver:
+  webapp:
     runs-on: ubuntu-latest    
     steps:
       - name: git-checkout
