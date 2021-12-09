@@ -1,6 +1,7 @@
 const firebase = require('firebase/app')
 require("firebase/firestore");
 
+const path = require('path');
 const express = require('express');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
