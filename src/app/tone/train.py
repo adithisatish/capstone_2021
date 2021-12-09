@@ -25,18 +25,19 @@ from sklearn.pipeline import Pipeline
 # save and load a file
 import pickle
 
-df_train = pd.read_csv('data/data_train.csv')
-df_test = pd.read_csv('data/data_test.csv')
+if __name__=="__main__":
+    df_train = pd.read_csv('data/data_train.csv')
+    df_test = pd.read_csv('data/data_test.csv')
 
-data = pd.concat([df_train, df_test])
+    data = pd.concat([df_train, df_test])
 
-X_train = df_train.Text
-X_test = df_test.Text
+    X_train = df_train.Text
+    X_test = df_test.Text
 
-y_train = df_train.Emotion
-y_test = df_test.Emotion
+    y_train = df_train.Emotion
+    y_test = df_test.Emotion
 
-class_names = ['joy', 'sadness', 'anger', 'neutral', 'fear']
+    class_names = ['joy', 'sadness', 'anger', 'neutral', 'fear']
 
 def preprocess_and_tokenize(data):    
     # remove html markup
@@ -139,4 +140,5 @@ def serialize_data():
     # "C:/Users/91974/OneDrive/Desktop/vectorizers/tfidf.sav"
     pickle.dump(vect, open(v, 'wb'))
 
-serialize_data()
+if __name__=="__main__":
+    serialize_data()

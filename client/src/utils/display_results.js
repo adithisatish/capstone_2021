@@ -196,15 +196,24 @@ const Simile = ({obj}) => {
                     <React.Fragment>
                         <p className="text-green-800 text-lg">Similes: </p>
                         {
-                            sentence.Simile.map((simile, index) => {
+                                sentence.Simile.map((simile, index) => {
                                 return (
                                         <React.Fragment>
                                             <p className="font-bold">{index+1}. {simile}</p>
-                                            {/* <p>{getMarkdown(simile.Explanation)}</p> */}
+                                            <p>{getMarkdown(simile.Explanation)}</p>
+                                            
+                                        </React.Fragment>
+                                )
+                            })}{                      
+                            sentence.Explanation.map((exp, index) => {
+                                return (
+                                        <React.Fragment>
+                                            <p className="italic">{getMarkdown(exp)}</p>
                                             <br></br>
                                         </React.Fragment>
                                 )
-                            })}
+                            })
+                        }
                     </React.Fragment>:
                     <p className="font-bold text-lg">No Similes Found!</p>
                 }

@@ -118,7 +118,7 @@ class Simile:
                     x="like"
                     if(ans[2]==0):
                         x="as"
-                    Explanation="The sentence \"" + Sentence + "\" is a simile because it compares the"+t1+"\""+w1+"\""+" and the"+t2+"\""+w2+"\""+ " using the word "+"\""+x+"\""
+                    Explanation="The sentence \"" + Sentence + "\" is a simile because it compares the "+t1+"**\""+w1+"\"**"+" and the "+t2+"**\""+w2+"\"**"+ " using the word **"+"\""+x+"\"**."
                     self.similes[k]['Explanation'].append(Explanation)
             
 

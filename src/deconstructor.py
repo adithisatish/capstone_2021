@@ -7,4 +7,4 @@ from app.voice.VoiceDetector import Voice
 from app.rhyme_scheme.RhymeSchemeDetector import RhymeScheme
 from app.tone.ToneDetector import Tone
 
-mapComponent = {"SPO": SPO, "Alliteration": Alliteration, "Simile": Simile, "Metaphor": Metaphor, "Tense":Tenses, "Voice": Voice, "Rhyme Scheme":RhymeScheme, "Tone": Tone}
+mapComponent = {"SPO": SPO, "Alliteration": Alliteration, "Similes": Simile, "Metaphor": Metaphor, "Tense":Tenses, "Voice": Voice, "Rhyme Scheme":RhymeScheme, "Tone": Tone}
