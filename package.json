@@ -5,17 +5,19 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "postinstall": "cd authserver && npm install",
-    "start": "cd authserver && npm start"
+    "postinstall": "cd webapp && npm install",
+    "start": "cd webapp && npm start",
+    "preinstall": "cd webapp/client && npm install",
+    "build": "cd webapp && npm run build"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/adithisatish/capstone_2021.git"
+    "url": "git+https://github.com/adithisatish/sentence-deconstructor.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/adithisatish/capstone_2021/issues"
+    "url": "https://github.com/adithisatish/sentence-deconstructor/issues"
   },
-  "homepage": "https://github.com/adithisatish/capstone_2021#readme"
+  "homepage": "https://github.com/adithisatish/sentence-deconstructor#readme"
 }
