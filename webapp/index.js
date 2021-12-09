@@ -25,7 +25,9 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
-
+if(process.env.NODE_ENV === "production"){
+    app.use(express.static(path.join(__dirname, "client/build")))
+}
 
 app.post('/signup', async (req, res) => {
     try {
