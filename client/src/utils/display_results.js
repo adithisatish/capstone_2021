@@ -361,6 +361,35 @@ return res
 }
 
 
+const Tone = ({obj}) => {
+    
+    // for each sentence
+    //     display sentence 
+    //     for each alliteration 
+    //         display joined
+    //         display explanation
+
+    const res = obj.map((sentence, index) => {
+        return (
+            <div>
+                <p className="text-lg">{index+1}. {sentence.Sentence}</p>
+                <div className="ml-6">
+                    <p className="font-bold">Tone: {sentence.Tone}</p>
+                    <p className="italic">The following words (in decreasing order) were given the highest importance by our model while detecting the tone "{sentence.Tone}": <b>{sentence.Explanation.join(", ")}</b></p>
+                    <br></br>
+                </div>
+            </div>
+        )
+    })
+    
+    if(res.length){
+        return <React.Fragment>{res}</React.Fragment>
+    }
+
+    return <p className="font-bold text-lg">No Voice Found!</p>
+}
+
+
 const OutputSelector = (obj, type) => {
     // const display_result = {Alliteration, SPO}
     console.log(type)
@@ -379,6 +408,8 @@ const OutputSelector = (obj, type) => {
             return <RhymeScheme obj = {obj}></RhymeScheme>
         case "Metaphor":
             return <Metaphor obj = {obj}></Metaphor>
+        case "Tone":
+            return <Tone obj = {obj}></Tone>
         default:
             return null
     }

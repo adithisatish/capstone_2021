@@ -8,7 +8,7 @@ import re
 app = flask.Flask(__name__)
 cors = CORS(app)
 # app.config['CORS_HEADERS'] = 'Content-Type'
-app.config["DEBUG"] = True
+app.config["DEBUG"] = False
 
 def preprocess(comp, text):
     if comp != "Rhyme Scheme":
@@ -45,4 +45,4 @@ def deconstruct():
         
     # return jsonify(mapComponent)
 
-app.run()
+app.run(host="0.0.0.0")
