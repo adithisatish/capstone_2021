@@ -6,6 +6,7 @@ const express = require('express');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const config = require('config');
+const axios = require("axios");
 
 const cors = require('cors');
 
@@ -114,6 +115,21 @@ app.post('/authenticateUser', async (req, res) => {
 	}
 });
 
+
+app.post("/proxy", (req, res) => {
+    const URL = "http://3.111.6.194:5000/deconstructor";
+    axios.post(URL, req.body)
+    .then(result => {
+        // console.log(result);
+        res.json(result.data)
+    })
+    .catch(err => {
+        console.log(err);
+        res.status(500).json({
+            message: "Internal Server Error!"
+        })
+    })
+});
 
 app.get('*', (req,res) =>{
     res.sendFile(path.join(__dirname+'/client/build/index.html'));
