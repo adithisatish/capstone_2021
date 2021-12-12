@@ -1,6 +1,7 @@
 module.exports = {
-  purge: ['./pages/**/*.{js,ts,jsx,tsx}', './components/**/*.{js,ts,jsx,tsx}'],
-  darkMode: false, // or 'media' or 'class'
+  content: [
+    "./src/**/*.{js,jsx}",
+  ],
   theme: {
     extend: {},
     maxWidth: {
@@ -13,9 +14,6 @@ module.exports = {
       'ph': {'max': '1024px'},
       'lg': {'min': '1025px'}
     }
-  },
-  variants: {
-    extend: {},
   },
   plugins: [
     require("@tailwindcss/forms")({strategy:"class"})

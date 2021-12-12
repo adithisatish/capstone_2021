@@ -1,15 +1,11 @@
 import React from 'react';
-import { Route, Redirect } from 'react-router-dom';
+import { Route, Navigate } from 'react-router-dom';
 import { connect } from 'react-redux';
 
-const AuthenticatedRoute = ({loggedIn, component: Component, auth, ...rest}) => {
-    return (        
-        <Route
-            {...rest}   
-            render={props => (
-                ((loggedIn && auth) || !auth) ? <Component {...props} /> : <Redirect to="/" />
-            )} 
-        />
+const AuthenticatedRoute = ({loggedIn, component: Component, auth}) => {
+
+    return (                
+        ((loggedIn && auth) || !auth) ? <Component /> : <Navigate to="/" />
     );
 };
 
