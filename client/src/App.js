@@ -1,6 +1,6 @@
 import React  from "react";
 import { connect } from 'react-redux';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
 import Login from "./pages/Login";
 import Landing from "./pages/Landing";
@@ -38,15 +38,17 @@ const App = (props) => {
   	if(props.loading) return <Loading/>;
 
   	return (
-    	<Router>
-			<Switch>
-				<Route exact path='/' component={Landing} />
-				<AuthenticatedRoute exact auth={true} path='/deconstructor' component={Deconstructor} />
-        		<AuthenticatedRoute exact auth={false} path='/login' component={Login} />
-				<AuthenticatedRoute auth={false} component={NotFound} />
-			</Switch>
-			<Alert></Alert>
-		</Router>
+      <React.Fragment>
+        <Router>
+          <Routes>
+            <Route exact path='/' element={<Landing/>} />
+            <Route exact path='/deconstructor' element={<AuthenticatedRoute auth={true} component={Deconstructor}/>} />
+            <Route exact path='/login' element={<AuthenticatedRoute auth={false} component={Login}/>} />
+            <Route auth={false} element={<NotFound/>} />
+          </Routes>
+        </Router>
+        <Alert></Alert>
+      </React.Fragment>
   	);
 }
 
