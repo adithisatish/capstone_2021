@@ -7,7 +7,7 @@ import re
 
 app = flask.Flask(__name__)
 cors = CORS(app)
-# app.config['CORS_HEADERS'] = 'Content-Type'
+app.config['CORS_HEADERS'] = 'Content-Type'
 app.config["DEBUG"] = False
 
 def preprocess(comp, text):
@@ -27,9 +27,10 @@ def preprocess(comp, text):
 def home():
     return "<h1>Sentence Deconstructor</h1><p>Capstone Project 2021</p>"
 
-@app.route('/deconstructor', methods=['POST'])
 @cross_origin()
+@app.route('/deconstructor', methods = ['POST'])
 def deconstruct():
+    print(request.method)
     comp = request.json['component']
     text = request.json['text'].strip()
     paragraph = 1

@@ -27,7 +27,7 @@ const Deconstructor = () => {
         }
         
         setIsLoading(true)
-        decServer.post("/", body)//http://ec2-18-219-212-186.us-east-2.compute.amazonaws.com:5000/deconstructor",body)
+        decServer.post("", body)//http://ec2-18-219-212-186.us-east-2.compute.amazonaws.com:5000/deconstructor",body)
         .then(res => {
             setIsLoading(false)
             const newOutputJSXMap = {...outputJSXMap}
