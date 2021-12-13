@@ -6,5 +6,5 @@ export const authServer = axios.create({
 });
 const isFlaskProduction = process.env.NODE_ENV === "production"
 export const decServer = axios.create({
-    baseURL: isFlaskProduction? '/proxy': 'http://127.0.0.1:5000/deonstructor'
+    baseURL: isFlaskProduction? '/proxy': 'http://127.0.0.1:5000/deconstructor'
 });
