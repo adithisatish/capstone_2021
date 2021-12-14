@@ -80,7 +80,7 @@ class Tenses:
                 for j in i.children: #ccomp, advcl, only aux, no aux
                     if(j.dep_ == 'aux'):
                         aux.append(j)
-                    elif(j.dep_ == 'nsubj'):
+                    elif(j.dep_ == 'nsubj' or j.dep_ == "nsubjpass"):
                         sub = j.text
                     if(j.dep_ == 'ccomp'):
                         Clause['ccomp']['verb'] = j
