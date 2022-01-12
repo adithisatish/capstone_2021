@@ -68,7 +68,7 @@ const Navbar = (props) => {
                     <line x1="4" y1="18" x2="20" y2="18"></line>
                 </svg>
             </div>
-            <p>Capstone</p>
+            <p>iREAD</p>
             <div className="flex flex-grow ml-6 ph:hidden">
                 {leftElement}
             </div>

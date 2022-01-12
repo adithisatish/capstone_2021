@@ -7,7 +7,7 @@ const Landing = () => {
             <div className="flex-col mt-6">
                 <div>
                     <p className="text-7xl font-bold text-green-800 text-center ph:text-5xl">
-                        Capstone
+                        iREAD
                     </p>
                 </div>
                 <div className="w-full lg:mt-12 ph:mb-12">
@@ -15,9 +15,20 @@ const Landing = () => {
                         <div className="bg-green-200 w-1/2 rounded-2xl p-4 ph:w-full">
                             <p className="text-center font-bold text-green-800 text-xl">About Us</p>
                             <p className="p-2 text-justify text-green-600">
-                                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam. Sed nisi. Nulla quis sem at nibh elementum imperdiet. Duis sagittis ipsum. Praesent mauris. Fusce nec tellus sed augue semper porta. Mauris massa. Vestibulum lacinia arcu eget nulla. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. 
-                                Curabitur sodales ligula in libero. Sed dignissim lacinia nunc. Curabitur tortor. Pellentesque nibh. Aenean quam. In scelerisque sem at dolor. Maecenas mattis. Sed convallis tristique sem. Proin ut ligula vel nunc egestas porttitor. Morbi lectus risus, iaculis vel, suscipit quis, luctus non, massa. Fusce ac turpis quis ligula lacinia aliquet. Mauris ipsum. 
-                                Nulla metus metus, ullamcorper vel, tincidunt sed, euismod in, nibh. Quisque volutpat condimentum velit. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Nam nec ante. Sed lacinia, urna non tincidunt mattis, tortor neque adipiscing diam, a cursus ipsum ante quis turpis. Nulla facilisi. Ut fringilla. Suspendisse potenti. Nunc feugiat mi a tellus consequat imperdiet. Vestibulum sapien. Proin quam. Etiam ultrices. Suspendisse in justo eu magna luctus suscipit. </p>
+                                iREAD is a learning aid that uses Machine Learning and Natural Language Processing 
+                                techniques to deconstruct passages and identify literary devices and 
+                                grammatical rules pertaining to Tense, Tone, Rhyme Schemes, and Metaphors, 
+                                amongst others. The techniques used provide an insight to the rationale 
+                                behind the deconstruction using: (1) an intuitive explanation through 
+                                explication of the rules that underlie the grammatical constructs and 
+                                (2) identifying the most relevant features for machine classification 
+                                as a way to explain the outcome of models. We validate the algorithms 
+                                that underlie the learning aid on manually annotated datasets from high 
+                                school textbooks on English Grammar that are widely prescribed and referred 
+                                to. The various components are delineated to three learning levels: easy
+                                (recognition of subject-predicate-object, tense and tone), intermediate 
+                                (recognition of simile, alliteration and rhyme scheme) and advanced 
+                                (recognition of metaphor and voice). </p>
                         </div>
                         <div className="p-12 w-1/2 ph:w-full">
                             <img src="./images/girl_reading.svg" className="w-full"/>
