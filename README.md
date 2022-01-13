@@ -10,8 +10,9 @@ To run the AllenNLP module, [PyTorch](https://pytorch.org/) is required (follow 
 Run ```pip install -r requirements.txt``` once all the prerequisites are satisfied.
 
 ### Execution
-1. Navigate to ```client``` and run ```npm start``` on the terminal.
-2. Navigate to ```src``` and run ```python server.py``` on another terminal.
+1. To start the authserver, navigate to ```/webapp``` and run ```npm run dev``` on the terminal.
+2. To start the client, navigate to ```/webapp/client``` and run ```npm start``` on a new terminal.
+3. To start the Flask server, navigate to ```src``` and run ```python server.py``` on another terminal.
 
 Note: Refer to the Instructions file for detailed directions on how to execute the individual components.
 
@@ -21,11 +22,13 @@ Note: Refer to the Instructions file for detailed directions on how to execute t
 - Database for authentication: Firebase
 
 ### Components Implemented
-- Alliterations
-- Metaphors
-- Rhyme Scheme
-- Similes
-- Subject Predicate Object
+- Subject-Predicate-Object
 - Tense
 - Tone
+- Alliterations
+- Rhyme Scheme
+- Simile
+- Metaphor
 - Voice
+
+
