@@ -24,6 +24,8 @@ const firebaseConfig = {
     appId: config.get("appId")
 };
 
+const jwtKey = "capstone";
+
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
@@ -78,7 +80,7 @@ app.post('/login', async (req, res) => {
 			iat: new Date().getTime()
 		};
 
-        jwt.sign(payload, config.get('jwtSecret'), (err, token) => {
+        jwt.sign(payload, jwtKey, (err, token) => {
 			if (err) throw err;
 			res.status(200).json({
 				token,
@@ -94,7 +96,7 @@ app.post('/login', async (req, res) => {
 app.post('/authenticateUser', async (req, res) => {
 	try {
         const token = req.header('x-auth-token');
-        const decoded = jwt.verify(token, config.get('jwtSecret'));
+        const decoded = jwt.verify(token, jwtKey);
 		userId = decoded.id.slice(0, decoded.id.length / 2);
 
 		const existingUser = await db.collection('users').doc(userId).get();
